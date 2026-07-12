@@ -45,6 +45,7 @@ class CaseSpec(StrictModel):
     cues: CueSpec = Field(default_factory=CueSpec)
     session_outlines: list[SessionOutline] = []
     eval_outlines: list[EvalOutline] = []
+    assistant_persona: str = "用户的普通朋友"
 
 
 class SessionPlan(StrictModel):
