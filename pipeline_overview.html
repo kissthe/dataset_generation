@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数据生成 Pipeline 说明文档</title>
+<style>
+  :root {
+    --bg: #f5f7fb;
+    --card: #ffffff;
+    --primary: #2563eb;
+    --primary-dark: #1e40af;
+    --accent: #f59e0b;
+    --text: #1f2937;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --success: #10b981;
+    --danger: #ef4444;
+    --shadow: 0 4px 12px rgba(0,0,0,0.06);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 0;
+  }
+  header {
+    background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+    color: white;
+    padding: 48px 24px;
+    text-align: center;
+  }
+  header h1 { font-size: 2.4rem; font-weight: 700; margin-bottom: 12px; }
+  header p { font-size: 1.1rem; opacity: 0.92; max-width: 760px; margin: 0 auto; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  section { margin-bottom: 48px; }
+  h2 {
+    font-size: 1.6rem;
+    color: var(--primary-dark);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 3px solid var(--primary);
+    display: inline-block;
+  }
+  h3 { font-size: 1.2rem; color: var(--text); margin-bottom: 12px; }
+  p { margin-bottom: 12px; color: var(--text); }
+  code {
+    background: #eef2ff;
+    color: var(--primary-dark);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: "Consolas", "Monaco", monospace;
+    font-size: 0.9em;
+  }
+  ul, ol { margin-left: 24px; margin-bottom: 12px; }
+  li { margin-bottom: 6px; }
+
+  /* Pipeline Flow */
+  .pipeline-flow {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 32px;
+    box-shadow: var(--shadow);
+    overflow-x: auto;
+  }
+  .flow-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+  }
+  .flow-step {
+    display: flex;
+    align-items: stretch;
+    gap: 16px;
+    position: relative;
+  }
+  .flow-step::before {
+    content: "";
+    position: absolute;
+    left: 23px;
+    top: 48px;
+    bottom: -16px;
+    width: 2px;
+    background: var(--border);
+    z-index: 0;
+  }
+  .flow-step:last-child::before { display: none; }
+  .step-num {
+    flex: 0 0 48px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    z-index: 1;
+    box-shadow: 0 0 0 4px var(--card);
+  }
+  .step-content {
+    flex: 1;
+    background: #f9fafb;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 16px;
+  }
+  .step-content .title { font-weight: 600; color: var(--primary-dark); margin-bottom: 4px; }
+  .step-content .desc { font-size: 0.95rem; color: var(--muted); }
+
+  /* Component Cards */
+  .components-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    gap: 20px;
+  }
+  .component-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+    border-top: 4px solid var(--primary);
+    transition: transform 0.2s;
+  }
+  .component-card:hover { transform: translateY(-3px); }
+  .component-card.eval { border-top-color: var(--accent); }
+  .component-card.tool { border-top-color: var(--success); }
+  .component-card h3 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: #dbeafe;
+    color: var(--primary-dark);
+  }
+  .badge.eval { background: #fef3c7; color: #92400e; }
+  .badge.tool { background: #d1fae5; color: #065f46; }
+  .component-card .prompt-file {
+    font-family: monospace;
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .component-card .role { font-weight: 600; margin-bottom: 6px; color: var(--text); }
+  .component-card ul { font-size: 0.92rem; }
+  .component-card .io {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--border);
+    font-size: 0.88rem;
+  }
+  .io-row { display: flex; gap: 8px; margin-bottom: 4px; }
+  .io-label {
+    flex: 0 0 60px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+
+  /* Data Model */
+  .model-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 16px;
+  }
+  .model-card {
+    background: var(--card);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+    border-left: 4px solid var(--primary);
+  }
+  .model-card h4 {
+    color: var(--primary-dark);
+    margin-bottom: 10px;
+    font-size: 1.05rem;
+  }
+  .model-card .fields { font-size: 0.9rem; }
+  .model-card .field {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 4px;
+    font-family: monospace;
+  }
+  .model-card .field-name { color: var(--primary); font-weight: 600; min-width: 140px; }
+  .model-card .field-type { color: var(--muted); }
+
+  /* Config table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    font-size: 0.92rem;
+  }
+  th, td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  th { background: var(--primary); color: white; font-weight: 600; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #f9fafb; }
+  td code { font-size: 0.88rem; }
+
+  /* Output structure */
+  .output-tree {
+    background: #1e293b;
+    color: #e2e8f0;
+    padding: 24px;
+    border-radius: 10px;
+    font-family: "Consolas", monospace;
+    font-size: 0.9rem;
+    line-height: 1.7;
+    overflow-x: auto;
+  }
+  .output-tree .dir { color: #60a5fa; }
+  .output-tree .file { color: #fbbf24; }
+  .output-tree .comment { color: #94a3b8; }
+
+  .callout {
+    background: #fffbeb;
+    border-left: 4px solid var(--accent);
+    padding: 16px 20px;
+    border-radius: 6px;
+    margin: 16px 0;
+  }
+  .callout strong { color: #92400e; }
+
+  .footer {
+    text-align: center;
+    padding: 24px;
+    color: var(--muted);
+    font-size: 0.9rem;
+    border-top: 1px solid var(--border);
+    margin-top: 32px;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>长期对话数据生成 Pipeline</h1>
+  <p>本系统调用兼容 OpenAI API 的模型，根据固定 CaseSpec 生成按时间排列的长期用户—助手对话，用于构建情绪记忆触发评测数据集。</p>
+</header>
+
+<div class="container">
+
+  <!-- 概览 -->
+  <section>
+    <h2>项目概览</h2>
+    <p>本项目根据固定 <code>CaseSpec</code>（案例规格）调用兼容 OpenAI API 的模型，生成按时间排列的长期用户—助手对话。每个角色产出：</p>
+    <ul>
+      <li><strong>10 个 session</strong>：按时间排列的历史对话，每个 session 包含 4–6 个 round（user turn + assistant turn）；</li>
+      <li><strong>6 个 eval sample</strong>：用于评测的当前输入与 gold 答案；</li>
+      <li><strong>1 份 QA 报告</strong>：自动结构校验结果；</li>
+      <li><strong>1 份 benchmark JSON</strong>：最终输出数据集。</li>
+    </ul>
+    <p>所有 LLM 输出均使用<strong>结构化 JSON Schema</strong>约束，并通过 Pydantic 模型校验；每个步骤失败时最多重试 3 次。</p>
+    <div class="callout">
+      <strong>核心任务：</strong>模型需判断 <code>trigger_label</code>（triggered / not_triggered / insufficient_evidence），即当前输入中的 cue 是否触发用户的历史情绪记忆。触发成立需同时满足：① cue 出现在当前输入中；② 历史中存在 cue 与个人情绪事件的关联证据；③ 该历史记忆能够解释用户当前的情绪或行为反应。
+    </div>
+  </section>
+
+  <!-- Pipeline 流程 -->
+  <section>
+    <h2>Pipeline 整体流程</h2>
+    <div class="pipeline-flow">
+      <div class="flow-steps">
+        <div class="flow-step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <div class="title">加载 CaseSpec</div>
+            <div class="desc">从 <code>cases/case_a.json</code> 读取角色身份、核心情绪事件、cue 规格、10 个 session outlines 和 6 个 eval outlines。这是后续生成的事实唯一来源。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <div class="title">分批生成 SessionPlan（SessionPlanner）</div>
+            <div class="desc">按 <code>planner_batch_size</code> 分批生成轻量计划，每批将已生成计划传给下一批以维持严格时间顺序，避免单次输出长度限制。产出 <code>session_plans.json</code> 与 <code>session_plans.txt</code>。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <div class="title">逐 Session 生成对话（SessionWriter → Verifier → Reviser）</div>
+            <div class="desc">每个 session 依次执行：① <code>SessionWriter</code> 生成完整对话；② <code>_structural_verdict</code> 做结构校验（turn 数、ID、speaker 顺序）；③ <code>SessionVerifier</code> 做语义校验；④ 若需修订，<code>SessionReviser</code> 做最小修改。最多循环 <code>max_revision_cycles</code> 次。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <div class="title">自然度检查（NaturalnessChecker）</div>
+            <div class="desc">检查对话风格、语气是否自然；如需修订，调用 Reviser 仅修改指定表达，不得改变事件、时间、人物、cue。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">5</div>
+          <div class="step-content">
+            <div class="title">Checkpoint 持久化</div>
+            <div class="desc">每完成一个 session 立即写入 <code>checkpoint_sessions.json</code>，便于中断后从未完成处继续。重新运行时会校验并复用已有计划与合法 checkpoint。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">6</div>
+          <div class="step-content">
+            <div class="title">QA 校验（validate_sessions）</div>
+            <div class="desc">非 LLM 校验：session ID 顺序、严格时间递增、turn 数量与交替规则、speaker 唯一性。产出 <code>qa_report.json</code>。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">7</div>
+          <div class="step-content">
+            <div class="title">输出 Benchmark JSON</div>
+            <div class="desc">汇总 <code>dataset_id</code>、<code>character_profile</code>、<code>dialogues</code>、<code>eval_samples</code>，写入 <code>benchmark.json</code>。本轮 <code>run_eval=false</code>，eval_samples 为空数组。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">8</div>
+          <div class="step-content">
+            <div class="title">Eval 生成（可选，当前关闭）</div>
+            <div class="desc">EvalGenerator 生成 3 个候选 → EvalVerifier 选择最佳或全部拒绝 → GoldFinalizer 做确定性整理（校验 turn/cue 存在性、随机排序 cue options、分配 sample ID）。后续可在 pipeline 中启用。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 组件 -->
+  <section>
+    <h2>核心组件功能</h2>
+    <div class="components-grid">
+
+      <div class="component-card">
+        <h3>SessionPlanner <span class="badge">LLM</span></h3>
+        <div class="prompt-file">prompts/session_planner.txt</div>
+        <div class="role">职责：将固定 CaseSpec 扩展为轻量 SessionPlan</div>
+        <ul>
+          <li>宏观控制：指定每个 session 的主题、日期、story beat；</li>
+          <li>保持固定故事功能不变，不得改变核心事件；</li>
+          <li>支持分批生成，把已生成计划传给下一批维持时间顺序。</li>
+        </ul>
+        <div class="io">
+          <div class="io-row"><span class="io-label">输入：</span><span>CaseSpec + min/max rounds + prior_plans</span></div>
+          <div class="io-row"><span class="io-label">输出：</span><span>SessionPlanList（session_id, date, topic, story_beat, round_count）</span></div>
+        </div>
+      </div>
+
+      <div class="component-card">
+        <h3>SessionWriter <span class="badge">LLM</span></h3>
+        <div class="prompt-file">prompts/session_writer.txt</div>
+        <div class="role">职责：一次生成完整 session 对话</div>
+        <ul>
+          <li>根据 plan 和 recent_history 生成全部 turns；</li>
+          <li>严格遵循 user/assistant 交替、round 结构、turn ID 命名；</li>
+          <li>保持角色风格与故事 beat 一致。</li>
+        </ul>
+        <div class="io">
+          <div class="io-row"><span class="io-label">输入：</span><span>CaseSpec + SessionPlan + 最近 N 个 session</span></div>
+          <div class="io-row"><span class="io-label">输出：</span><span>Session（含 turns、summary）</span></div>
+        </div>
+      </div>
+
+      <div class="component-card">
+        <h3>SessionVerifier <span class="badge">LLM</span></h3>
+        <div class="prompt-file">prompts/session_verifier.txt</div>
+        <div class="role">职责：只做检查，不改文本</div>
+        <ul>
+          <li>assistant 是否知道了未披露信息（overclaim）；</li>
+          <li>人物身份是否冲突；</li>
+          <li>是否形成机械问答、是否重复历史；</li>
+          <li>user 是否有可用 evidence turn；</li>
+          <li>session 是否像自然对话。</li>
+        </ul>
+        <div class="io">
+          <div class="io-row"><span class="io-label">输入：</span><span>CaseSpec + plan + Session + recent_history</span></div>
+          <div class="io-row"><span class="io-label">输出：</span><span>VerificationResult（pass/revise + issues 列表）</span></div>
+        </div>
+      </div>
+
+      <div class="component-card">
+        <h3>SessionReviser <span class="badge">LLM</span></h3>
+        <div class="prompt-file">prompts/session_reviser.txt</div>
+        <div class="role">职责：根据具体问题做最小修改</div>
+        <ul>
+          <li>仅修改 verifier/naturalness 指出的相关 turn；</li>
+          <li>不重写整个 session；</li>
+          <li>保留事件、时间、人物、cue 不变。</li>
+        </ul>
+        <div class="io">
+          <div class="io-row"><span class="io-label">输入：</span><span>CaseSpec + plan + Session + VerificationResult</span></div>
+          <div class="io-row"><span class="io-label">输出：</span><span>修订后的 Session</span></div>
+        </div>
+      </div>
+
+      <div class="component-card">
+        <h3>NaturalnessChecker <span class="badge">LLM</span></h3>
+        <div class="prompt-file">prompts/naturalness_checker.txt</div>
+        <div class="role">职责：检查对话风格与自然度</div>
+        <ul>
+          <li>基于 character_profile.conversation_style；</li>
+          <li>检查语气、表达是否自然；</li>
+          <li>只修改指定表达，不改事实。</li>
+        </ul>
+        <div class="io">
+          <div class="io-row"><span class="io-label">输入：</span><span>conversation_style + Session</span></div>
+          <div class="io-row"><span class="io-label">输出：</span><span>VerificationResult（pass/revise）</span></div>
+        </div>
+      </div>
+
+      <div class="component-card eval">
+        <h3>EvalGenerator <span class="badge eval">LLM · Eval</span></h3>
+        <div class="prompt-file">prompts/eval_generator.txt</div>
+        <div class="role">职责：根据覆盖目标生成 eval 候选</div>
+        <ul>
+          <li>按 eval outline 的 target_label/emotion/history_cutoff 出题；</li>
+          <li>从历史中寻找可用 evidence；</li>
+          <li>生成当前文本/图文输入、cue options、预期 gold；</li>
+          <li>一次生成 3 个候选。</li>
+        </ul>
+        <div class="io">
+          <div class="io-row"><span class="io-label">输入：</span><span>CaseSpec + visible_sessions + EvalOutline</span></div>
+          <div class="io-row"><span class="io-label">输出：</span><span>EvalCandidateList（3 个候选）</span></div>
+        </div>
+      </div>
+
+      <div class="component-card eval">
+        <h3>EvalVerifier <span class="badge eval">LLM · Eval</span></h3>
+        <div class="prompt-file">prompts/eval_verifier.txt</div>
+        <div class="role">职责：检查候选并选择最佳</div>
+        <ul>
+          <li>不生成新题，不大幅重写；</li>
+          <li>检查每个候选是否符合覆盖目标；</li>
+          <li>选择最佳候选，或全部拒绝要求重试。</li>
+        </ul>
+        <div class="io">
+          <div class="io-row"><span class="io-label">输入：</span><span>CaseSpec + sessions + outline + candidates</span></div>
+          <div class="io-row"><span class="io-label">输出：</span><span>EvalSelection（reject_all + selected_index + issues）</span></div>
+        </div>
+      </div>
+
+      <div class="component-card tool">
+        <h3>GoldFinalizer <span class="badge tool">非 LLM</span></h3>
+        <div class="role">职责：确定性整理最终 eval JSON</div>
+        <ul>
+          <li>校验 evidence turn_id 是否存在且 speaker=user；</li>
+          <li>校验 cue_id 是否存在于 cue_options；</li>
+          <li>随机排序 cue options（避免位置偏见）；</li>
+          <li>根据标签强制修正空值规则；</li>
+          <li>分配 sample_id，删除调试字段。</li>
+        </ul>
+        <div class="io">
+          <div class="io-row"><span class="io-label">输入：</span><span>CaseSpec + sessions + EvalCandidate + 序号</span></div>
+          <div class="io-row"><span class="io-label">输出：</span><span>EvalSample</span></div>
+        </div>
+      </div>
+
+      <div class="component-card tool">
+        <h3>LLMClient <span class="badge tool">基础设施</span></h3>
+        <div class="role">职责：统一 LLM 调用客户端</div>
+        <ul>
+          <li>结构化输出（json_schema response_format）；</li>
+          <li>按组件配置 model/temperature/max_tokens；</li>
+          <li>从环境变量读取 api_key 与 base_url（自动补 /v1）；</li>
+          <li>支持 openai_sdk 与 powershell 两种 transport；</li>
+          <li>失败重试（最多 max_retries 次），记录 CallRecord。</li>
+        </ul>
+        <div class="io">
+          <div class="io-row"><span class="io-label">输入：</span><span>component 名 + payload + 输出模型类</span></div>
+          <div class="io-row"><span class="io-label">输出：</span><span>Pydantic 模型实例 + records 调用记录</span></div>
+        </div>
+      </div>
+
+      <div class="component-card tool">
+        <h3>validate_sessions <span class="badge tool">非 LLM</span></h3>
+        <div class="role">职责：QA 结构校验</div>
+        <ul>
+          <li>session_ids_and_order：与 case outline 顺序一致；</li>
+          <li>strict_chronology：date 严格递增；</li>
+          <li>turn_structure：8–12 turns、user/assistant 交替、ID 唯一；</li>
+          <li>schema_validation：Pydantic 校验通过。</li>
+        </ul>
+        <div class="io">
+          <div class="io-row"><span class="io-label">输入：</span><span>dataset_id + CaseSpec + sessions + call_records</span></div>
+          <div class="io-row"><span class="io-label">输出：</span><span>QAReport（passed + checks + errors）</span></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 核心数据模型 -->
+  <section>
+    <h2>核心数据模型</h2>
+    <div class="model-grid">
+      <div class="model-card">
+        <h4>CaseSpec</h4>
+        <div class="fields">
+          <div class="field"><span class="field-name">case_id</span><span class="field-type">str</span></div>
+          <div class="field"><span class="field-name">character_profile</span><span class="field-type">CharacterProfile</span></div>
+          <div class="field"><span class="field-name">core_emotional_event</span><span class="field-type">str</span></div>
+          <div class="field"><span class="field-name">forbidden_facts</span><span class="field-type">list[str]</span></div>
+          <div class="field"><span class="field-name">cues</span><span class="field-type">CueSpec（exact/related/non_triggering）</span></div>
+          <div class="field"><span class="field-name">session_outlines</span><span class="field-type">list[SessionOutline]</span></div>
+          <div class="field"><span class="field-name">eval_outlines</span><span class="field-type">list[EvalOutline]</span></div>
+        </div>
+      </div>
+
+      <div class="model-card">
+        <h4>SessionPlan</h4>
+        <div class="fields">
+          <div class="field"><span class="field-name">session_id</span><span class="field-type">str</span></div>
+          <div class="field"><span class="field-name">date</span><span class="field-type">str (YYYY-MM-DD)</span></div>
+          <div class="field"><span class="field-name">topic</span><span class="field-type">str</span></div>
+          <div class="field"><span class="field-name">story_beat</span><span class="field-type">str</span></div>
+          <div class="field"><span class="field-name">outline_function</span><span class="field-type">str</span></div>
+          <div class="field"><span class="field-name">round_count</span><span class="field-type">int (1–20)</span></div>
+        </div>
+      </div>
+
+      <div class="model-card">
+        <h4>Session / Turn</h4>
+        <div class="fields">
+          <div class="field"><span class="field-name">session_id</span><span class="field-type">str</span></div>
+          <div class="field"><span class="field-name">topic, date</span><span class="field-type">str</span></div>
+          <div class="field"><span class="field-name">turns</span><span class="field-type">list[Turn]</span></div>
+          <div class="field"><span class="field-name">summary</span><span class="field-type">str</span></div>
+          <div class="field"><span class="field-name">Turn.turn_id</span><span class="field-type">{sid}_T{nn}</span></div>
+          <div class="field"><span class="field-name">Turn.round_id</span><span class="field-type">{sid}_R{nn}</span></div>
+          <div class="field"><span class="field-name">Turn.speaker</span><span class="field-type">user | assistant</span></div>
+        </div>
+      </div>
+
+      <div class="model-card">
+        <h4>EvalSample / Gold</h4>
+        <div class="fields">
+          <div class="field"><span class="field-name">sample_id</span><span class="field-type">{case}-E{nn}</span></div>
+          <div class="field"><span class="field-name">eval_user_id</span><span class="field-type">str</span></div>
+          <div class="field"><span class="field-name">current_input</span><span class="field-type">CurrentInput</span></div>
+          <div class="field"><span class="field-name">gold.trigger_label</span><span class="field-type">triggered/not_triggered/insufficient</span></div>
+          <div class="field"><span class="field-name">gold.trigger_cue_id</span><span class="field-type">cue_id | none</span></div>
+          <div class="field"><span class="field-name">gold.evidence_turn_ids</span><span class="field-type">list[str]</span></div>
+          <div class="field"><span class="field-name">gold.current_emotion</span><span class="field-type">8 种情绪枚举</span></div>
+        </div>
+      </div>
+
+      <div class="model-card">
+        <h4>VerificationResult</h4>
+        <div class="fields">
+          <div class="field"><span class="field-name">result</span><span class="field-type">pass | revise</span></div>
+          <div class="field"><span class="field-name">issues</span><span class="field-type">list[VerificationIssue]</span></div>
+          <div class="field"><span class="field-name">Issue.turn_id</span><span class="field-type">str</span></div>
+          <div class="field"><span class="field-name">Issue.type</span><span class="field-type">str（如 assistant_overclaim）</span></div>
+          <div class="field"><span class="field-name">Issue.description</span><span class="field-type">str</span></div>
+        </div>
+      </div>
+
+      <div class="model-card">
+        <h4>Benchmark</h4>
+        <div class="fields">
+          <div class="field"><span class="field-name">dataset_id</span><span class="field-type">str</span></div>
+          <div class="field"><span class="field-name">character_profile</span><span class="field-type">CharacterProfile</span></div>
+          <div class="field"><span class="field-name">dialogues</span><span class="field-type">list[dict]</span></div>
+          <div class="field"><span class="field-name">eval_samples</span><span class="field-type">list[EvalSample]</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <strong>Gold 一致性规则（model_validator 强制）：</strong>
+      <ul style="margin-top:8px;">
+        <li><code>triggered</code>：cue_id ≠ none，evidence 非空；</li>
+        <li><code>not_triggered</code> / <code>insufficient_evidence</code>：cue_id = none，evidence 为空；</li>
+        <li>evidence 只能引用真实存在的 user turn。</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 配置 -->
+  <section>
+    <h2>配置说明（config.json）</h2>
+    <table>
+      <thead>
+        <tr><th>配置项</th><th>示例值</th><th>说明</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>dataset_id_prefix</code></td><td>memory-trigger-dialogue</td><td>数据集 ID 前缀</td></tr>
+        <tr><td><code>transport</code></td><td>powershell</td><td>LLM 调用通道：openai_sdk 或 powershell（Windows 原生网络栈）</td></tr>
+        <tr><td><code>generation.session_count</code></td><td>10</td><td>每个 case 生成 session 数</td></tr>
+        <tr><td><code>generation.planner_batch_size</code></td><td>5</td><td>Planner 分批大小</td></tr>
+        <tr><td><code>generation.min_rounds / max_rounds</code></td><td>4 / 6</td><td>每个 session round 数范围</td></tr>
+        <tr><td><code>generation.context_sessions</code></td><td>3</td><td>Writer 可见的最近 session 数</td></tr>
+        <tr><td><code>generation.seed</code></td><td>42</td><td>LLM 调用 seed</td></tr>
+        <tr><td><code>generation.max_retries</code></td><td>3</td><td>单次调用最大重试次数</td></tr>
+        <tr><td><code>generation.max_revision_cycles</code></td><td>3</td><td>每个 session 的 Verifier→Reviser 循环上限</td></tr>
+        <tr><td><code>generation.run_eval</code></td><td>false</td><td>是否启用 Eval 生成（本轮关闭）</td></tr>
+        <tr><td><code>components.*</code></td><td>见下表</td><td>每个组件独立配置 model/temperature/max_completion_tokens</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin-top:24px;">各组件模型配置</h3>
+    <table>
+      <thead>
+        <tr><th>组件</th><th>model</th><th>temperature</th><th>max_completion_tokens</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>session_planner</td><td>gpt-5.4-nano</td><td>0.4</td><td>4096</td></tr>
+        <tr><td>session_writer</td><td>gpt-5.4-nano</td><td>0.8</td><td>4096</td></tr>
+        <tr><td>session_verifier</td><td>gpt-5.4-nano</td><td>0.1</td><td>2048</td></tr>
+        <tr><td>session_reviser</td><td>gpt-5.4-nano</td><td>0.3</td><td>4096</td></tr>
+        <tr><td>naturalness_checker</td><td>gpt-5.4-nano</td><td>0.1</td><td>2048</td></tr>
+        <tr><td>eval_generator</td><td>gpt-5.4-nano</td><td>0.7</td><td>4096</td></tr>
+        <tr><td>eval_verifier</td><td>gpt-5.4-nano</td><td>0.1</td><td>2048</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top:12px; color:var(--muted); font-size:0.9rem;">
+      温度设计原则：生成类组件（writer/eval_generator）温度较高以保证多样性；校验类组件（verifier/naturalness/checker）温度极低以保证稳定性；修订类（reviser）取中间值。
+    </p>
+  </section>
+
+  <!-- 输出结构 -->
+  <section>
+    <h2>输出目录结构</h2>
+    <div class="output-tree">
+<span class="dir">outputs/case_a/</span>
+├── <span class="file">session_plans.json</span>       <span class="comment"># 10 个 SessionPlan（结构化）</span>
+├── <span class="file">session_plans.txt</span>         <span class="comment"># 人工检查用的纯文本计划</span>
+├── <span class="file">checkpoint_sessions.json</span>  <span class="comment"># 已完成 session 的增量 checkpoint</span>
+├── <span class="file">benchmark.json</span>            <span class="comment"># 最终数据集（dialogues + eval_samples）</span>
+└── <span class="file">qa_report.json</span>            <span class="comment"># 结构校验报告 + 调用记录</span>
+    </div>
+  </section>
+
+  <!-- 运行方式 -->
+  <section>
+    <h2>运行方式</h2>
+    <p>安装依赖并设置环境变量后运行：</p>
+    <div class="output-tree">
+<span class="comment"># 设置 API 凭据</span>
+$env:openai_api_key = "<span class="comment">your-key</span>"
+$env:base_url = "https://your-gateway.com"   <span class="comment"># 可选，自动补 /v1</span>
+
+<span class="comment"># 安装依赖</span>
+pip install -r requirements.txt
+
+<span class="comment"># 运行</span>
+python run.py --case cases/case_a.json --output outputs/case_a
+    </div>
+    <div class="callout">
+      <strong>断点续跑：</strong>再次使用同一输出目录运行时，程序会校验并复用已有 <code>session_plans.json</code> 和合法的 session 前缀 checkpoint，从未完成的 session 继续。
+    </div>
+  </section>
+
+  <!-- 项目结构 -->
+  <section>
+    <h2>项目目录结构</h2>
+    <div class="output-tree">
+<span class="dir">data_generation_v1/</span>
+├── <span class="dir">cases/</span>                    <span class="comment"># 固定 CaseSpec（事实唯一来源）</span>
+│   └── <span class="file">case_a.json</span>
+├── <span class="dir">prompts/</span>                  <span class="comment"># 每个 LLM 组件的 prompt 控制文件</span>
+│   ├── <span class="file">session_planner.txt</span>
+│   ├── <span class="file">session_writer.txt</span>
+│   ├── <span class="file">session_verifier.txt</span>
+│   ├── <span class="file">session_reviser.txt</span>
+│   ├── <span class="file">naturalness_checker.txt</span>
+│   ├── <span class="file">eval_generator.txt</span>
+│   └── <span class="file">eval_verifier.txt</span>
+├── <span class="dir">scripts/</span>
+│   └── <span class="file">invoke_openai.ps1</span>    <span class="comment"># PowerShell transport 调用脚本</span>
+├── <span class="dir">src/</span>
+│   ├── <span class="file">__init__.py</span>
+│   ├── <span class="file">config.py</span>            <span class="comment"># AppConfig / ComponentConfig / GenerationConfig</span>
+│   ├── <span class="file">models.py</span>            <span class="comment"># Pydantic 数据模型（CaseSpec, Session, Gold...）</span>
+│   ├── <span class="file">llm_client.py</span>        <span class="comment"># 统一 LLMClient（结构化输出 + 重试）</span>
+│   ├── <span class="file">components.py</span>        <span class="comment"># 7 个 LLM 组件实现</span>
+│   ├── <span class="file">pipeline.py</span>          <span class="comment"># GenerationPipeline 主流程编排</span>
+│   ├── <span class="file">gold_finalizer.py</span>    <span class="comment"># 确定性 Gold 整理</span>
+│   └── <span class="file">qa.py</span>                <span class="comment"># 结构校验</span>
+├── <span class="file">config.json</span>              <span class="comment"># 模型/温度/seed/重试配置</span>
+├── <span class="file">run.py</span>                   <span class="comment"># 入口脚本</span>
+├── <span class="file">web_app.py</span>
+├── <span class="file">requirements.txt</span>
+└── <span class="file">README.md</span>
+    </div>
+  </section>
+
+</div>
+
+<div class="footer">
+  数据生成 Pipeline 说明文档 · 基于 data_generation_v1 项目源码生成
+</div>
+
+</body>
+</html>

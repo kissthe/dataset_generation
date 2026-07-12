@@ -1,0 +1,58 @@
+{
+  "character_profile": {
+    "user_id": "string",
+    "name": "string",
+    "identity": "string",
+    "daily_scenes": ["string"],
+    "conversation_style": "string",
+    "interests": ["string"]
+  },
+  "dialogues": [
+    {
+      "session_id": "string",
+      "topic": "string",
+      "date": "YYYY-MM-DD",
+      "turns": [
+        {
+          "turn_id": "string",
+          "round_id": "string",
+          "speaker": "user | assistant",
+          "text": "string",
+          "image_id": ["string"],
+          "image_dir": "string",
+          "image_caption": ["string"]
+        }
+      ]
+    }
+  ],
+  "eval_samples": [
+    {
+      "sample_id": "string",
+      "eval_user_id": "string",
+      "current_input": {
+        "input_type": "text | image | text_image",
+        "text": "string",
+        "image_refs": [
+          {
+            "image_id": "string",
+            "image_path": "string",
+            "image_caption": "string"
+          }
+        ],
+        "cue_type": "string",
+        "cue_options": [
+          {
+            "cue_id": "string",
+            "name": "string"
+          }
+        ]
+      },
+      "gold": {
+        "trigger_label": "triggered | not_triggered | insufficient_evidence",
+        "trigger_cue_id": "string",
+        "evidence_turn_ids": ["string"],
+        "current_emotion": "string"
+      }
+    }
+  ]
+}
