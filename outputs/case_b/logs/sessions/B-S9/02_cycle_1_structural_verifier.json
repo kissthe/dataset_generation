@@ -1,0 +1,90 @@
+{
+  "component": "deterministic_structural_verifier",
+  "input": {
+    "session": {
+      "session_id": "B-S9",
+      "topic": "完成10公里比赛",
+      "date": "2026-08-09",
+      "turns": [
+        {
+          "turn_id": "B-S9_T01",
+          "round_id": "B-S9_R01",
+          "speaker": "user",
+          "text": "10公里跑完了，今天穿的还是那双荧光黄。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S9_T02",
+          "round_id": "B-S9_R01",
+          "speaker": "assistant",
+          "text": "恭喜，是真正稳稳完成的10公里。膝盖全程怎么样？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S9_T03",
+          "round_id": "B-S9_R02",
+          "speaker": "user",
+          "text": "没出问题。我前半程压着，最后两公里才加了一点。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S9_T04",
+          "round_id": "B-S9_R02",
+          "speaker": "assistant",
+          "text": "这次节奏控制得很好，尤其是没有被比赛气氛带着提前冲。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S9_T05",
+          "round_id": "B-S9_R03",
+          "speaker": "user",
+          "text": "过终点先看了眼鞋，突然觉得它终于有别的故事了。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S9_T06",
+          "round_id": "B-S9_R03",
+          "speaker": "assistant",
+          "text": "同一双鞋，现在也记着你按计划恢复、重新完成比赛的这段。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S9_T07",
+          "round_id": "B-S9_R04",
+          "speaker": "user",
+          "text": "嗯，半程那次还是遗憾，但不至于一看它就堵。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S9_T08",
+          "round_id": "B-S9_R04",
+          "speaker": "assistant",
+          "text": "遗憾还在，鞋的意义却不再被那一次占满。这个变化已经很清楚了。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        }
+      ],
+      "summary": "许言穿同一双荧光黄跑鞋完成10公里比赛，膝盖稳定，并明确感到这双鞋获得了不同于退赛的新意义。"
+    },
+    "expected_round_count": 4
+  },
+  "output": {
+    "result": "pass",
+    "issues": []
+  }
+}

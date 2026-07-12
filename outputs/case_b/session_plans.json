@@ -1,0 +1,84 @@
+{
+  "plans": [
+    {
+      "session_id": "B-S1",
+      "date": "2026-03-02",
+      "topic": "评审结束后的日常跑",
+      "story_beat": "许言用跑步消化普通工作疲惫，建立工作与跑步背景。",
+      "outline_function": "建立背景",
+      "round_count": 4
+    },
+    {
+      "session_id": "B-S2",
+      "date": "2026-03-16",
+      "topic": "新跑鞋和号码布",
+      "story_beat": "荧光黄跑鞋与号码布317被编码为比赛期待。",
+      "outline_function": "编码cue的初始正向意义",
+      "round_count": 4
+    },
+    {
+      "session_id": "B-S3",
+      "date": "2026-04-12",
+      "topic": "半程比赛中途退赛",
+      "story_beat": "许言明确说出膝盖疼痛和退赛，留下可独立引用的证据。",
+      "outline_function": "编码失败事件，必须产生高质量evidence turn",
+      "round_count": 4
+    },
+    {
+      "session_id": "B-S4",
+      "date": "2026-04-15",
+      "topic": "把跑鞋收起来",
+      "story_beat": "许言回避同事追问，也暂时避开荧光黄跑鞋。",
+      "outline_function": "强化回避反应",
+      "round_count": 4
+    },
+    {
+      "session_id": "B-S5",
+      "date": "2026-04-29",
+      "topic": "工作方案被否",
+      "story_beat": "许言因方案被否而烦躁，情绪与跑步记忆无关。",
+      "outline_function": "当前事件控制样本",
+      "round_count": 4
+    },
+    {
+      "session_id": "B-S6",
+      "date": "2026-05-08",
+      "topic": "同款跑鞋广告",
+      "story_beat": "同款荧光黄跑鞋广告引起退赛联想，许言立即关页。",
+      "outline_function": "更新前的负面触发",
+      "round_count": 4
+    },
+    {
+      "session_id": "B-S7",
+      "date": "2026-06-01",
+      "topic": "康复后的短距离慢跑",
+      "story_beat": "许言按计划做康复和短距离慢跑，开始重建把握感。",
+      "outline_function": "开始更新记忆状态",
+      "round_count": 4
+    },
+    {
+      "session_id": "B-S8",
+      "date": "2026-06-22",
+      "topic": "重新穿旧鞋轻松跑",
+      "story_beat": "许言重新穿荧光黄跑鞋完成轻松跑，体验到放松。",
+      "outline_function": "cue意义开始改变",
+      "round_count": 4
+    },
+    {
+      "session_id": "B-S9",
+      "date": "2026-08-09",
+      "topic": "完成10公里比赛",
+      "story_beat": "许言穿同一双荧光黄跑鞋完成10公里比赛，更新其情绪意义。",
+      "outline_function": "形成关键状态更新",
+      "round_count": 4
+    },
+    {
+      "session_id": "B-S10",
+      "date": "2026-08-23",
+      "topic": "重看旧比赛照片",
+      "story_beat": "许言看见号码布317和旧鞋，仍遗憾但能平静复盘。",
+      "outline_function": "稳定更新后的记忆意义",
+      "round_count": 4
+    }
+  ]
+}

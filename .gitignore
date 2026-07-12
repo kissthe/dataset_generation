@@ -1,4 +1,6 @@
 __pycache__/
 *.py[cod]
 .env
-outputs/
+outputs/*
+!outputs/case_b/
+!outputs/case_b/**

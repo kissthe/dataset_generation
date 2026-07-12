@@ -25,11 +25,33 @@ class GenerationPipeline:
         cfg = self.config.generation
         expected = [x.session_id for x in case.session_outlines[:cfg.session_count]]
         output_dir.mkdir(parents=True, exist_ok=True)
+        audit_dir = output_dir / "logs"
+        audit_dir.mkdir(parents=True, exist_ok=True)
+        self._write_log(audit_dir / "00_original_case_spec.json", {
+            "source_path": str(case_path),
+            "case_spec": case.model_dump(),
+            "generation_config": {
+                "session_count": cfg.session_count,
+                "planner_batch_size": cfg.planner_batch_size,
+                "min_rounds": cfg.min_rounds,
+                "max_rounds": cfg.max_rounds,
+                "context_sessions": cfg.context_sessions,
+                "seed": cfg.seed,
+                "max_retries": cfg.max_retries,
+                "max_revision_cycles": cfg.max_revision_cycles,
+                "run_eval": cfg.run_eval,
+            },
+        })
         plan_path = output_dir / "session_plans.json"
         if plan_path.exists():
             from .models import SessionPlanList
             plans = SessionPlanList.model_validate_json(plan_path.read_text(encoding="utf-8"))
             print(f"resumed {len(plans.plans)} saved plans", flush=True)
+            self._write_log(audit_dir / "01_planner_resumed.json", {
+                "action": "reused_existing_session_plans",
+                "source_path": str(plan_path),
+                "output": plans.model_dump(),
+            })
         else:
             all_plans = []
             outlines = case.session_outlines[:cfg.session_count]
@@ -38,10 +60,15 @@ class GenerationPipeline:
                     "session_outlines": outlines[start:start + cfg.planner_batch_size],
                     "eval_outlines": [],
                 })
-                batch = self.planner.run(
-                    batch_case, cfg.min_rounds, cfg.max_rounds,
-                    prior_plans=[p.model_dump() for p in all_plans],
-                )
+                planner_input = {
+                    "case_spec": batch_case.model_dump(),
+                    "constraints": {"min_rounds": cfg.min_rounds, "max_rounds": cfg.max_rounds},
+                    "prior_plans": [p.model_dump() for p in all_plans],
+                }
+                batch = self.planner.run(batch_case, cfg.min_rounds, cfg.max_rounds, prior_plans=planner_input["prior_plans"])
+                self._write_log(audit_dir / f"01_planner_batch_{start // cfg.planner_batch_size + 1:02d}.json", {
+                    "component": "session_planner", "input": planner_input, "output": batch.model_dump(),
+                })
                 all_plans.extend(batch.plans)
                 print(f"planned {len(all_plans)}/{len(outlines)} sessions", flush=True)
             from .models import SessionPlanList
@@ -66,23 +93,75 @@ class GenerationPipeline:
         for plan in plans.plans[len(sessions):]:
             print(f"generating {plan.session_id}...", flush=True)
             recent = sessions[-cfg.context_sessions:]
+            session_log_dir = audit_dir / "sessions" / plan.session_id
+            session_log_dir.mkdir(parents=True, exist_ok=True)
+            writer_input = {
+                "case_spec": case.model_dump(), "session_plan": plan.model_dump(),
+                "recent_history": [s.model_dump() for s in recent],
+            }
             session = self.writer.run(case, plan.model_dump(), recent)
+            self._write_log(session_log_dir / "01_writer.json", {
+                "component": "session_writer", "input": writer_input, "output": session.model_dump(),
+            })
             for cycle in range(cfg.max_revision_cycles):
                 structural = self._structural_verdict(session, plan.round_count)
-                verdict = structural if structural.result == "revise" else self.verifier.run(
-                    case, plan.model_dump(), session, recent
-                )
+                self._write_log(session_log_dir / f"{cycle + 2:02d}_cycle_{cycle + 1}_structural_verifier.json", {
+                    "component": "deterministic_structural_verifier",
+                    "input": {"session": session.model_dump(), "expected_round_count": plan.round_count},
+                    "output": structural.model_dump(),
+                })
+                if structural.result == "revise":
+                    verdict = structural
+                    verifier_kind = "deterministic_structural_verifier"
+                else:
+                    verdict = self.verifier.run(case, plan.model_dump(), session, recent)
+                    verifier_kind = "session_verifier"
+                    self._write_log(session_log_dir / f"{cycle + 2:02d}_cycle_{cycle + 1}_session_verifier.json", {
+                        "component": verifier_kind,
+                        "input": {
+                            "case_spec": case.model_dump(), "session_plan": plan.model_dump(),
+                            "session": session.model_dump(), "recent_history": [s.model_dump() for s in recent],
+                        },
+                        "output": verdict.model_dump(),
+                    })
                 if verdict.result == "pass":
                     break
+                before_revision = session
                 session = self.reviser.run(case, plan.model_dump(), session, verdict)
+                self._write_log(session_log_dir / f"{cycle + 2:02d}_cycle_{cycle + 1}_reviser.json", {
+                    "component": "session_reviser", "triggered_by": verifier_kind,
+                    "input": {
+                        "case_spec": case.model_dump(), "session_plan": plan.model_dump(),
+                        "session": before_revision.model_dump(), "issues": verdict.model_dump(),
+                    },
+                    "output": session.model_dump(),
+                })
             final_structure = self._structural_verdict(session, plan.round_count)
             if final_structure.result != "pass":
                 raise RuntimeError(f"{plan.session_id} failed deterministic structure checks: {final_structure.model_dump()}")
             natural = self.naturalness.run(case, session)
+            self._write_log(session_log_dir / "90_naturalness_checker.json", {
+                "component": "naturalness_checker",
+                "input": {"conversation_style": case.character_profile.conversation_style, "session": session.model_dump()},
+                "output": natural.model_dump(),
+            })
             if natural.result == "revise":
                 revised = self.reviser.run(case, plan.model_dump(), session, natural)
-                if self._structural_verdict(revised, plan.round_count).result == "pass":
+                post_natural_structure = self._structural_verdict(revised, plan.round_count)
+                self._write_log(session_log_dir / "91_naturalness_reviser.json", {
+                    "component": "session_reviser", "triggered_by": "naturalness_checker",
+                    "input": {
+                        "case_spec": case.model_dump(), "session_plan": plan.model_dump(),
+                        "session": session.model_dump(), "issues": natural.model_dump(),
+                    },
+                    "output": revised.model_dump(),
+                    "post_revision_structural_verdict": post_natural_structure.model_dump(),
+                })
+                if post_natural_structure.result == "pass":
                     session = revised
+            self._write_log(session_log_dir / "99_final_session.json", {
+                "component": "pipeline", "output": session.model_dump(),
+            })
             sessions.append(session)
             print(f"completed {plan.session_id} ({len(sessions)}/{len(plans.plans)})", flush=True)
             checkpoint_path.write_text(
@@ -101,7 +180,16 @@ class GenerationPipeline:
         qa_path = output_dir / "qa_report.json"
         benchmark_path.write_text(benchmark.model_dump_json(indent=2), encoding="utf-8")
         qa_path.write_text(qa.model_dump_json(indent=2), encoding="utf-8")
+        self._write_log(audit_dir / "99_pipeline_result.json", {
+            "benchmark_path": str(benchmark_path), "qa_path": str(qa_path),
+            "qa": qa.model_dump(), "eval_generated": False,
+        })
         return benchmark_path, qa_path
+
+    @staticmethod
+    def _write_log(path: Path, value: dict) -> None:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(value, ensure_ascii=False, indent=2), encoding="utf-8")
 
     @staticmethod
     def _structural_verdict(session: Session, round_count: int) -> VerificationResult:

@@ -1,0 +1,223 @@
+{
+  "dataset_id": "memory-trigger-dialogue-case-b",
+  "passed": true,
+  "checks": {
+    "session_ids_and_order": true,
+    "strict_chronology": true,
+    "turn_structure": true,
+    "schema_validation": true
+  },
+  "errors": [],
+  "call_records": [
+    {
+      "component": "session_writer",
+      "model": "local_codex",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_verifier",
+      "model": "local_codex",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "naturalness_checker",
+      "model": "local_codex",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_writer",
+      "model": "local_codex",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_verifier",
+      "model": "local_codex",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "naturalness_checker",
+      "model": "local_codex",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_writer",
+      "model": "local_codex",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_verifier",
+      "model": "local_codex",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "naturalness_checker",
+      "model": "local_codex",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_writer",
+      "model": "local_codex",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_verifier",
+      "model": "local_codex",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "naturalness_checker",
+      "model": "local_codex",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_writer",
+      "model": "local_codex",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_verifier",
+      "model": "local_codex",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "naturalness_checker",
+      "model": "local_codex",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_writer",
+      "model": "local_codex",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_verifier",
+      "model": "local_codex",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "naturalness_checker",
+      "model": "local_codex",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_writer",
+      "model": "local_codex",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_verifier",
+      "model": "local_codex",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "naturalness_checker",
+      "model": "local_codex",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_writer",
+      "model": "local_codex",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_verifier",
+      "model": "local_codex",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "naturalness_checker",
+      "model": "local_codex",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_writer",
+      "model": "local_codex",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_verifier",
+      "model": "local_codex",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "naturalness_checker",
+      "model": "local_codex",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_writer",
+      "model": "local_codex",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_verifier",
+      "model": "local_codex",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "naturalness_checker",
+      "model": "local_codex",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "component": "deterministic_structural_verifier",
+  "input": {
+    "session": {
+      "session_id": "B-S3",
+      "topic": "半程比赛中途退赛",
+      "date": "2026-04-12",
+      "turns": [
+        {
+          "turn_id": "B-S3_T01",
+          "round_id": "B-S3_R01",
+          "speaker": "user",
+          "text": "今天那场我退赛了。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S3_T02",
+          "round_id": "B-S3_R01",
+          "speaker": "assistant",
+          "text": "知道了。你现在人安全吗，膝盖还疼得厉害吗？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S3_T03",
+          "round_id": "B-S3_R02",
+          "speaker": "user",
+          "text": "十几公里的时候膝盖开始疼，我又撑了一段，最后还是停了。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S3_T04",
+          "round_id": "B-S3_R02",
+          "speaker": "assistant",
+          "text": "能在疼痛继续加重前停下来，是在保护自己。现在先别急着给整场下结论。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S3_T05",
+          "round_id": "B-S3_R03",
+          "speaker": "user",
+          "text": "道理知道，但看着别人继续跑，还是觉得自己准备得太差。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S3_T06",
+          "round_id": "B-S3_R03",
+          "speaker": "assistant",
+          "text": "失落很正常，不过一次退赛不能直接证明你所有准备都不够。先把疼痛和恢复弄清楚。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S3_T07",
+          "round_id": "B-S3_R04",
+          "speaker": "user",
+          "text": "同事还等着问成绩，我暂时不想说。先回去冰敷。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S3_T08",
+          "round_id": "B-S3_R04",
+          "speaker": "assistant",
+          "text": "好，结果可以等你想说时再说。今天先回去休息，若疼痛持续或影响走路，就尽快找专业人员评估。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        }
+      ],
+      "summary": "许言在半程马拉松中因膝盖疼痛中途退赛，感到失落并暂时不愿向同事说明结果。"
+    },
+    "expected_round_count": 4
+  },
+  "output": {
+    "result": "pass",
+    "issues": []
+  }
+}

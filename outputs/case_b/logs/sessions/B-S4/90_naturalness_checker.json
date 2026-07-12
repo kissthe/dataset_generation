@@ -1,0 +1,91 @@
+{
+  "component": "naturalness_checker",
+  "execution_mode": "local_codex",
+  "input": {
+    "conversation_style": "表达直接；遇到工作或跑步问题时会带一点自嘲；被问到失败结果时容易转移话题，事情过去后能够较平静地复盘。",
+    "session": {
+      "session_id": "B-S4",
+      "topic": "把跑鞋收起来",
+      "date": "2026-04-15",
+      "turns": [
+        {
+          "turn_id": "B-S4_T01",
+          "round_id": "B-S4_R01",
+          "speaker": "user",
+          "text": "我把那双荧光黄的鞋塞进柜子最里面了。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S4_T02",
+          "round_id": "B-S4_R01",
+          "speaker": "assistant",
+          "text": "这几天不想看见它，也可以。膝盖现在怎么样？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S4_T03",
+          "round_id": "B-S4_R02",
+          "speaker": "user",
+          "text": "走路基本没事。小周又问我比赛成绩，我说改天再聊。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S4_T04",
+          "round_id": "B-S4_R02",
+          "speaker": "assistant",
+          "text": "你还没准备好复盘，先把话题放一放很合理。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S4_T05",
+          "round_id": "B-S4_R03",
+          "speaker": "user",
+          "text": "主要是不想解释为什么没跑完，解释起来像做事故汇报。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S4_T06",
+          "round_id": "B-S4_R03",
+          "speaker": "assistant",
+          "text": "那就不用交完整报告。一句“中途不舒服，之后再聊”已经够用了。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S4_T07",
+          "round_id": "B-S4_R04",
+          "speaker": "user",
+          "text": "嗯。今天不聊跑步了，我去把落下的稿子补掉。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S4_T08",
+          "round_id": "B-S4_R04",
+          "speaker": "assistant",
+          "text": "好，先切回手头的事。稿子卡住了再叫我。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        }
+      ],
+      "summary": "许言把荧光黄跑鞋收进柜子并回避同事对比赛结果的追问，随后主动结束跑步话题。"
+    }
+  },
+  "output": {
+    "result": "pass",
+    "issues": []
+  }
+}

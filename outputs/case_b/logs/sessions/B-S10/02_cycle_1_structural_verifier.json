@@ -1,0 +1,90 @@
+{
+  "component": "deterministic_structural_verifier",
+  "input": {
+    "session": {
+      "session_id": "B-S10",
+      "topic": "重看旧比赛照片",
+      "date": "2026-08-23",
+      "turns": [
+        {
+          "turn_id": "B-S10_T01",
+          "round_id": "B-S10_R01",
+          "speaker": "user",
+          "text": "整理相册翻到半程那天的照片了，号码布317还挺显眼。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S10_T02",
+          "round_id": "B-S10_R01",
+          "speaker": "assistant",
+          "text": "这次看到照片，第一反应是什么？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S10_T03",
+          "round_id": "B-S10_R02",
+          "speaker": "user",
+          "text": "还是会想，要是当时准备再充分点会不会不一样。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S10_T04",
+          "round_id": "B-S10_R02",
+          "speaker": "assistant",
+          "text": "这个遗憾还在。现在回看，你觉得当时最该调整的是什么？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S10_T05",
+          "round_id": "B-S10_R03",
+          "speaker": "user",
+          "text": "前期力量训练太随缘，疼了以后也不该硬撑那一段。现在说这些没以前那么难了。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S10_T06",
+          "round_id": "B-S10_R03",
+          "speaker": "assistant",
+          "text": "你已经能把它拆成具体经验，而不是只剩一句“我失败了”。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S10_T07",
+          "round_id": "B-S10_R04",
+          "speaker": "user",
+          "text": "对。照片先留着吧，不用删。鞋我明早还要穿去慢跑。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S10_T08",
+          "round_id": "B-S10_R04",
+          "speaker": "assistant",
+          "text": "好。317留在那次经历里，那双鞋则还会继续陪你跑新的路。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        }
+      ],
+      "summary": "许言重看号码布317的旧照，仍有遗憾但能平静总结训练与临场问题，并决定保留照片、继续穿旧鞋跑步。"
+    },
+    "expected_round_count": 4
+  },
+  "output": {
+    "result": "pass",
+    "issues": []
+  }
+}

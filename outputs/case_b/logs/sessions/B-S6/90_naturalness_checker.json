@@ -1,0 +1,91 @@
+{
+  "component": "naturalness_checker",
+  "execution_mode": "local_codex",
+  "input": {
+    "conversation_style": "表达直接；遇到工作或跑步问题时会带一点自嘲；被问到失败结果时容易转移话题，事情过去后能够较平静地复盘。",
+    "session": {
+      "session_id": "B-S6",
+      "topic": "同款跑鞋广告",
+      "date": "2026-05-08",
+      "turns": [
+        {
+          "turn_id": "B-S6_T01",
+          "round_id": "B-S6_R01",
+          "speaker": "user",
+          "text": "刚才网页给我推了那双荧光黄跑鞋的广告，我直接关了。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S6_T02",
+          "round_id": "B-S6_R01",
+          "speaker": "assistant",
+          "text": "它一下把你拉回那场没跑完的比赛了？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S6_T03",
+          "round_id": "B-S6_R02",
+          "speaker": "user",
+          "text": "嗯，连配色都一样。看到就想起我停在路边那一下。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S6_T04",
+          "round_id": "B-S6_R02",
+          "speaker": "assistant",
+          "text": "这个联想现在还很近。关掉页面先让自己缓一缓，也没关系。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S6_T05",
+          "round_id": "B-S6_R03",
+          "speaker": "user",
+          "text": "本来只是想买双日常鞋，瞬间没兴趣了。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S6_T06",
+          "round_id": "B-S6_R03",
+          "speaker": "assistant",
+          "text": "那今天先不选。等你想买时，也可以从完全不同的款式看起。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S6_T07",
+          "round_id": "B-S6_R04",
+          "speaker": "user",
+          "text": "算了，鞋够穿。去开会了。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S6_T08",
+          "round_id": "B-S6_R04",
+          "speaker": "assistant",
+          "text": "好，先去开会。这件事不用现在处理。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        }
+      ],
+      "summary": "同款荧光黄跑鞋广告触发许言对退赛现场的联想，他立即关闭页面并结束话题。"
+    }
+  },
+  "output": {
+    "result": "pass",
+    "issues": []
+  }
+}

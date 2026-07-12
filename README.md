@@ -30,3 +30,7 @@ python run.py --case cases/case_a.json --output outputs/case_a
 再次使用同一输出目录运行时，程序会校验并复用已有 `session_plans.json` 和合法的 session 前缀 checkpoint，从未完成的 session 继续。
 
 `EvalGenerator`、`EvalVerifier` 与非 LLM 的 `GoldFinalizer` 已提供独立接口。本轮 `run_eval=false`，所以测试 benchmark 的 `eval_samples` 是空数组；后续可在 pipeline 中启用这些组件生成正式 eval。
+
+## 生成审计日志
+
+每次运行会在输出目录的 `logs/` 下保存可审阅的阶段记录：`00_original_case_spec.json` 保存原始 spec 和本次生成配置；`01_planner_*.json` 保存 planner 的分批输入输出；`sessions/<session_id>/` 保存 writer 初稿、每轮结构检查、verifier 结论、必要时的 reviser 修改、自然度检查和最终 session；`99_pipeline_result.json` 保存最终 QA 与是否生成 eval。日志不记录 API key。

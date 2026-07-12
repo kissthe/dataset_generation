@@ -1,0 +1,91 @@
+{
+  "component": "naturalness_checker",
+  "execution_mode": "local_codex",
+  "input": {
+    "conversation_style": "表达直接；遇到工作或跑步问题时会带一点自嘲；被问到失败结果时容易转移话题，事情过去后能够较平静地复盘。",
+    "session": {
+      "session_id": "B-S7",
+      "topic": "康复后的短距离慢跑",
+      "date": "2026-06-01",
+      "turns": [
+        {
+          "turn_id": "B-S7_T01",
+          "round_id": "B-S7_R01",
+          "speaker": "user",
+          "text": "这阵子在做康复训练，今天慢跑了两公里。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S7_T02",
+          "round_id": "B-S7_R01",
+          "speaker": "assistant",
+          "text": "两公里之后膝盖感觉如何？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S7_T03",
+          "round_id": "B-S7_R02",
+          "speaker": "user",
+          "text": "没疼，就是一直在等它疼，跑得像在听警报。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S7_T04",
+          "round_id": "B-S7_R02",
+          "speaker": "assistant",
+          "text": "身体没报警，注意力还保持戒备。刚恢复时这种不放心挺常见。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S7_T05",
+          "round_id": "B-S7_R03",
+          "speaker": "user",
+          "text": "教练让我先固定两公里，连续几次都稳定再加。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S7_T06",
+          "round_id": "B-S7_R03",
+          "speaker": "assistant",
+          "text": "这个节奏很明确。先积累几次“跑完也没事”的记录，比急着加量更重要。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S7_T07",
+          "round_id": "B-S7_R04",
+          "speaker": "user",
+          "text": "行，暂时当自己是系统灰度发布。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S7_T08",
+          "round_id": "B-S7_R04",
+          "speaker": "assistant",
+          "text": "可以，小流量稳定运行，没报错再逐步放量。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        }
+      ],
+      "summary": "许言开始康复训练并完成两公里慢跑，身体无疼痛但仍有戒备，决定按计划逐步增加距离。"
+    }
+  },
+  "output": {
+    "result": "pass",
+    "issues": []
+  }
+}

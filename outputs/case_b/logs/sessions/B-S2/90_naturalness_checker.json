@@ -1,0 +1,91 @@
+{
+  "component": "naturalness_checker",
+  "execution_mode": "local_codex",
+  "input": {
+    "conversation_style": "表达直接；遇到工作或跑步问题时会带一点自嘲；被问到失败结果时容易转移话题，事情过去后能够较平静地复盘。",
+    "session": {
+      "session_id": "B-S2",
+      "topic": "新跑鞋和号码布",
+      "date": "2026-03-16",
+      "turns": [
+        {
+          "turn_id": "B-S2_T01",
+          "round_id": "B-S2_R01",
+          "speaker": "user",
+          "text": "新鞋到了，荧光黄，亮得像施工标志。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S2_T02",
+          "round_id": "B-S2_R01",
+          "speaker": "assistant",
+          "text": "至少比赛里很难把自己弄丢。上脚感觉怎么样？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S2_T03",
+          "round_id": "B-S2_R02",
+          "speaker": "user",
+          "text": "包裹感不错，周末先跑十公里试试。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S2_T04",
+          "round_id": "B-S2_R02",
+          "speaker": "assistant",
+          "text": "先磨合一次挺稳妥，哪里顶脚也能提前发现。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S2_T05",
+          "round_id": "B-S2_R03",
+          "speaker": "user",
+          "text": "号码布也领了，317。突然有点比赛要来的实感。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S2_T06",
+          "round_id": "B-S2_R03",
+          "speaker": "assistant",
+          "text": "鞋和号码布都到位了，期待终于从日历里落到手上了。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S2_T07",
+          "round_id": "B-S2_R04",
+          "speaker": "user",
+          "text": "希望当天别跑上头。我最会在起点假装自己很强。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S2_T08",
+          "round_id": "B-S2_R04",
+          "speaker": "assistant",
+          "text": "那就让317负责提醒你：前面收一点，后面才有得跑。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        }
+      ],
+      "summary": "许言收到荧光黄跑鞋并领到号码布317，对即将参加的比赛抱有期待。"
+    }
+  },
+  "output": {
+    "result": "pass",
+    "issues": []
+  }
+}

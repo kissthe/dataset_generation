@@ -1,0 +1,91 @@
+{
+  "component": "naturalness_checker",
+  "execution_mode": "local_codex",
+  "input": {
+    "conversation_style": "表达直接；遇到工作或跑步问题时会带一点自嘲；被问到失败结果时容易转移话题，事情过去后能够较平静地复盘。",
+    "session": {
+      "session_id": "B-S1",
+      "topic": "评审结束后的日常跑",
+      "date": "2026-03-02",
+      "turns": [
+        {
+          "turn_id": "B-S1_T01",
+          "round_id": "B-S1_R01",
+          "speaker": "user",
+          "text": "评审总算结束了，三个人给了四套意见。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S1_T02",
+          "round_id": "B-S1_R01",
+          "speaker": "assistant",
+          "text": "听着像意见自己还开了个分会场。你今晚还跑吗？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S1_T03",
+          "round_id": "B-S1_R02",
+          "speaker": "user",
+          "text": "跑，五公里随便晃一下，不看配速。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S1_T04",
+          "round_id": "B-S1_R02",
+          "speaker": "assistant",
+          "text": "那就把它当下班的分隔线，舒服跑完就行。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S1_T05",
+          "round_id": "B-S1_R03",
+          "speaker": "user",
+          "text": "最近坐太久，出去动一圈脑子会安静点。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S1_T06",
+          "round_id": "B-S1_R03",
+          "speaker": "assistant",
+          "text": "嗯，今天的目标不是练成绩，是把评审从脑子里清出去一点。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S1_T07",
+          "round_id": "B-S1_R04",
+          "speaker": "user",
+          "text": "正好沿河那段晚上人少。跑完我去吃面。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S1_T08",
+          "round_id": "B-S1_R04",
+          "speaker": "assistant",
+          "text": "路线和收尾都定了。去吧，别让那四套意见追上你。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        }
+      ],
+      "summary": "许言在公司评审后计划进行不看配速的五公里日常跑，用跑步从工作状态中抽离。"
+    }
+  },
+  "output": {
+    "result": "pass",
+    "issues": []
+  }
+}

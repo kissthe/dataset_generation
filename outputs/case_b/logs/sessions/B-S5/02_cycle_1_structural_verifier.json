@@ -1,0 +1,90 @@
+{
+  "component": "deterministic_structural_verifier",
+  "input": {
+    "session": {
+      "session_id": "B-S5",
+      "topic": "工作方案被否",
+      "date": "2026-04-29",
+      "turns": [
+        {
+          "turn_id": "B-S5_T01",
+          "round_id": "B-S5_R01",
+          "speaker": "user",
+          "text": "方案被否了，理由是“不够有记忆点”。很有记忆点的一句废话。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S5_T02",
+          "round_id": "B-S5_R01",
+          "speaker": "assistant",
+          "text": "这句反馈确实够空。对方有没有指出具体是信息层级、造型还是使用流程的问题？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S5_T03",
+          "round_id": "B-S5_R02",
+          "speaker": "user",
+          "text": "没有，只说要更大胆。我怀疑大胆等于让他们再看一版。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S5_T04",
+          "round_id": "B-S5_R02",
+          "speaker": "assistant",
+          "text": "很可能。先让他们把“大胆”落成两个可比较的方向，不然你只能猜。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S5_T05",
+          "round_id": "B-S5_R03",
+          "speaker": "user",
+          "text": "我准备做一版结构调整，再做一版只改视觉，逼他们选。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S5_T06",
+          "round_id": "B-S5_R03",
+          "speaker": "assistant",
+          "text": "这个拆法清楚，也方便看他们真正不满意的是哪一层。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S5_T07",
+          "round_id": "B-S5_R04",
+          "speaker": "user",
+          "text": "今晚先不跑了，加班把框架搭完。烦。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S5_T08",
+          "round_id": "B-S5_R04",
+          "speaker": "assistant",
+          "text": "那就先定一个收工点，别让一句模糊反馈把整晚都吃掉。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        }
+      ],
+      "summary": "许言因产品方案被模糊否定而烦躁，决定拆分两个修改方向；本次情绪明确来自工作。"
+    },
+    "expected_round_count": 4
+  },
+  "output": {
+    "result": "pass",
+    "issues": []
+  }
+}

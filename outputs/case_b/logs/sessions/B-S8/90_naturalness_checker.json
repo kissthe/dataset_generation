@@ -1,0 +1,91 @@
+{
+  "component": "naturalness_checker",
+  "execution_mode": "local_codex",
+  "input": {
+    "conversation_style": "表达直接；遇到工作或跑步问题时会带一点自嘲；被问到失败结果时容易转移话题，事情过去后能够较平静地复盘。",
+    "session": {
+      "session_id": "B-S8",
+      "topic": "重新穿旧鞋轻松跑",
+      "date": "2026-06-22",
+      "turns": [
+        {
+          "turn_id": "B-S8_T01",
+          "round_id": "B-S8_R01",
+          "speaker": "user",
+          "text": "今天把柜子里那双荧光黄的旧鞋拿出来了。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S8_T02",
+          "round_id": "B-S8_R01",
+          "speaker": "assistant",
+          "text": "你穿它出去跑了吗？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S8_T03",
+          "round_id": "B-S8_R02",
+          "speaker": "user",
+          "text": "穿了，三公里轻松跑。前一公里有点紧，后面居然忘了盯膝盖。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S8_T04",
+          "round_id": "B-S8_R02",
+          "speaker": "assistant",
+          "text": "能从一直监测膝盖，到自然地跑起来，是个挺实在的变化。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S8_T05",
+          "round_id": "B-S8_R03",
+          "speaker": "user",
+          "text": "跑完坐在河边，觉得这鞋也不只等于退赛。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S8_T06",
+          "round_id": "B-S8_R03",
+          "speaker": "assistant",
+          "text": "嗯，它今天也对应了一次安全、轻松完成的跑步。新的经历开始和旧的并排了。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S8_T07",
+          "round_id": "B-S8_R04",
+          "speaker": "user",
+          "text": "对，没什么热血反转，就是松了一点。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S8_T08",
+          "round_id": "B-S8_R04",
+          "speaker": "assistant",
+          "text": "松一点已经很好，不需要把它讲成翻篇仪式。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        }
+      ],
+      "summary": "许言重新穿荧光黄跑鞋完成三公里轻松跑，后程不再紧盯膝盖，并感到这双鞋不再只代表退赛。"
+    }
+  },
+  "output": {
+    "result": "pass",
+    "issues": []
+  }
+}

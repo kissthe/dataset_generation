@@ -1,0 +1,165 @@
+{
+  "component": "session_planner",
+  "execution_mode": "local_codex",
+  "input": {
+    "case_spec": {
+      "case_id": "case-b",
+      "character_profile": {
+        "user_id": "user-xuyan",
+        "name": "许言",
+        "identity": "产品设计师",
+        "daily_scenes": [
+          "公司",
+          "家中",
+          "跑步公园",
+          "康复训练场地",
+          "比赛现场"
+        ],
+        "conversation_style": "表达直接；遇到工作或跑步问题时会带一点自嘲；被问到失败结果时容易转移话题，事情过去后能够较平静地复盘。",
+        "interests": [
+          "产品设计",
+          "跑步",
+          "运动装备",
+          "城市路线"
+        ]
+      },
+      "core_emotional_event": "许言参加半程马拉松时膝盖疼痛，中途退赛。最初他将退赛理解为准备不足，不愿向同事说明结果。之后进行康复训练，重新穿同一双鞋完成轻松跑，最终穿同一双鞋完成一次10公里比赛，同一双鞋的情绪意义因此发生更新。",
+      "forbidden_facts": [
+        "手术",
+        "严重疾病",
+        "完成半程马拉松",
+        "把10公里比赛写成半程马拉松"
+      ],
+      "cues": {
+        "exact": [
+          "荧光黄跑鞋",
+          "号码布317"
+        ],
+        "related": [
+          "跑步时膝盖不适"
+        ],
+        "non_triggering": [
+          "普通白色跑鞋不能自动视为触发"
+        ]
+      },
+      "session_outlines": [
+        {
+          "session_id": "B-S6",
+          "core_content": "看到同款跑鞋广告后立即关闭页面",
+          "function": "更新前的负面触发"
+        },
+        {
+          "session_id": "B-S7",
+          "core_content": "开始康复和短距离慢跑",
+          "function": "开始更新记忆状态"
+        },
+        {
+          "session_id": "B-S8",
+          "core_content": "重新穿旧鞋完成轻松跑，感觉放松",
+          "function": "cue意义开始改变"
+        },
+        {
+          "session_id": "B-S9",
+          "core_content": "穿同一双鞋完成10公里比赛",
+          "function": "形成关键状态更新"
+        },
+        {
+          "session_id": "B-S10",
+          "core_content": "重看旧比赛照片，仍有遗憾但能平静复盘",
+          "function": "稳定更新后的记忆意义"
+        }
+      ],
+      "eval_outlines": []
+    },
+    "constraints": {
+      "min_rounds": 4,
+      "max_rounds": 6
+    },
+    "prior_plans": [
+      {
+        "session_id": "B-S1",
+        "date": "2026-03-02",
+        "topic": "评审结束后的日常跑",
+        "story_beat": "许言用跑步消化普通工作疲惫，建立工作与跑步背景。",
+        "outline_function": "建立背景",
+        "round_count": 4
+      },
+      {
+        "session_id": "B-S2",
+        "date": "2026-03-16",
+        "topic": "新跑鞋和号码布",
+        "story_beat": "荧光黄跑鞋与号码布317被编码为比赛期待。",
+        "outline_function": "编码cue的初始正向意义",
+        "round_count": 4
+      },
+      {
+        "session_id": "B-S3",
+        "date": "2026-04-12",
+        "topic": "半程比赛中途退赛",
+        "story_beat": "许言明确说出膝盖疼痛和退赛，留下可独立引用的证据。",
+        "outline_function": "编码失败事件，必须产生高质量evidence turn",
+        "round_count": 4
+      },
+      {
+        "session_id": "B-S4",
+        "date": "2026-04-15",
+        "topic": "把跑鞋收起来",
+        "story_beat": "许言回避同事追问，也暂时避开荧光黄跑鞋。",
+        "outline_function": "强化回避反应",
+        "round_count": 4
+      },
+      {
+        "session_id": "B-S5",
+        "date": "2026-04-29",
+        "topic": "工作方案被否",
+        "story_beat": "许言因方案被否而烦躁，情绪与跑步记忆无关。",
+        "outline_function": "当前事件控制样本",
+        "round_count": 4
+      }
+    ]
+  },
+  "output": {
+    "plans": [
+      {
+        "session_id": "B-S6",
+        "date": "2026-05-08",
+        "topic": "同款跑鞋广告",
+        "story_beat": "同款荧光黄跑鞋广告引起退赛联想，许言立即关页。",
+        "outline_function": "更新前的负面触发",
+        "round_count": 4
+      },
+      {
+        "session_id": "B-S7",
+        "date": "2026-06-01",
+        "topic": "康复后的短距离慢跑",
+        "story_beat": "许言按计划做康复和短距离慢跑，开始重建把握感。",
+        "outline_function": "开始更新记忆状态",
+        "round_count": 4
+      },
+      {
+        "session_id": "B-S8",
+        "date": "2026-06-22",
+        "topic": "重新穿旧鞋轻松跑",
+        "story_beat": "许言重新穿荧光黄跑鞋完成轻松跑，体验到放松。",
+        "outline_function": "cue意义开始改变",
+        "round_count": 4
+      },
+      {
+        "session_id": "B-S9",
+        "date": "2026-08-09",
+        "topic": "完成10公里比赛",
+        "story_beat": "许言穿同一双荧光黄跑鞋完成10公里比赛，更新其情绪意义。",
+        "outline_function": "形成关键状态更新",
+        "round_count": 4
+      },
+      {
+        "session_id": "B-S10",
+        "date": "2026-08-23",
+        "topic": "重看旧比赛照片",
+        "story_beat": "许言看见号码布317和旧鞋，仍遗憾但能平静复盘。",
+        "outline_function": "稳定更新后的记忆意义",
+        "round_count": 4
+      }
+    ]
+  }
+}

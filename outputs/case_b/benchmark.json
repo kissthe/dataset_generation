@@ -1,0 +1,815 @@
+{
+  "dataset_id": "memory-trigger-dialogue-case-b",
+  "character_profile": {
+    "user_id": "user-xuyan",
+    "name": "许言",
+    "identity": "产品设计师",
+    "daily_scenes": [
+      "公司",
+      "家中",
+      "跑步公园",
+      "康复训练场地",
+      "比赛现场"
+    ],
+    "conversation_style": "表达直接；遇到工作或跑步问题时会带一点自嘲；被问到失败结果时容易转移话题，事情过去后能够较平静地复盘。",
+    "interests": [
+      "产品设计",
+      "跑步",
+      "运动装备",
+      "城市路线"
+    ]
+  },
+  "dialogues": [
+    {
+      "session_id": "B-S1",
+      "topic": "评审结束后的日常跑",
+      "date": "2026-03-02",
+      "turns": [
+        {
+          "turn_id": "B-S1_T01",
+          "round_id": "B-S1_R01",
+          "speaker": "user",
+          "text": "评审总算结束了，三个人给了四套意见。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S1_T02",
+          "round_id": "B-S1_R01",
+          "speaker": "assistant",
+          "text": "听着像意见自己还开了个分会场。你今晚还跑吗？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S1_T03",
+          "round_id": "B-S1_R02",
+          "speaker": "user",
+          "text": "跑，五公里随便晃一下，不看配速。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S1_T04",
+          "round_id": "B-S1_R02",
+          "speaker": "assistant",
+          "text": "那就把它当下班的分隔线，舒服跑完就行。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S1_T05",
+          "round_id": "B-S1_R03",
+          "speaker": "user",
+          "text": "最近坐太久，出去动一圈脑子会安静点。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S1_T06",
+          "round_id": "B-S1_R03",
+          "speaker": "assistant",
+          "text": "嗯，今天的目标不是练成绩，是把评审从脑子里清出去一点。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S1_T07",
+          "round_id": "B-S1_R04",
+          "speaker": "user",
+          "text": "正好沿河那段晚上人少。跑完我去吃面。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S1_T08",
+          "round_id": "B-S1_R04",
+          "speaker": "assistant",
+          "text": "路线和收尾都定了。去吧，别让那四套意见追上你。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        }
+      ]
+    },
+    {
+      "session_id": "B-S2",
+      "topic": "新跑鞋和号码布",
+      "date": "2026-03-16",
+      "turns": [
+        {
+          "turn_id": "B-S2_T01",
+          "round_id": "B-S2_R01",
+          "speaker": "user",
+          "text": "新鞋到了，荧光黄，亮得像施工标志。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S2_T02",
+          "round_id": "B-S2_R01",
+          "speaker": "assistant",
+          "text": "至少比赛里很难把自己弄丢。上脚感觉怎么样？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S2_T03",
+          "round_id": "B-S2_R02",
+          "speaker": "user",
+          "text": "包裹感不错，周末先跑十公里试试。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S2_T04",
+          "round_id": "B-S2_R02",
+          "speaker": "assistant",
+          "text": "先磨合一次挺稳妥，哪里顶脚也能提前发现。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S2_T05",
+          "round_id": "B-S2_R03",
+          "speaker": "user",
+          "text": "号码布也领了，317。突然有点比赛要来的实感。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S2_T06",
+          "round_id": "B-S2_R03",
+          "speaker": "assistant",
+          "text": "鞋和号码布都到位了，期待终于从日历里落到手上了。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S2_T07",
+          "round_id": "B-S2_R04",
+          "speaker": "user",
+          "text": "希望当天别跑上头。我最会在起点假装自己很强。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S2_T08",
+          "round_id": "B-S2_R04",
+          "speaker": "assistant",
+          "text": "那就让317负责提醒你：前面收一点，后面才有得跑。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        }
+      ]
+    },
+    {
+      "session_id": "B-S3",
+      "topic": "半程比赛中途退赛",
+      "date": "2026-04-12",
+      "turns": [
+        {
+          "turn_id": "B-S3_T01",
+          "round_id": "B-S3_R01",
+          "speaker": "user",
+          "text": "今天那场我退赛了。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S3_T02",
+          "round_id": "B-S3_R01",
+          "speaker": "assistant",
+          "text": "知道了。你现在人安全吗，膝盖还疼得厉害吗？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S3_T03",
+          "round_id": "B-S3_R02",
+          "speaker": "user",
+          "text": "十几公里的时候膝盖开始疼，我又撑了一段，最后还是停了。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S3_T04",
+          "round_id": "B-S3_R02",
+          "speaker": "assistant",
+          "text": "能在疼痛继续加重前停下来，是在保护自己。现在先别急着给整场下结论。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S3_T05",
+          "round_id": "B-S3_R03",
+          "speaker": "user",
+          "text": "道理知道，但看着别人继续跑，还是觉得自己准备得太差。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S3_T06",
+          "round_id": "B-S3_R03",
+          "speaker": "assistant",
+          "text": "失落很正常，不过一次退赛不能直接证明你所有准备都不够。先把疼痛和恢复弄清楚。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S3_T07",
+          "round_id": "B-S3_R04",
+          "speaker": "user",
+          "text": "同事还等着问成绩，我暂时不想说。先回去冰敷。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S3_T08",
+          "round_id": "B-S3_R04",
+          "speaker": "assistant",
+          "text": "好，结果可以等你想说时再说。今天先回去休息，若疼痛持续或影响走路，就尽快找专业人员评估。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        }
+      ]
+    },
+    {
+      "session_id": "B-S4",
+      "topic": "把跑鞋收起来",
+      "date": "2026-04-15",
+      "turns": [
+        {
+          "turn_id": "B-S4_T01",
+          "round_id": "B-S4_R01",
+          "speaker": "user",
+          "text": "我把那双荧光黄的鞋塞进柜子最里面了。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S4_T02",
+          "round_id": "B-S4_R01",
+          "speaker": "assistant",
+          "text": "这几天不想看见它，也可以。膝盖现在怎么样？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S4_T03",
+          "round_id": "B-S4_R02",
+          "speaker": "user",
+          "text": "走路基本没事。小周又问我比赛成绩，我说改天再聊。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S4_T04",
+          "round_id": "B-S4_R02",
+          "speaker": "assistant",
+          "text": "你还没准备好复盘，先把话题放一放很合理。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S4_T05",
+          "round_id": "B-S4_R03",
+          "speaker": "user",
+          "text": "主要是不想解释为什么没跑完，解释起来像做事故汇报。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S4_T06",
+          "round_id": "B-S4_R03",
+          "speaker": "assistant",
+          "text": "那就不用交完整报告。一句“中途不舒服，之后再聊”已经够用了。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S4_T07",
+          "round_id": "B-S4_R04",
+          "speaker": "user",
+          "text": "嗯。今天不聊跑步了，我去把落下的稿子补掉。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S4_T08",
+          "round_id": "B-S4_R04",
+          "speaker": "assistant",
+          "text": "好，先切回手头的事。稿子卡住了再叫我。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        }
+      ]
+    },
+    {
+      "session_id": "B-S5",
+      "topic": "工作方案被否",
+      "date": "2026-04-29",
+      "turns": [
+        {
+          "turn_id": "B-S5_T01",
+          "round_id": "B-S5_R01",
+          "speaker": "user",
+          "text": "方案被否了，理由是“不够有记忆点”。很有记忆点的一句废话。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S5_T02",
+          "round_id": "B-S5_R01",
+          "speaker": "assistant",
+          "text": "这句反馈确实够空。对方有没有指出具体是信息层级、造型还是使用流程的问题？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S5_T03",
+          "round_id": "B-S5_R02",
+          "speaker": "user",
+          "text": "没有，只说要更大胆。我怀疑大胆等于让他们再看一版。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S5_T04",
+          "round_id": "B-S5_R02",
+          "speaker": "assistant",
+          "text": "很可能。先让他们把“大胆”落成两个可比较的方向，不然你只能猜。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S5_T05",
+          "round_id": "B-S5_R03",
+          "speaker": "user",
+          "text": "我准备做一版结构调整，再做一版只改视觉，逼他们选。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S5_T06",
+          "round_id": "B-S5_R03",
+          "speaker": "assistant",
+          "text": "这个拆法清楚，也方便看他们真正不满意的是哪一层。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S5_T07",
+          "round_id": "B-S5_R04",
+          "speaker": "user",
+          "text": "今晚先不跑了，加班把框架搭完。烦。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S5_T08",
+          "round_id": "B-S5_R04",
+          "speaker": "assistant",
+          "text": "那就先定一个收工点，别让一句模糊反馈把整晚都吃掉。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        }
+      ]
+    },
+    {
+      "session_id": "B-S6",
+      "topic": "同款跑鞋广告",
+      "date": "2026-05-08",
+      "turns": [
+        {
+          "turn_id": "B-S6_T01",
+          "round_id": "B-S6_R01",
+          "speaker": "user",
+          "text": "刚才网页给我推了那双荧光黄跑鞋的广告，我直接关了。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S6_T02",
+          "round_id": "B-S6_R01",
+          "speaker": "assistant",
+          "text": "它一下把你拉回那场没跑完的比赛了？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S6_T03",
+          "round_id": "B-S6_R02",
+          "speaker": "user",
+          "text": "嗯，连配色都一样。看到就想起我停在路边那一下。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S6_T04",
+          "round_id": "B-S6_R02",
+          "speaker": "assistant",
+          "text": "这个联想现在还很近。关掉页面先让自己缓一缓，也没关系。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S6_T05",
+          "round_id": "B-S6_R03",
+          "speaker": "user",
+          "text": "本来只是想买双日常鞋，瞬间没兴趣了。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S6_T06",
+          "round_id": "B-S6_R03",
+          "speaker": "assistant",
+          "text": "那今天先不选。等你想买时，也可以从完全不同的款式看起。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S6_T07",
+          "round_id": "B-S6_R04",
+          "speaker": "user",
+          "text": "算了，鞋够穿。去开会了。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S6_T08",
+          "round_id": "B-S6_R04",
+          "speaker": "assistant",
+          "text": "好，先去开会。这件事不用现在处理。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        }
+      ]
+    },
+    {
+      "session_id": "B-S7",
+      "topic": "康复后的短距离慢跑",
+      "date": "2026-06-01",
+      "turns": [
+        {
+          "turn_id": "B-S7_T01",
+          "round_id": "B-S7_R01",
+          "speaker": "user",
+          "text": "这阵子在做康复训练，今天慢跑了两公里。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S7_T02",
+          "round_id": "B-S7_R01",
+          "speaker": "assistant",
+          "text": "两公里之后膝盖感觉如何？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S7_T03",
+          "round_id": "B-S7_R02",
+          "speaker": "user",
+          "text": "没疼，就是一直在等它疼，跑得像在听警报。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S7_T04",
+          "round_id": "B-S7_R02",
+          "speaker": "assistant",
+          "text": "身体没报警，注意力还保持戒备。刚恢复时这种不放心挺常见。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S7_T05",
+          "round_id": "B-S7_R03",
+          "speaker": "user",
+          "text": "教练让我先固定两公里，连续几次都稳定再加。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S7_T06",
+          "round_id": "B-S7_R03",
+          "speaker": "assistant",
+          "text": "这个节奏很明确。先积累几次“跑完也没事”的记录，比急着加量更重要。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S7_T07",
+          "round_id": "B-S7_R04",
+          "speaker": "user",
+          "text": "行，暂时当自己是系统灰度发布。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S7_T08",
+          "round_id": "B-S7_R04",
+          "speaker": "assistant",
+          "text": "可以，小流量稳定运行，没报错再逐步放量。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        }
+      ]
+    },
+    {
+      "session_id": "B-S8",
+      "topic": "重新穿旧鞋轻松跑",
+      "date": "2026-06-22",
+      "turns": [
+        {
+          "turn_id": "B-S8_T01",
+          "round_id": "B-S8_R01",
+          "speaker": "user",
+          "text": "今天把柜子里那双荧光黄的旧鞋拿出来了。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S8_T02",
+          "round_id": "B-S8_R01",
+          "speaker": "assistant",
+          "text": "你穿它出去跑了吗？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S8_T03",
+          "round_id": "B-S8_R02",
+          "speaker": "user",
+          "text": "穿了，三公里轻松跑。前一公里有点紧，后面居然忘了盯膝盖。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S8_T04",
+          "round_id": "B-S8_R02",
+          "speaker": "assistant",
+          "text": "能从一直监测膝盖，到自然地跑起来，是个挺实在的变化。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S8_T05",
+          "round_id": "B-S8_R03",
+          "speaker": "user",
+          "text": "跑完坐在河边，觉得这鞋也不只等于退赛。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S8_T06",
+          "round_id": "B-S8_R03",
+          "speaker": "assistant",
+          "text": "嗯，它今天也对应了一次安全、轻松完成的跑步。新的经历开始和旧的并排了。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S8_T07",
+          "round_id": "B-S8_R04",
+          "speaker": "user",
+          "text": "对，没什么热血反转，就是松了一点。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S8_T08",
+          "round_id": "B-S8_R04",
+          "speaker": "assistant",
+          "text": "松一点已经很好，不需要把它讲成翻篇仪式。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        }
+      ]
+    },
+    {
+      "session_id": "B-S9",
+      "topic": "完成10公里比赛",
+      "date": "2026-08-09",
+      "turns": [
+        {
+          "turn_id": "B-S9_T01",
+          "round_id": "B-S9_R01",
+          "speaker": "user",
+          "text": "10公里跑完了，今天穿的还是那双荧光黄。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S9_T02",
+          "round_id": "B-S9_R01",
+          "speaker": "assistant",
+          "text": "恭喜，是真正稳稳完成的10公里。膝盖全程怎么样？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S9_T03",
+          "round_id": "B-S9_R02",
+          "speaker": "user",
+          "text": "没出问题。我前半程压着，最后两公里才加了一点。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S9_T04",
+          "round_id": "B-S9_R02",
+          "speaker": "assistant",
+          "text": "这次节奏控制得很好，尤其是没有被比赛气氛带着提前冲。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S9_T05",
+          "round_id": "B-S9_R03",
+          "speaker": "user",
+          "text": "过终点先看了眼鞋，突然觉得它终于有别的故事了。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S9_T06",
+          "round_id": "B-S9_R03",
+          "speaker": "assistant",
+          "text": "同一双鞋，现在也记着你按计划恢复、重新完成比赛的这段。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S9_T07",
+          "round_id": "B-S9_R04",
+          "speaker": "user",
+          "text": "嗯，半程那次还是遗憾，但不至于一看它就堵。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S9_T08",
+          "round_id": "B-S9_R04",
+          "speaker": "assistant",
+          "text": "遗憾还在，鞋的意义却不再被那一次占满。这个变化已经很清楚了。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        }
+      ]
+    },
+    {
+      "session_id": "B-S10",
+      "topic": "重看旧比赛照片",
+      "date": "2026-08-23",
+      "turns": [
+        {
+          "turn_id": "B-S10_T01",
+          "round_id": "B-S10_R01",
+          "speaker": "user",
+          "text": "整理相册翻到半程那天的照片了，号码布317还挺显眼。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S10_T02",
+          "round_id": "B-S10_R01",
+          "speaker": "assistant",
+          "text": "这次看到照片，第一反应是什么？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S10_T03",
+          "round_id": "B-S10_R02",
+          "speaker": "user",
+          "text": "还是会想，要是当时准备再充分点会不会不一样。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S10_T04",
+          "round_id": "B-S10_R02",
+          "speaker": "assistant",
+          "text": "这个遗憾还在。现在回看，你觉得当时最该调整的是什么？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S10_T05",
+          "round_id": "B-S10_R03",
+          "speaker": "user",
+          "text": "前期力量训练太随缘，疼了以后也不该硬撑那一段。现在说这些没以前那么难了。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S10_T06",
+          "round_id": "B-S10_R03",
+          "speaker": "assistant",
+          "text": "你已经能把它拆成具体经验，而不是只剩一句“我失败了”。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S10_T07",
+          "round_id": "B-S10_R04",
+          "speaker": "user",
+          "text": "对。照片先留着吧，不用删。鞋我明早还要穿去慢跑。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S10_T08",
+          "round_id": "B-S10_R04",
+          "speaker": "assistant",
+          "text": "好。317留在那次经历里，那双鞋则还会继续陪你跑新的路。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        }
+      ]
+    }
+  ],
+  "eval_samples": []
+}
