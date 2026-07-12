@@ -4,35 +4,9 @@
     "user_id": "user-lincheng",
     "name": "林澄",
     "identity": "博物馆学硕士生",
-    "daily_scenes": ["学校工作室", "博物馆展厅", "宿舍", "咖啡店", "旧货店"],
-    "conversation_style": "表达简短；谈日常事务时会直接说烦或累；涉及家人和私人遗憾时减少解释，偶尔主动结束话题。",
-    "interests": ["旧物", "展览设计", "手工装帧", "逛旧货店"]
+    "daily_scenes": ["学校", "博物馆", "宿舍"],
+    "conversation_style": "表达简短，谈家人时减少解释",
+    "interests": ["旧物", "展览设计"]
   },
-  "core_emotional_event": "奶奶住院期间曾给林澄打视频。林澄当时在赶展览作业，说晚一点再打，但之后没有再联系上。奶奶去世后，林澄对错过最后沟通留有遗憾和轻微自责。",
-  "forbidden_facts": ["奶奶的具体疾病", "奶奶的死亡原因", "遗嘱", "财产", "家庭冲突"],
-  "cues": {
-    "exact": ["带白色小花、杯沿有缺口的蓝色搪瓷杯"],
-    "related": ["普通蓝色杯子", "桂花糖", "给长辈打电话的话题"],
-    "non_triggering": ["普通蓝色杯子本身不能自动视为触发"]
-  },
-  "session_outlines": [
-    {"session_id":"A-S1","core_content":"赶展览作业，讨论展签和排版","function":"建立普通工作背景"},
-    {"session_id":"A-S2","core_content":"回家整理厨房，提到奶奶常用的蓝色搪瓷杯","function":"编码 cue 与人物关联，不提去世"},
-    {"session_id":"A-S3","core_content":"奶奶住院并打过视频，用户当时没有接完","function":"建立未完成互动"},
-    {"session_id":"A-S4","core_content":"用户告知奶奶去世，并表达遗憾和轻微自责","function":"编码核心情绪事件，必须产生高质量 evidence turn"},
-    {"session_id":"A-S5","core_content":"展览方案被退回，用户因工作烦躁","function":"当前事件控制样本"},
-    {"session_id":"A-S6","core_content":"咖啡店出现普通蓝杯子，用户没有明显情绪反应","function":"相关但未触发"},
-    {"session_id":"A-S7","core_content":"家人发来精确同款杯子照片，用户停顿并换话题","function":"精确 cue 触发"},
-    {"session_id":"A-S8","core_content":"室友谈到给外婆打电话，用户短暂沉默","function":"轻度语义触发"},
-    {"session_id":"A-S9","core_content":"用户吃到奶奶以前常给的桂花糖","function":"以 nostalgia 为主"},
-    {"session_id":"A-S10","core_content":"工作文件损坏，桌面有普通蓝杯子","function":"情绪来自工作，不触发记忆"}
-  ],
-  "eval_outlines": [
-    {"outline_id":"A-E1","description":"精确搪瓷杯＋折返、停留、没有拿起","target_label":"triggered","target_emotion":"sadness","history_cutoff":"A-S10"},
-    {"outline_id":"A-E2","description":"桂花糖＋像回到以前","target_label":"triggered","target_emotion":"nostalgia","history_cutoff":"A-S10"},
-    {"outline_id":"A-E3","description":"普通蓝色塑料杯＋普通评价","target_label":"not_triggered","target_emotion":"neutral","history_cutoff":"A-S10"},
-    {"outline_id":"A-E4","description":"工作文件损坏＋普通蓝杯作为背景","target_label":"not_triggered","target_emotion":"anger","history_cutoff":"A-S10"},
-    {"outline_id":"A-E5","description":"只有精确杯子图片，没有当前反应","target_label":"not_triggered","target_emotion":"neutral","history_cutoff":"A-S10"},
-    {"outline_id":"A-E6","description":"陌生大狗引发回避，但历史中没有狗相关经历","target_label":"insufficient_evidence","target_emotion":"fear","history_cutoff":"A-S10"}
-  ]
+  "core_emotional_event": "林澄错过奶奶去世前最后一次通话，留有遗憾。"
 }

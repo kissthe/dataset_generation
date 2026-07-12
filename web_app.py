@@ -2,10 +2,12 @@ from __future__ import annotations
 
 import json
 import os
+import queue
 import re
 import shutil
 import subprocess
 import sys
+import threading
 from datetime import datetime
 from pathlib import Path
 
@@ -151,6 +153,119 @@ def update_progress(line: str, total: int, completed: int) -> tuple[float, str]:
     return 0.03, "正在初始化生成任务"
 
 
+def classify_log(rel_path: str) -> tuple[str, str, str]:
+    """Map a log file's relative path to (group, label, icon).
+
+    group:  用于分组的 key（init / planner / session_id / finalize）
+    label:  人类可读的阶段名
+    icon:   emoji 状态标记
+    """
+    name = Path(rel_path).name
+    parent = Path(rel_path).parent.as_posix()
+
+    if name == "00_original_case_spec.json":
+        return "init", "CaseSpec 加载", "📦"
+    if re.match(r"01_planner_(batch_\d+|resumed)\.json", name):
+        m = re.search(r"batch_(\d+)", name)
+        tag = f"批次 {m.group(1)}" if m else "复用已有计划"
+        return "planner", f"SessionPlanner · {tag}", "🗺️"
+    if name == "99_pipeline_result.json":
+        return "finalize", "Pipeline 完成", "✅"
+    if parent.startswith("sessions/"):
+        session_id = Path(parent).name
+        if name == "01_writer.json":
+            return session_id, f"{session_id} · Writer", "✍️"
+        if name == "99_final_session.json":
+            return session_id, f"{session_id} · 完成", "✅"
+        m = re.match(r"\d+_cycle_(\d+)_(.+)\.json", name)
+        if m:
+            cycle, kind = m.group(1), m.group(2)
+            kind_label = {
+                "structural_verifier": "结构校验",
+                "session_verifier": "语义校验",
+                "reviser": "修订",
+                "naturalness_reviser": "自然度修订",
+            }.get(kind, kind)
+            return session_id, f"{session_id} · {kind_label} (Cycle {cycle})", "🔧"
+        if name == "90_naturalness_checker.json":
+            return session_id, f"{session_id} · 自然度检查", "🌿"
+    return Path(rel_path).stem, rel_path, "📄"
+
+
+def scan_pipeline_logs(logs_dir: Path, seen: set[str]) -> list[dict]:
+    """Scan logs directory for newly appeared JSON artifact files."""
+    found: list[dict] = []
+    if not logs_dir.exists():
+        return found
+    for path in sorted(logs_dir.rglob("*.json")):
+        rel = path.relative_to(logs_dir).as_posix()
+        if rel in seen:
+            continue
+        seen.add(rel)
+        group, label, icon = classify_log(rel)
+        found.append({"path": path, "rel": rel, "group": group, "label": label, "icon": icon})
+    return found
+
+
+def render_live_stages(stages: list[dict]) -> str:
+    """Build a compact markdown summary of completed pipeline stages."""
+    if not stages:
+        return "_等待产物生成…_"
+    lines: list[str] = []
+    current_group: str | None = None
+    for stage in stages:
+        if stage["group"] != current_group:
+            if current_group is not None:
+                lines.append("")
+            current_group = stage["group"]
+        lines.append(f"{stage['icon']} {stage['label']}")
+    return "\n".join(lines)
+
+
+def render_artifact(path: Path) -> None:
+    """Render a log artifact file in a readable format."""
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        st.error(f"无法读取产物：{exc}")
+        return
+    component = payload.get("component", "pipeline")
+    st.caption(f"组件：`{component}` · 路径：`{path.name}`")
+
+    # 优先展示 output 字段
+    output = payload.get("output")
+    if output is None:
+        st.json(payload, expanded=False)
+        return
+
+    # Writer / final session：展示对话
+    if component in {"session_writer", "session_reviser", "pipeline"} and isinstance(output, dict) and "turns" in output:
+        st.write(f"**Session**：{output.get('session_id', '')} · {output.get('topic', '')}")
+        for turn in output.get("turns", []):
+            with st.chat_message(turn.get("speaker", "user")):
+                st.caption(f"{turn.get('turn_id', '')} · {turn.get('round_id', '')}")
+                st.write(turn.get("text", ""))
+        return
+
+    # Planner：展示计划列表
+    if component == "session_planner" and isinstance(output, dict) and "plans" in output:
+        for plan in output["plans"]:
+            st.write(f"**{plan.get('session_id', '')}** · {plan.get('date', '')} · {plan.get('topic', '')}")
+            st.caption(f"rounds={plan.get('round_count', '')} · {plan.get('story_beat', '')} · {plan.get('outline_function', '')}")
+        return
+
+    # Verifier：展示结论
+    if component in {"session_verifier", "deterministic_structural_verifier", "naturalness_checker"} and isinstance(output, dict):
+        result = output.get("result", "")
+        st.write(f"**结论**：{'✅ pass' if result == 'pass' else '⚠️ revise'}")
+        for issue in output.get("issues", []):
+            st.write(f"- `{issue.get('turn_id', '')}` ({issue.get('type', '')})：{issue.get('description', '')}")
+        return
+
+    # 其他：展示 JSON
+    st.json(output, expanded=False)
+
+
 def render_results(output_dir: Path) -> None:
     benchmark_path = output_dir / "benchmark.json"
     qa_path = output_dir / "qa_report.json"
@@ -197,8 +312,7 @@ def render_results(output_dir: Path) -> None:
             label = f"{session['session_id']} · {session['date']} · {session['topic']}"
             with st.expander(label, expanded=session == dialogues[0]):
                 for turn in session.get("turns", []):
-                    avatar = "👤" if turn["speaker"] == "user" else "✦"
-                    with st.chat_message(turn["speaker"], avatar=avatar):
+                    with st.chat_message(turn["speaker"]):
                         st.caption(f"{turn['turn_id']} · {turn['round_id']}")
                         st.write(turn["text"])
     with qa_tab:
@@ -214,6 +328,33 @@ def render_results(output_dir: Path) -> None:
         st.json(benchmark, expanded=False)
 
 
+def render_artifact_browser(output_dir: Path) -> None:
+    """交互式产物浏览器：扫描 logs 目录，让用户选择查看任意阶段的产物。"""
+    logs_dir = output_dir / "logs"
+    if not logs_dir.exists():
+        return
+    artifacts: list[dict] = []
+    seen: set[str] = set()
+    for path in sorted(logs_dir.rglob("*.json")):
+        rel = path.relative_to(logs_dir).as_posix()
+        if rel in seen:
+            continue
+        seen.add(rel)
+        group, label, icon = classify_log(rel)
+        artifacts.append({"path": path, "rel": rel, "group": group, "label": label, "icon": icon})
+    if not artifacts:
+        return
+
+    st.divider()
+    st.subheader("产物浏览器")
+    st.caption("选择任意阶段查看其完整产物（Writer 对话、Planner 计划、Verifier 结论等）。")
+
+    options = [f"{a['icon']} {a['label']}  ·  {a['rel']}" for a in artifacts]
+    selected = st.selectbox("选择阶段", options=options, index=len(options) - 1)
+    idx = options.index(selected)
+    render_artifact(artifacts[idx]["path"])
+
+
 def resolve_output_root(value: str) -> Path:
     path = Path(value).expanduser()
     return path.resolve() if path.is_absolute() else (ROOT / path).resolve()
@@ -225,6 +366,7 @@ def build_runtime_snapshot(
     writer_temperature: float,
     transport: str,
     prompt_drafts: dict[str, str],
+    session_count: int,
 ) -> Path:
     """Create an isolated config/prompt snapshot without touching project defaults."""
     runtime_dir = output_dir / ".runtime"
@@ -235,6 +377,7 @@ def build_runtime_snapshot(
 
     runtime_config = read_json(CONFIG_PATH)
     runtime_config["transport"] = transport
+    runtime_config["generation"]["session_count"] = session_count
     for component, component_config in runtime_config["components"].items():
         component_config["model"] = model_name.strip()
         if component in {"session_writer", "eval_generator"}:
@@ -260,6 +403,7 @@ def run_generation(
     api_key_override: str,
     base_url_override: str,
     prompt_drafts: dict[str, str],
+    session_count_override: int,
 ) -> None:
     spec, error = validate_spec(spec_text)
     if error or spec is None:
@@ -294,19 +438,19 @@ def run_generation(
     case_path.write_text(spec.model_dump_json(indent=2), encoding="utf-8")
     try:
         runtime_config_path = build_runtime_snapshot(
-            output_dir, model_name, writer_temperature, transport, prompt_drafts
+            output_dir, model_name, writer_temperature, transport, prompt_drafts,
+            session_count_override,
         )
     except OSError as exc:
         st.error(f"无法创建本次运行的配置快照：{exc}")
         return
     st.session_state["last_output"] = str(output_dir)
 
-    progress = st.progress(0.01, text="准备生成环境")
-    status = st.empty()
-    log_box = st.empty()
-    logs: list[str] = []
-    completed = 0
-    total = len(spec.session_outlines)
+    # total 优先用滑块值；若 case 自带 outlines 则以 outlines 数量为准
+    if spec.session_outlines:
+        total = min(len(spec.session_outlines), session_count_override)
+    else:
+        total = session_count_override
 
     command = [
         sys.executable,
@@ -338,8 +482,52 @@ def run_generation(
         env=child_env,
     )
 
-    assert process.stdout is not None
-    for raw_line in process.stdout:
+    # 布局：进度条 + 状态 + 实时阶段面板 + 日志
+    progress = st.progress(0.01, text="准备生成环境")
+    status = st.empty()
+    st.markdown("##### Pipeline 实时阶段")
+    stage_placeholder = st.empty()
+    log_box = st.empty()
+
+    logs: list[str] = []
+    completed = 0
+    logs_dir = output_dir / "logs"
+    seen_stages: set[str] = set()
+    all_stages: list[dict] = []
+
+    # 用后台线程非阻塞读取 stdout，主循环同时轮询日志目录
+    stdout_queue: queue.Queue[str | None] = queue.Queue()
+
+    def _reader(proc: subprocess.Popen, q: queue.Queue) -> None:
+        assert proc.stdout is not None
+        for line in proc.stdout:
+            q.put(line)
+        q.put(None)
+
+    threading.Thread(target=_reader, args=(process, stdout_queue), daemon=True).start()
+
+    while True:
+        # 轮询日志目录，发现新产物立即更新阶段面板
+        new_stages = scan_pipeline_logs(logs_dir, seen_stages)
+        if new_stages:
+            all_stages.extend(new_stages)
+            stage_placeholder.markdown(render_live_stages(all_stages))
+
+        try:
+            raw_line = stdout_queue.get(timeout=0.5)
+        except queue.Empty:
+            if process.poll() is not None and stdout_queue.empty():
+                break
+            continue
+
+        if raw_line is None:
+            # 进程结束的哨兵，再轮询一次确保最后的日志文件被捕获
+            final_stages = scan_pipeline_logs(logs_dir, seen_stages)
+            if final_stages:
+                all_stages.extend(final_stages)
+                stage_placeholder.markdown(render_live_stages(all_stages))
+            break
+
         line = raw_line.rstrip()
         if not line:
             continue
@@ -356,9 +544,11 @@ def run_generation(
         progress.progress(1.0, text="生成完成")
         status.success("Benchmark 与 QA 已生成。")
         render_results(output_dir)
+        render_artifact_browser(output_dir)
     else:
         progress.progress(min(0.99, 0.10 + 0.84 * completed / max(total, 1)), text="生成中断")
         status.error("生成任务未完成。日志已保留；修正问题后可使用同一名称断点续跑。")
+        render_artifact_browser(output_dir)
 
 
 st.set_page_config(
@@ -467,6 +657,8 @@ if "catalog_source" not in st.session_state:
     st.session_state["catalog_source"] = "内置候选"
 if "writer_temperature" not in st.session_state:
     st.session_state["writer_temperature"] = float(config["components"]["session_writer"]["temperature"])
+if "session_count_override" not in st.session_state:
+    st.session_state["session_count_override"] = config["generation"]["session_count"]
 if "transport" not in st.session_state:
     st.session_state["transport"] = config.get("transport", "openai_sdk")
 if "api_key_secret" not in st.session_state:
@@ -567,6 +759,14 @@ with st.sidebar:
         key="writer_temperature",
         help="Planner、Verifier 等组件继续使用其稳定性默认值。",
     )
+    st.slider(
+        "Session 数量",
+        min_value=1,
+        max_value=20,
+        step=1,
+        key="session_count_override",
+        help="本次运行生成的 session 数量。仅当 CaseSpec 未提供 session_outlines 时生效。",
+    )
     st.selectbox(
         "API 传输方式",
         options=["powershell", "openai_sdk"],
@@ -620,9 +820,11 @@ with spec_col:
     if parsed_spec:
         info_cols = st.columns(4)
         info_cols[0].metric("角色", parsed_spec.character_profile.name)
-        info_cols[1].metric("Sessions", len(parsed_spec.session_outlines))
-        info_cols[2].metric("Eval outlines", len(parsed_spec.eval_outlines))
-        info_cols[3].metric("精确 Cues", len(parsed_spec.cues.exact))
+        # session 数量：有 outlines 时取 outlines 数，否则取侧边栏滑块值
+        session_count = len(parsed_spec.session_outlines) or st.session_state["session_count_override"]
+        info_cols[1].metric("Sessions", session_count)
+        info_cols[2].metric("身份", parsed_spec.character_profile.identity)
+        info_cols[3].metric("Outlines", len(parsed_spec.session_outlines))
         st.success("Spec 结构有效，可以生成。")
     else:
         with st.expander("Spec 校验错误", expanded=True):
@@ -677,8 +879,10 @@ if run_clicked:
         api_key_override=st.session_state["api_key_secret"],
         base_url_override=st.session_state["base_url_override"],
         prompt_drafts=prompt_drafts,
+        session_count_override=st.session_state["session_count_override"],
     )
 elif st.session_state.get("last_output"):
     render_results(Path(st.session_state["last_output"]))
+    render_artifact_browser(Path(st.session_state["last_output"]))
 else:
     st.info("完成 Spec 校验后，点击左侧“开始生成”。结果将在这里展开。")

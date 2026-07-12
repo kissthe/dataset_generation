@@ -11,9 +11,14 @@ class SessionPlanner:
     def __init__(self, llm: LLMClient) -> None:
         self.llm = llm
 
-    def run(self, case: CaseSpec, min_rounds: int, max_rounds: int, prior_plans: list[dict] | None = None) -> SessionPlanList:
+    def run(self, case: CaseSpec, min_rounds: int, max_rounds: int,
+            session_count: int, id_prefix: str, start_index: int = 0,
+            prior_plans: list[dict] | None = None) -> SessionPlanList:
         return self.llm.generate("session_planner", {
             "case_spec": case.model_dump(),
+            "session_count": session_count,
+            "id_prefix": id_prefix,
+            "start_index": start_index,
             "constraints": {"min_rounds": min_rounds, "max_rounds": max_rounds},
             "prior_plans": prior_plans or [],
         }, SessionPlanList)

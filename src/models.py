@@ -32,19 +32,19 @@ class EvalOutline(StrictModel):
 
 
 class CueSpec(StrictModel):
-    exact: list[str]
-    related: list[str]
-    non_triggering: list[str]
+    exact: list[str] = []
+    related: list[str] = []
+    non_triggering: list[str] = []
 
 
 class CaseSpec(StrictModel):
     case_id: str
     character_profile: CharacterProfile
     core_emotional_event: str
-    forbidden_facts: list[str]
-    cues: CueSpec
-    session_outlines: list[SessionOutline]
-    eval_outlines: list[EvalOutline]
+    forbidden_facts: list[str] = []
+    cues: CueSpec = Field(default_factory=CueSpec)
+    session_outlines: list[SessionOutline] = []
+    eval_outlines: list[EvalOutline] = []
 
 
 class SessionPlan(StrictModel):

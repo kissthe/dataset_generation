@@ -24,7 +24,6 @@ class GenerationPipeline:
         raw_case_spec = case_path.read_text(encoding="utf-8")
         case = CaseSpec.model_validate_json(raw_case_spec)
         cfg = self.config.generation
-        expected = [x.session_id for x in case.session_outlines[:cfg.session_count]]
         output_dir.mkdir(parents=True, exist_ok=True)
         audit_dir = output_dir / "logs"
         audit_dir.mkdir(parents=True, exist_ok=True)
@@ -45,6 +44,11 @@ class GenerationPipeline:
             },
         })
         plan_path = output_dir / "session_plans.json"
+        if case.session_outlines:
+            expected = [x.session_id for x in case.session_outlines[:cfg.session_count]]
+        else:
+            id_prefix = case.case_id.split('-')[-1].upper()
+            expected = [f"{id_prefix}-S{i+1:02d}" for i in range(cfg.session_count)]
         if plan_path.exists():
             from .models import SessionPlanList
             plans = SessionPlanList.model_validate_json(plan_path.read_text(encoding="utf-8"))
@@ -56,24 +60,53 @@ class GenerationPipeline:
             })
         else:
             all_plans = []
-            outlines = case.session_outlines[:cfg.session_count]
-            for start in range(0, len(outlines), cfg.planner_batch_size):
-                batch_case = case.model_copy(update={
-                    "session_outlines": outlines[start:start + cfg.planner_batch_size],
-                    "eval_outlines": [],
-                })
-                planner_input = {
-                    "case_spec": batch_case.model_dump(),
-                    "constraints": {"min_rounds": cfg.min_rounds, "max_rounds": cfg.max_rounds},
-                    "prior_plans": [p.model_dump() for p in all_plans],
-                }
-                batch = self.planner.run(batch_case, cfg.min_rounds, cfg.max_rounds, prior_plans=planner_input["prior_plans"])
-                self._write_log(audit_dir / f"01_planner_batch_{start // cfg.planner_batch_size + 1:02d}.json", {
-                    "component": "session_planner", "llm": self._llm_metadata("session_planner"),
-                    "input": planner_input, "output": batch.model_dump(),
-                })
-                all_plans.extend(batch.plans)
-                print(f"planned {len(all_plans)}/{len(outlines)} sessions", flush=True)
+            if case.session_outlines:
+                # Backward-compatible path: outlines provided in case spec.
+                outlines = case.session_outlines[:cfg.session_count]
+                for start in range(0, len(outlines), cfg.planner_batch_size):
+                    batch_case = case.model_copy(update={
+                        "session_outlines": outlines[start:start + cfg.planner_batch_size],
+                        "eval_outlines": [],
+                    })
+                    planner_input = {
+                        "case_spec": batch_case.model_dump(),
+                        "constraints": {"min_rounds": cfg.min_rounds, "max_rounds": cfg.max_rounds},
+                        "prior_plans": [p.model_dump() for p in all_plans],
+                    }
+                    batch = self.planner.run(batch_case, cfg.min_rounds, cfg.max_rounds,
+                                             session_count=len(outlines[start:start + cfg.planner_batch_size]),
+                                             id_prefix="", start_index=start,
+                                             prior_plans=planner_input["prior_plans"])
+                    self._write_log(audit_dir / f"01_planner_batch_{start // cfg.planner_batch_size + 1:02d}.json", {
+                        "component": "session_planner", "llm": self._llm_metadata("session_planner"),
+                        "input": planner_input, "output": batch.model_dump(),
+                    })
+                    all_plans.extend(batch.plans)
+                    print(f"planned {len(all_plans)}/{len(outlines)} sessions", flush=True)
+            else:
+                # New path: planner generates sessions from scratch based on core_emotional_event.
+                id_prefix = case.case_id.split('-')[-1].upper()
+                total = cfg.session_count
+                for start in range(0, total, cfg.planner_batch_size):
+                    batch_count = min(cfg.planner_batch_size, total - start)
+                    planner_input = {
+                        "case_spec": case.model_dump(),
+                        "session_count": batch_count,
+                        "id_prefix": id_prefix,
+                        "start_index": start,
+                        "constraints": {"min_rounds": cfg.min_rounds, "max_rounds": cfg.max_rounds},
+                        "prior_plans": [p.model_dump() for p in all_plans],
+                    }
+                    batch = self.planner.run(case, cfg.min_rounds, cfg.max_rounds,
+                                             session_count=batch_count, id_prefix=id_prefix,
+                                             start_index=start,
+                                             prior_plans=planner_input["prior_plans"])
+                    self._write_log(audit_dir / f"01_planner_batch_{start // cfg.planner_batch_size + 1:02d}.json", {
+                        "component": "session_planner", "llm": self._llm_metadata("session_planner"),
+                        "input": planner_input, "output": batch.model_dump(),
+                    })
+                    all_plans.extend(batch.plans)
+                    print(f"planned {len(all_plans)}/{total} sessions", flush=True)
             from .models import SessionPlanList
             plans = SessionPlanList(plans=all_plans)
         plans.plans = [p for p in plans.plans if p.session_id in expected]
@@ -181,7 +214,7 @@ class GenerationPipeline:
             item.pop("summary", None)
             dialogues.append(item)
         benchmark = Benchmark(dataset_id=dataset_id, character_profile=case.character_profile, dialogues=dialogues, eval_samples=[])
-        qa = validate_sessions(dataset_id, case, sessions, self.llm.records)
+        qa = validate_sessions(dataset_id, case, sessions, self.llm.records, expected)
         benchmark_path = output_dir / "benchmark.json"
         qa_path = output_dir / "qa_report.json"
         benchmark_path.write_text(benchmark.model_dump_json(indent=2), encoding="utf-8")

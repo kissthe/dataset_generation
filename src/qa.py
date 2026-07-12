@@ -3,10 +3,10 @@ from __future__ import annotations
 from .models import CaseSpec, QAReport, Session
 
 
-def validate_sessions(dataset_id: str, case: CaseSpec, sessions: list[Session], call_records: list) -> QAReport:
+def validate_sessions(dataset_id: str, case: CaseSpec, sessions: list[Session],
+                      call_records: list, expected_ids: list[str]) -> QAReport:
     errors: list[str] = []
-    expected_ids = [x.session_id for x in case.session_outlines]
-    actual_ids = [x.session_id for x in sessions]
+    actual_ids = [s.session_id for s in sessions]
     ids_ok = actual_ids == expected_ids
     if not ids_ok:
         errors.append(f"session ids/order mismatch: {actual_ids}")
