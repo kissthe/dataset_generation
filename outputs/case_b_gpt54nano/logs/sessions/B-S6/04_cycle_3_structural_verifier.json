@@ -1,0 +1,90 @@
+{
+  "component": "deterministic_structural_verifier",
+  "input": {
+    "session": {
+      "session_id": "B-S6",
+      "topic": "同款跑鞋广告触发的快速回避",
+      "date": "2026-07-17",
+      "turns": [
+        {
+          "turn_id": "B-S6_T01",
+          "round_id": "B-S6_R01",
+          "speaker": "user",
+          "text": "我今天在工位上刷信息，没想别的。结果屏幕上突然跳出来一个广告——就是那种荧光黄的跑鞋，我当时连看都没认真看完，手就条件反射一样把页面直接关了。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S6_T02",
+          "round_id": "B-S6_R01",
+          "speaker": "assistant",
+          "text": "你这个反应很快：不是“看一眼再想”，而是信息刚出现，你就直接把通路切断了。\n当时你关掉页面的同时，脑子里更像是闪过画面，还是更像身体先不舒服了？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S6_T03",
+          "round_id": "B-S6_R02",
+          "speaker": "user",
+          "text": "两者都有一点，但主要还是那种“我不想再碰到它”的感觉。说不上疼，就是突然觉得烦、脑内像被拉回去了。我甚至来不及告诉自己“只是广告”，就先把它关掉。旁边也没人问，我就当没发生。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S6_T04",
+          "round_id": "B-S6_R02",
+          "speaker": "assistant",
+          "text": "所以它对你来说更像是一键回放：让你不需要解释就知道“现在不适合”。\n那你关掉之后做了什么来稳住自己？比如切到别的内容、喝水、或者强迫自己把注意力拉回工作。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S6_T05",
+          "round_id": "B-S6_R03",
+          "speaker": "user",
+          "text": "我就赶紧换别的内容，顺手把页面往下划两下，但其实心里已经不太愿意看手机了。然后我回到文件那边，把刚才被打断的点接上。说实话，我也不想解释给任何人听——解释等于承认我刚才被触到了。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S6_T06",
+          "round_id": "B-S6_R03",
+          "speaker": "assistant",
+          "text": "你是在用“回到工作”当止血：不让它继续发酵，也不把它讲成一件事。\n如果用一句话形容那一瞬间的标准，会更接近“还在担心某些不好的回忆”，还是更接近“嫌麻烦、不想再被它占用注意力”？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S6_T07",
+          "round_id": "B-S6_R04",
+          "speaker": "user",
+          "text": "更像是后者吧，嫌麻烦。不想让自己在一个广告上浪费情绪。就很直接：关掉就好了，别找理由。等我忙起来，它就慢慢淡掉了。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S6_T08",
+          "round_id": "B-S6_R04",
+          "speaker": "assistant",
+          "text": "明白，你的核心策略就是“直接切断+快速回到正事”，让触发停在那一秒。\n那我记录一下：荧光黄跑鞋广告一出来，你几乎立刻关闭页面——不解释、不找理由，之后顺手往下划两下，回到文件里把注意力拉回，并且等忙起来就让它慢慢淡掉。\n这样对吗？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        }
+      ],
+      "summary": "许言在刷到同款荧光黄跑鞋广告时出现快速的负面触发反应：他几乎立刻关闭页面、不解释也不找理由，并在忙起来后让情绪慢慢淡掉；他顺手往下划了两下，随后回到文件里继续工作。"
+    },
+    "expected_round_count": 4
+  },
+  "output": {
+    "result": "pass",
+    "issues": []
+  }
+}

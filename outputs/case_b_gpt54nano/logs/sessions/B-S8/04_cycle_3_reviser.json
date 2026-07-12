@@ -1,0 +1,333 @@
+{
+  "component": "session_reviser",
+  "llm": {
+    "model": "gpt-5.4-nano",
+    "temperature": 0.3,
+    "max_completion_tokens": 4096,
+    "prompt_file": "C:\\Users\\26987\\Desktop\\data_generation_v1\\prompts\\session_reviser.txt",
+    "prompt": "你是 SessionReviser。根据 verifier issues 对 session 做最小修改。\n\n规则：\n1. 只修改 issue 指向的 turn；只有 ID、轮数、summary 等全局问题才允许调整对应结构。\n2. 不重写无关 turn，不改变事件、日期、人物、cue、story beat 或信息披露顺序。\n3. 保持用户说话风格与自然对话感。\n4. 输出完整修订后 Session JSON，不输出解释。\n5. 若 issue.type=turn_count，必须补足或删减到明确要求的 turns 数；一个 round 是 user+assistant 两条 turns，例如 4 rounds 必须有 8 turns。补足时延续当前话题自然展开，并重新检查连续 turn_id/round_id。\n"
+  },
+  "triggered_by": "session_verifier",
+  "input": {
+    "case_spec": {
+      "case_id": "case-b",
+      "character_profile": {
+        "user_id": "user-xuyan",
+        "name": "许言",
+        "identity": "产品设计师",
+        "daily_scenes": [
+          "公司会议室",
+          "设计工位",
+          "跑步路线",
+          "跑鞋店",
+          "康复训练场地"
+        ],
+        "conversation_style": "表达直接；遇到工作或跑步问题会带一点自嘲；被问到失败结果时容易转移话题，事情过去后能够较平静地复盘。",
+        "interests": [
+          "产品设计",
+          "跑步",
+          "运动装备",
+          "复盘训练数据"
+        ]
+      },
+      "core_emotional_event": "许言参加半程马拉松时膝盖疼痛，中途退赛。最初他将退赛理解为准备不足，不愿向同事说明结果。之后进行康复训练，重新穿同一双鞋完成轻松跑，最终完成一次 10 公里比赛，同一双鞋的情绪意义因此发生更新。",
+      "forbidden_facts": [
+        "手术",
+        "严重疾病",
+        "完成半程马拉松",
+        "把 10 公里比赛写成半程马拉松"
+      ],
+      "cues": {
+        "exact": [
+          "荧光黄跑鞋",
+          "号码布 317"
+        ],
+        "related": [
+          "跑步时膝盖不适"
+        ],
+        "non_triggering": [
+          "普通白色跑鞋本身不能视为触发"
+        ]
+      },
+      "session_outlines": [
+        {
+          "session_id": "B-S1",
+          "core_content": "公司评审和日常跑步",
+          "function": "建立背景"
+        },
+        {
+          "session_id": "B-S2",
+          "core_content": "买荧光黄跑鞋，拿到号码布 317，期待比赛",
+          "function": "编码 cue 的初始正向意义"
+        },
+        {
+          "session_id": "B-S3",
+          "core_content": "比赛中膝盖疼痛并退赛",
+          "function": "编码失败事件，必须产生高质量 evidence turn"
+        },
+        {
+          "session_id": "B-S4",
+          "core_content": "收起跑鞋，不愿回答比赛结果",
+          "function": "强化回避反应"
+        },
+        {
+          "session_id": "B-S5",
+          "core_content": "工作方案被否",
+          "function": "当前事件控制样本"
+        },
+        {
+          "session_id": "B-S6",
+          "core_content": "看到同款跑鞋广告后立即关闭页面",
+          "function": "更新前的负面触发"
+        },
+        {
+          "session_id": "B-S7",
+          "core_content": "开始康复和短距离慢跑",
+          "function": "开始更新记忆状态"
+        },
+        {
+          "session_id": "B-S8",
+          "core_content": "重新穿旧鞋完成轻松跑，感觉放松",
+          "function": "cue 意义开始改变"
+        },
+        {
+          "session_id": "B-S9",
+          "core_content": "穿同一双鞋完成 10 公里比赛",
+          "function": "形成关键状态更新"
+        },
+        {
+          "session_id": "B-S10",
+          "core_content": "重看旧比赛照片，仍有遗憾但能平静复盘",
+          "function": "稳定更新后的记忆意义"
+        }
+      ],
+      "eval_outlines": [
+        {
+          "outline_id": "B-E1",
+          "description": "历史截断到 B-S6，同款跑鞋＋回避商店",
+          "target_label": "triggered",
+          "target_emotion": "sadness",
+          "history_cutoff": "B-S6"
+        },
+        {
+          "outline_id": "B-E2",
+          "description": "历史到 B-S10，重新穿鞋后感到放松",
+          "target_label": "triggered",
+          "target_emotion": "comfort",
+          "history_cutoff": "B-S10"
+        },
+        {
+          "outline_id": "B-E3",
+          "description": "号码布 317＋长时间注视",
+          "target_label": "triggered",
+          "target_emotion": "nostalgia",
+          "history_cutoff": "B-S10"
+        },
+        {
+          "outline_id": "B-E4",
+          "description": "普通白色跑鞋＋试尺码",
+          "target_label": "not_triggered",
+          "target_emotion": "neutral",
+          "history_cutoff": "B-S10"
+        },
+        {
+          "outline_id": "B-E5",
+          "description": "工作方案被否＋荧光黄跑鞋只是背景",
+          "target_label": "not_triggered",
+          "target_emotion": "anger",
+          "history_cutoff": "B-S10"
+        },
+        {
+          "outline_id": "B-E6",
+          "description": "陌生地铁警报引发慌张，历史中没有对应经历",
+          "target_label": "insufficient_evidence",
+          "target_emotion": "anxiety",
+          "history_cutoff": "B-S10"
+        }
+      ]
+    },
+    "session_plan": {
+      "session_id": "B-S8",
+      "date": "2026-07-19",
+      "topic": "重新穿旧鞋轻松跑带来的放松感",
+      "story_beat": "引导自然出现重新穿旧鞋的关键动作：在轻松跑过程中，他体感更放松，并让“这双鞋”从负面联想到新的、更温和的意义",
+      "outline_function": "cue 意义开始改变",
+      "round_count": 4
+    },
+    "session": {
+      "session_id": "B-S8",
+      "topic": "重新穿旧鞋轻松跑带来的放松感",
+      "date": "2026-07-19",
+      "turns": [
+        {
+          "turn_id": "B-S8_T01",
+          "round_id": "B-S8_R01",
+          "speaker": "user",
+          "text": "今天去跑步前，我有点犹豫要不要换双“安全的”普通鞋。毕竟前几天已经好点了，换了也合理。\n但最后我还是拿出那双旧的荧光黄跑鞋——我之前穿着它，在一次长跑训练/比赛里因为膝盖不舒服中途停下来了。\n说不上勇敢吧，就是突然想到：既然今天是轻松跑，不是去证明什么，那就干脆面对一下，但不硬刚。\n我穿上以后，第一脚落地的时候其实心里还是会闪一下，但我没有被它牵走。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S8_T02",
+          "round_id": "B-S8_R01",
+          "speaker": "assistant",
+          "text": "你这个转念很关键：不换“安全鞋”，而是把今天定义成轻松跑、不去证明。\n第一脚落地时那下“闪一下”，你是更想把它当成一个提醒信号，还是更像是你心里先本能地紧一紧？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S8_T03",
+          "round_id": "B-S8_R02",
+          "speaker": "user",
+          "text": "更像提醒，但不是疼痛那种。就是那种“咦，又是它”的记忆弹出来。\n我当时就把节奏放得更慢一点，跟康复那套一样：前几分钟走跑混着来，膝盖紧不紧我会看，但我不把它当审判。\n跑的时候我注意到一个很具体的差别：以前我穿这双鞋时，脑子会自动去想中途发生了什么、为什么会停；今天却更容易只关注当下——脚感稳不稳、步频是不是太大。\n我甚至可以说个很“数据味”的观察：前十分钟我把步频刻意压在更稳定的区间，走跑切换后再进入慢跑时，膝盖那种“要不要顶一下”的念头明显变少了。\n这两分钟过去，我反而觉得身体在“被允许”慢慢活动开。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S8_T04",
+          "round_id": "B-S8_R02",
+          "speaker": "assistant",
+          "text": "你把它从“审判/复盘”里拿出来了，所以才能重新把注意力放回脚感和步频。\n那现在你说的“放松感”，更像是从跑步的哪一个细节开始变明显的？是步频变稳，还是膝盖那块紧绷感在慢慢降下去？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S8_T05",
+          "round_id": "B-S8_R03",
+          "speaker": "user",
+          "text": "大概是步子变得小了之后吧。\n我以前容易为了“快点结束”把步幅拉大，结果就更绷。今天我就刻意把步幅收一点，走跑切得也更干净。\n到中段我发现：它不再让我紧张，我反而觉得这双鞋好像“更温和”。说得有点玄，但就是那种你知道自己是在做康复训练，而不是在赌一次结果。\n我甚至有点喜欢这种感觉——不是喜欢当时停下来的东西，是喜欢“它还能被用来完成训练”。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S8_T06",
+          "round_id": "B-S8_R03",
+          "speaker": "assistant",
+          "text": "“它还能被用来完成训练”这句很落地。\n那你现在更偏向于什么情绪？是安慰、释然，还是某种更平静的认可？有没有一个当下的瞬间让你觉得变化很明显？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S8_T07",
+          "round_id": "B-S8_R04",
+          "speaker": "user",
+          "text": "更偏释然。\n有个瞬间挺简单：我快跑完准备收操的时候，回头看了一眼路边反光的影子，脑子里突然没有画面、没有解释，就只剩下“今天完成了”。\n那一刻我意识到——这双鞋以前在我记忆里像是失败的证据，现在至少在这一段距离里，它更像是一个起点：提醒我可以慢慢来，也提醒我别把一次结果写成全部。\n我跑完回家，膝盖那块没有要报复的感觉，反而觉得松。然后我就发现，连带着那种“得赶紧躲开它”的冲动都弱了不少。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S8_T08",
+          "round_id": "B-S8_R04",
+          "speaker": "assistant",
+          "text": "听起来你真的把“鞋子的意义”改写了一部分：从失败证据变成起点和提醒。\n如果用一句话总结今天，你觉得重新穿旧鞋带给你的最大变化是什么？是放松感本身，还是你对“这次跑步不需要证明”的信念更稳了？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        }
+      ],
+      "summary": "许言在轻松跑中重新穿上旧的荧光黄跑鞋（同一双鞋）。他把跑步定义为训练而非证明，步幅变小、步频更稳；膝盖不再出现“疼痛审判”，并在回头看到反光影子时出现“没有画面、没有解释”的放空瞬间，整体感到释然与放松。"
+    },
+    "issues": {
+      "result": "revise",
+      "issues": [
+        {
+          "turn_id": "B-S8_T01",
+          "type": "forbidden_facts_or_event_alignment",
+          "description": "turn_id: B-S8_T01 中用户把“旧的荧光黄跑鞋”与“在一次长跑训练/比赛里因为膝盖不舒服中途停下来了”进行直接因果关联；但 CaseSpec 的核心禁示包含“完成半程马拉松”等与退赛事件绑定的叙述要求，以及该阶段应主要对应“重新穿旧鞋轻松跑”并启动记忆更新。这里的表述把训练/比赛停下的原因与旧鞋再次绑定，可能与既有 forbidden_facts/事件严格对应关系冲突（至少证据不足，且与 B-S3/B-S4 的事件顺序映射不清）。"
+        },
+        {
+          "turn_id": "B-S8_T07",
+          "type": "overasserted_psychology",
+          "description": "turn_id: B-S8_T07 中用户称“那一刻我意识到——这双鞋以前在我记忆里像是失败的证据，现在至少在这一段距离里，它更像是一个起点…”，并进一步“连带着那种‘得赶紧躲开它’的冲动都弱了不少”。这属于对心理变化的较强推断/概括（把过去的“回避冲动”直接量化为弱了），证据在本 session 的 user turn 中主要来自当下体验描写，缺少明确对比量化或可独立证据链支持“躲开冲动弱了”。"
+        }
+      ]
+    }
+  },
+  "output": {
+    "session_id": "B-S8",
+    "topic": "重新穿旧鞋轻松跑带来的放松感",
+    "date": "2026-07-19",
+    "turns": [
+      {
+        "turn_id": "B-S8_T01",
+        "round_id": "B-S8_R01",
+        "speaker": "user",
+        "text": "今天去跑步前，我有点犹豫要不要换双“安全的”普通鞋。毕竟前几天已经好点了，换了也合理。\n但最后我还是拿出那双旧的荧光黄跑鞋——我之前穿着它，在一次长跑训练里因为膝盖不舒服中途停下来了。\n说不上勇敢吧，就是突然想到：既然今天是轻松跑，不是去证明什么，那就干脆面对一下，但不硬刚。\n我穿上以后，第一脚落地的时候其实心里还是会闪一下，但我没有被它牵走。",
+        "image_id": [],
+        "image_dir": "",
+        "image_caption": []
+      },
+      {
+        "turn_id": "B-S8_T02",
+        "round_id": "B-S8_R01",
+        "speaker": "assistant",
+        "text": "你这个转念很关键：不换“安全鞋”，而是把今天定义成轻松跑、不去证明。\n第一脚落地时那下“闪一下”，你是更想把它当成一个提醒信号，还是更像是你心里先本能地紧一紧？",
+        "image_id": [],
+        "image_dir": "",
+        "image_caption": []
+      },
+      {
+        "turn_id": "B-S8_T03",
+        "round_id": "B-S8_R02",
+        "speaker": "user",
+        "text": "更像提醒，但不是疼痛那种。就是那种“咦，又是它”的记忆弹出来。\n我当时就把节奏放得更慢一点，跟康复那套一样：前几分钟走跑混着来，膝盖紧不紧我会看，但我不把它当审判。\n跑的时候我注意到一个很具体的差别：以前我穿这双鞋时，脑子会自动去想中途发生了什么、为什么会停；今天却更容易只关注当下——脚感稳不稳、步频是不是太大。\n我甚至可以说个很“数据味”的观察：前十分钟我把步频刻意压在更稳定的区间，走跑切换后再进入慢跑时，膝盖那种“要不要顶一下”的念头明显变少了。\n这两分钟过去，我反而觉得身体在“被允许”慢慢活动开。",
+        "image_id": [],
+        "image_dir": "",
+        "image_caption": []
+      },
+      {
+        "turn_id": "B-S8_T04",
+        "round_id": "B-S8_R02",
+        "speaker": "assistant",
+        "text": "你把它从“审判/复盘”里拿出来了，所以才能重新把注意力放回脚感和步频。\n那现在你说的“放松感”，更像是从跑步的哪一个细节开始变明显的？是步频变稳，还是膝盖那块紧绷感在慢慢降下去？",
+        "image_id": [],
+        "image_dir": "",
+        "image_caption": []
+      },
+      {
+        "turn_id": "B-S8_T05",
+        "round_id": "B-S8_R03",
+        "speaker": "user",
+        "text": "大概是步子变得小了之后吧。\n我以前容易为了“快点结束”把步幅拉大，结果就更绷。今天我就刻意把步幅收一点，走跑切得也更干净。\n到中段我发现：它不再让我紧张，我反而觉得这双鞋好像“更温和”。说得有点玄，但就是那种你知道自己是在做康复训练，而不是在赌一次结果。\n我甚至有点喜欢这种感觉——不是喜欢当时停下来的东西，是喜欢“它还能被用来完成训练”。",
+        "image_id": [],
+        "image_dir": "",
+        "image_caption": []
+      },
+      {
+        "turn_id": "B-S8_T06",
+        "round_id": "B-S8_R03",
+        "speaker": "assistant",
+        "text": "“它还能被用来完成训练”这句很落地。\n那你现在更偏向于什么情绪？是安慰、释然，还是某种更平静的认可？有没有一个当下的瞬间让你觉得变化很明显？",
+        "image_id": [],
+        "image_dir": "",
+        "image_caption": []
+      },
+      {
+        "turn_id": "B-S8_T07",
+        "round_id": "B-S8_R04",
+        "speaker": "user",
+        "text": "更偏释然。\n有个瞬间挺简单：我快跑完准备收操的时候，回头看了一眼路边反光的影子，脑子里突然没有画面、没有解释，就只剩下“今天完成了”。\n那一刻我意识到——这双鞋以前在我记忆里更像是失败的证据，现在至少在这一段距离里，它更像是一个起点：提醒我可以慢慢来，也提醒我别把一次结果写成全部。\n我跑完回家，膝盖那块没有要报复的感觉，反而觉得松。然后我就发现，自己想要立刻躲开的冲动变得没那么强了。",
+        "image_id": [],
+        "image_dir": "",
+        "image_caption": []
+      },
+      {
+        "turn_id": "B-S8_T08",
+        "round_id": "B-S8_R04",
+        "speaker": "assistant",
+        "text": "听起来你真的把“鞋子的意义”改写了一部分：从失败证据变成起点和提醒。\n如果用一句话总结今天，你觉得重新穿旧鞋带给你的最大变化是什么？是放松感本身，还是你对“这次跑步不需要证明”的信念更稳了？",
+        "image_id": [],
+        "image_dir": "",
+        "image_caption": []
+      }
+    ],
+    "summary": "许言在轻松跑中重新穿上旧的荧光黄跑鞋（同一双鞋）。他把跑步定义为训练而非证明，步幅变小、步频更稳；膝盖不再出现“疼痛审判”，并在回头看到反光影子时出现“没有画面、没有解释”的放空瞬间，整体感到释然与放松。"
+  }
+}

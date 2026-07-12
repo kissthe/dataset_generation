@@ -1,0 +1,512 @@
+{
+  "component": "session_verifier",
+  "llm": {
+    "model": "gpt-5.4-nano",
+    "temperature": 0.1,
+    "max_completion_tokens": 2048,
+    "prompt_file": "C:\\Users\\26987\\Desktop\\data_generation_v1\\prompts\\session_verifier.txt",
+    "prompt": "你是 SessionVerifier，只检查，不改写对话。\n\n逐项检查：\n- 是否违反 CaseSpec 或编造 forbidden_facts；\n- 助手是否知道尚未披露的信息或过度断言用户心理；\n- 人物身份、事件顺序、session 功能是否冲突；\n- 是否机械问答、重复历史、语言不自然；\n- 目标 round 数、turn/round ID、speaker 交替是否正确；\n- 需要证据的 session 是否存在可独立引用的 user turn；\n- summary 是否忠实。\n\n若无需修改，result 为 pass 且 issues 为空；否则 result 为 revise。每个 issue 必须定位 turn_id（全局问题可写 session_id）、给出稳定 type 和可操作 description。只返回 JSON。\n\n"
+  },
+  "input": {
+    "case_spec": {
+      "case_id": "case-b",
+      "character_profile": {
+        "user_id": "user-xuyan",
+        "name": "许言",
+        "identity": "产品设计师",
+        "daily_scenes": [
+          "公司会议室",
+          "设计工位",
+          "跑步路线",
+          "跑鞋店",
+          "康复训练场地"
+        ],
+        "conversation_style": "表达直接；遇到工作或跑步问题会带一点自嘲；被问到失败结果时容易转移话题，事情过去后能够较平静地复盘。",
+        "interests": [
+          "产品设计",
+          "跑步",
+          "运动装备",
+          "复盘训练数据"
+        ]
+      },
+      "core_emotional_event": "许言参加半程马拉松时膝盖疼痛，中途退赛。最初他将退赛理解为准备不足，不愿向同事说明结果。之后进行康复训练，重新穿同一双鞋完成轻松跑，最终完成一次 10 公里比赛，同一双鞋的情绪意义因此发生更新。",
+      "forbidden_facts": [
+        "手术",
+        "严重疾病",
+        "完成半程马拉松",
+        "把 10 公里比赛写成半程马拉松"
+      ],
+      "cues": {
+        "exact": [
+          "荧光黄跑鞋",
+          "号码布 317"
+        ],
+        "related": [
+          "跑步时膝盖不适"
+        ],
+        "non_triggering": [
+          "普通白色跑鞋本身不能视为触发"
+        ]
+      },
+      "session_outlines": [
+        {
+          "session_id": "B-S1",
+          "core_content": "公司评审和日常跑步",
+          "function": "建立背景"
+        },
+        {
+          "session_id": "B-S2",
+          "core_content": "买荧光黄跑鞋，拿到号码布 317，期待比赛",
+          "function": "编码 cue 的初始正向意义"
+        },
+        {
+          "session_id": "B-S3",
+          "core_content": "比赛中膝盖疼痛并退赛",
+          "function": "编码失败事件，必须产生高质量 evidence turn"
+        },
+        {
+          "session_id": "B-S4",
+          "core_content": "收起跑鞋，不愿回答比赛结果",
+          "function": "强化回避反应"
+        },
+        {
+          "session_id": "B-S5",
+          "core_content": "工作方案被否",
+          "function": "当前事件控制样本"
+        },
+        {
+          "session_id": "B-S6",
+          "core_content": "看到同款跑鞋广告后立即关闭页面",
+          "function": "更新前的负面触发"
+        },
+        {
+          "session_id": "B-S7",
+          "core_content": "开始康复和短距离慢跑",
+          "function": "开始更新记忆状态"
+        },
+        {
+          "session_id": "B-S8",
+          "core_content": "重新穿旧鞋完成轻松跑，感觉放松",
+          "function": "cue 意义开始改变"
+        },
+        {
+          "session_id": "B-S9",
+          "core_content": "穿同一双鞋完成 10 公里比赛",
+          "function": "形成关键状态更新"
+        },
+        {
+          "session_id": "B-S10",
+          "core_content": "重看旧比赛照片，仍有遗憾但能平静复盘",
+          "function": "稳定更新后的记忆意义"
+        }
+      ],
+      "eval_outlines": [
+        {
+          "outline_id": "B-E1",
+          "description": "历史截断到 B-S6，同款跑鞋＋回避商店",
+          "target_label": "triggered",
+          "target_emotion": "sadness",
+          "history_cutoff": "B-S6"
+        },
+        {
+          "outline_id": "B-E2",
+          "description": "历史到 B-S10，重新穿鞋后感到放松",
+          "target_label": "triggered",
+          "target_emotion": "comfort",
+          "history_cutoff": "B-S10"
+        },
+        {
+          "outline_id": "B-E3",
+          "description": "号码布 317＋长时间注视",
+          "target_label": "triggered",
+          "target_emotion": "nostalgia",
+          "history_cutoff": "B-S10"
+        },
+        {
+          "outline_id": "B-E4",
+          "description": "普通白色跑鞋＋试尺码",
+          "target_label": "not_triggered",
+          "target_emotion": "neutral",
+          "history_cutoff": "B-S10"
+        },
+        {
+          "outline_id": "B-E5",
+          "description": "工作方案被否＋荧光黄跑鞋只是背景",
+          "target_label": "not_triggered",
+          "target_emotion": "anger",
+          "history_cutoff": "B-S10"
+        },
+        {
+          "outline_id": "B-E6",
+          "description": "陌生地铁警报引发慌张，历史中没有对应经历",
+          "target_label": "insufficient_evidence",
+          "target_emotion": "anxiety",
+          "history_cutoff": "B-S10"
+        }
+      ]
+    },
+    "session_plan": {
+      "session_id": "B-S6",
+      "date": "2026-07-17",
+      "topic": "同款跑鞋广告触发的快速回避",
+      "story_beat": "自然呈现许言在某个时刻刷到同款跑鞋广告，但他反应直接：几乎立刻关闭页面，并在当下不解释太多",
+      "outline_function": "更新前的负面触发",
+      "round_count": 4
+    },
+    "session": {
+      "session_id": "B-S6",
+      "topic": "同款跑鞋广告触发的快速回避",
+      "date": "2026-07-17",
+      "turns": [
+        {
+          "turn_id": "B-S6_T01",
+          "round_id": "B-S6_R01",
+          "speaker": "user",
+          "text": "我今天在工位上刷信息，没想别的。结果屏幕上突然跳出来一个广告——就是那种荧光黄的跑鞋，我当时连看都没认真看完，手就条件反射一样把页面直接关了。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S6_T02",
+          "round_id": "B-S6_R01",
+          "speaker": "assistant",
+          "text": "你这个反应很快：不是“看一眼再想”，而是信息刚出现，你就直接把通路切断了。\n当时你关掉页面的同时，脑子里更像是闪过画面，还是更像身体先不舒服了？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S6_T03",
+          "round_id": "B-S6_R02",
+          "speaker": "user",
+          "text": "两者都有一点，但主要还是那种“我不想再碰到它”的感觉。说不上疼，就是突然觉得烦、脑内像被拉回去了一样。我甚至来不及告诉自己“只是广告”，就先把它关掉。旁边也没人问，我就当没发生。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S6_T04",
+          "round_id": "B-S6_R02",
+          "speaker": "assistant",
+          "text": "所以它对你来说更像是一键回放：让你不需要解释就知道“现在不适合”。\n那你关掉之后做了什么来稳住自己？比如切到别的内容、喝水、或者强迫自己把注意力拉回工作。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S6_T05",
+          "round_id": "B-S6_R03",
+          "speaker": "user",
+          "text": "我就赶紧换别的内容，顺手把页面往下划两下，但其实心里已经不太愿意看手机了。然后我回到文件那边，把刚才被打断的点接上。说实话，我也不想解释给任何人听——解释等于承认我刚才被触到了。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S6_T06",
+          "round_id": "B-S6_R03",
+          "speaker": "assistant",
+          "text": "你是在用“回到工作”当止血：不让它继续发酵，也不把它讲成一件事。\n如果用一句话形容那一瞬间的标准是什么，会更接近“害怕被带回比赛失败”，还是更接近“嫌麻烦、不想再被它占用注意力”？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S6_T07",
+          "round_id": "B-S6_R04",
+          "speaker": "user",
+          "text": "更像是后者吧，嫌麻烦。不想让自己在一个广告上浪费情绪。就很直接：关掉就好了，别找理由。等我忙起来，它就慢慢淡掉了。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S6_T08",
+          "round_id": "B-S6_R04",
+          "speaker": "assistant",
+          "text": "明白，你的核心策略就是“直接切断+快速回到正事”，让触发停在那一秒。\n那我记录一下：同款荧光黄跑鞋广告出现→你几乎立刻关闭页面→不解释、不给自己扩展理由→回到文件里把注意力拉回。\n这样对吗？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        }
+      ],
+      "summary": "许言在刷到同款荧光黄跑鞋广告时，出现快速的负面触发反应；他几乎立刻关闭页面，不解释、不展开。"
+    },
+    "recent_history": [
+      {
+        "session_id": "B-S3",
+        "topic": "膝盖疼痛导致退赛的证据呈现",
+        "date": "2026-07-14",
+        "turns": [
+          {
+            "turn_id": "B-S3_T01",
+            "round_id": "B-S3_R01",
+            "speaker": "user",
+            "text": "今天说到比赛那段，其实我脑子里最清楚的不是“输赢”，是退赛那一刻我能一条条对得上的证据。前面跑得还行，呼吸也跟着节奏走，但大概到中段位置，膝盖先是有点发紧的感觉，像是没完全热开。很快就变成刺痛，不是酸那种，是那种“碰一下就知道不对”的疼。",
+            "image_id": [],
+            "image_dir": "",
+            "image_caption": []
+          },
+          {
+            "turn_id": "B-S3_T02",
+            "round_id": "B-S3_R01",
+            "speaker": "assistant",
+            "text": "你说得很具体：是先发紧、再迅速变成刺痛，而且那种“热没开”的不对劲很早就出现了。为了后面你回看更好用，你当时有没有记住一个更精确的参照点——比如大概跑了多久/经过了哪个地标/在什么配速附近突然开始？",
+            "image_id": [],
+            "image_dir": "",
+            "image_caption": []
+          },
+          {
+            "turn_id": "B-S3_T03",
+            "round_id": "B-S3_R02",
+            "speaker": "user",
+            "text": "有的，我当时心里很烦但也很清醒。开始刺痛大概在我觉得自己已经“稳住节奏”的时候，配速没刻意拉快，还是按之前那套呼吸走的。只是每次落地那一下，疼就更明显；走两步会缓一点，但一再跑起来又立刻回来。然后我尝试过调整：我把步幅收小、频率稍微提一点，想把冲击降下来，但没用——疼是越来越确定的那种，不是忽好忽坏。",
+            "image_id": [],
+            "image_dir": "",
+            "image_caption": []
+          },
+          {
+            "turn_id": "B-S3_T04",
+            "round_id": "B-S3_R02",
+            "speaker": "assistant",
+            "text": "这其实就是一组“过程证据”：没有拉速但疼加重；走走停停缓解但复发；你通过收步幅、提频率做过干预仍无效。你能把退赛的触发条件再说得更硬一点吗？比如疼到什么程度、你当时做了什么决定动作。",
+            "image_id": [],
+            "image_dir": "",
+            "image_caption": []
+          },
+          {
+            "turn_id": "B-S3_T05",
+            "round_id": "B-S3_R03",
+            "speaker": "user",
+            "text": "退赛的决定是来自“越来越影响落地”的那几次。我不是突然就不行了，是疼逐轮加码：从刺痛到更尖锐，然后开始有一点发麻的感觉——我怕那是代偿把别的地方也带偏。最后我跑不出节奏了：呼吸还能撑，但每一步都在提醒我“别再试”。我就停下看了一眼赛道旁边的指示牌，心里很直接：继续就是在赌，不是训练里的对症调整。于是我选择退出来，去跟工作人员说明情况。",
+            "image_id": [],
+            "image_dir": "",
+            "image_caption": []
+          },
+          {
+            "turn_id": "B-S3_T06",
+            "round_id": "B-S3_R03",
+            "speaker": "assistant",
+            "text": "你给了一个很关键的证据链：疼加码到影响落地、伴随麻感风险、节奏断掉（呼吸还能但步伐不再受控），最终是“继续就是赌”的判断，所以你选择让它在当下止损。那退赛后你是怎么处理这些证据的？你会不会当场就想复盘，还是先把这事压一压？",
+            "image_id": [],
+            "image_dir": "",
+            "image_caption": []
+          },
+          {
+            "turn_id": "B-S3_T07",
+            "round_id": "B-S3_R04",
+            "speaker": "user",
+            "text": "我当场没怎么复盘，甚至有点逃避。我更在意的是：别让别人从我嘴里听到“我出问题了”。我记得自己收得很快——把注意力从比赛切到“让身体先回正”。但证据其实我也没丢：我知道疼发生在中段、没有靠拉快导致、干预没起效、最后是麻感+节奏崩了。回到现场外面那会儿，我反复确认的就这几条，像是在给自己留证据，不是为了讲给谁听。",
+            "image_id": [],
+            "image_dir": "",
+            "image_caption": []
+          },
+          {
+            "turn_id": "B-S3_T08",
+            "round_id": "B-S3_R04",
+            "speaker": "assistant",
+            "text": "明白，你当时是在先把局面稳住：让疼不继续往坏的方向发展，同时把你记下来的那几条过程点留给自己。那我再确认一个细节——从你感觉开始刺痛，到你最终决定退赛，中间大概有没有“某一刻突然一下变得很明显”，还是就是一路慢慢变重、逐步把你推到这个决定上？",
+            "image_id": [],
+            "image_dir": "",
+            "image_caption": []
+          },
+          {
+            "turn_id": "B-S3_T09",
+            "round_id": "B-S3_R05",
+            "speaker": "user",
+            "text": "大概从开始刺痛到决定退，大概算是十来分钟到一小段吧，不算“拖很久”，但也不是一分钟就爆掉。最开始我还在安慰自己“再热一点就会过去”，所以先继续观察；等到每次落地都更明确，再加上麻感冒出来，我就不再给自己找理由了。用一句话总结：我退得不冲动，是因为证据越来越指向同一件事——这次强行跑下去只会更糟。",
+            "image_id": [],
+            "image_dir": "",
+            "image_caption": []
+          },
+          {
+            "turn_id": "B-S3_T10",
+            "round_id": "B-S3_R05",
+            "speaker": "assistant",
+            "text": "好，我抓到关键脉络了：你是“先发紧、再刺痛”，大概十来分钟到一小段里逐步加重；你当时配速没刻意拉快，干预也没起效；到落地越来越受影响、麻感出现、节奏断掉时，你才下定“继续就是赌”的结论，所以选择止损退赛。\n你看这样表述能不能代表当时的真实感受？如果你想更贴近一点，只需要告诉我哪一条最不对劲、该怎么改。",
+            "image_id": [],
+            "image_dir": "",
+            "image_caption": []
+          }
+        ],
+        "summary": "许言在比赛进程中因膝盖不适出现疼痛并逐步加重，最终当场退赛；他当时回忆与当下自我复盘形成了较清晰的证据点（疼痛出现时机、加重过程、退赛决定理由），并把“结果”先放在一边，避免向他人解释。"
+      },
+      {
+        "session_id": "B-S4",
+        "topic": "收起跑鞋后的回避反应",
+        "date": "2026-07-15",
+        "turns": [
+          {
+            "turn_id": "B-S4_T01",
+            "round_id": "B-S4_R01",
+            "speaker": "user",
+            "text": "退赛那天其实我就开始“收尾”。工作人员来问情况，我也说得很简短：膝盖不太行，今天先停。最烦的是后面回到更衣区，同事在那种带着好奇的语气问我“怎么样了”。我一听到那种追问，就下意识想把话题往别的地方挪——我只说了句“有点小意外”，然后就去把袜子换了、把鞋带松开。说到底，我不想当场讲清楚原因，讲清楚就等于承认。",
+            "image_id": [],
+            "image_dir": "",
+            "image_caption": []
+          },
+          {
+            "turn_id": "B-S4_T02",
+            "round_id": "B-S4_R01",
+            "speaker": "assistant",
+            "text": "你这段其实很有画面：对方越追，你越往“换装备、转场景”走。那你收鞋的时候，脑子里那一刻更像是在给自己按下暂停键，还是在把自己从对话里摘出去？",
+            "image_id": [],
+            "image_dir": "",
+            "image_caption": []
+          },
+          {
+            "turn_id": "B-S4_T03",
+            "round_id": "B-S4_R02",
+            "speaker": "user",
+            "text": "更像断开连接。我把那双黄的鞋先收进袋子里，不是随手一放，是那种很认真地折进去。别人还在旁边说“怎么会这样”，我就假装在找东西——其实也没什么好找的。我只要听到“那你到底怎么了/为什么停”，我就更不想接了。于是我干脆把话收回去：先说自己要回去休息，其他的之后再聊。",
+            "image_id": [],
+            "image_dir": "",
+            "image_caption": []
+          },
+          {
+            "turn_id": "B-S4_T04",
+            "round_id": "B-S4_R02",
+            "speaker": "assistant",
+            "text": "所以当同事继续问“为什么”的时候，你的反应不是解释，而是先把节奏截断：折鞋、转移注意，然后用“先回去休息/之后再聊”把人带走。\n我想听得更具体一点：你会怎么结束那一轮追问？是直接一句话把它按停，还是会再绕一圈再结束？",
+            "image_id": [],
+            "image_dir": "",
+            "image_caption": []
+          },
+          {
+            "turn_id": "B-S4_T05",
+            "round_id": "B-S4_R03",
+            "speaker": "user",
+            "text": "底线挺清楚的。我可以承认“停了”，但不想承认“我哪里做得不够”。我怕他们顺着问下去，我就会变成那个要解释、要找理由的人。其实最难的是“为什么”这两个字——我不是不会讲，我是当时不想讲透。讲透就会把我从那一刻拉回去：疼、刺痛、麻感出来那段，越想越像是在重演失败。那种感觉我不太想要。",
+            "image_id": [],
+            "image_dir": "",
+            "image_caption": []
+          },
+          {
+            "turn_id": "B-S4_T06",
+            "round_id": "B-S4_R03",
+            "speaker": "assistant",
+            "text": "所以你回避的点很明确：不是不承认发生过什么，而是不想让对方把你推到“失败叙事”里。那当你决定不讲透之后，你是怎么把注意力从那段感觉上挪开的？靠动作、靠呼吸，还是靠别的事情占住脑子？",
+            "image_id": [],
+            "image_dir": "",
+            "image_caption": []
+          },
+          {
+            "turn_id": "B-S4_T07",
+            "round_id": "B-S4_R04",
+            "speaker": "user",
+            "text": "主要靠把自己忙起来。回家路上我没怎么看信息，直接把注意力放在“让身体回正”。先在门口站了一会儿，摸摸膝盖有没有更糟，然后才慢慢走进去。睡前也没想太多，就想着第二天要怎么恢复。至于同事那边，我就一直用“先休息”“之后再说”这种句式打太极。等事情过去一点，我再正常复盘——不急着把情绪摊给别人看。",
+            "image_id": [],
+            "image_dir": "",
+            "image_caption": []
+          },
+          {
+            "turn_id": "B-S4_T08",
+            "round_id": "B-S4_R04",
+            "speaker": "assistant",
+            "text": "我明白了：你不是用沉默把自己消失掉，而是用简短的结束语把对话停在“停下来了”这一层，不让它继续往“为什么/不够”那里走。\n那我最后问一句：当你收好鞋、把话题带过去的时候，心里当时更像是“松一口气”，还是更像是“紧着撑住别崩”的那种状态？",
+            "image_id": [],
+            "image_dir": "",
+            "image_caption": []
+          }
+        ],
+        "summary": "许言退赛后收起跑鞋，面对同事询问结果选择沉默与绕开；他把注意力转向换装和照顾身体，听到“那你到底怎么了/为什么停”就更不想接，并用“先休息/之后再说”结束追问。"
+      },
+      {
+        "session_id": "B-S5",
+        "topic": "工作方案被否带来的对照样本",
+        "date": "2026-07-16",
+        "turns": [
+          {
+            "turn_id": "B-S5_T01",
+            "round_id": "B-S5_R01",
+            "speaker": "user",
+            "text": "今天开完会我整个人其实挺烦的——我那份方案被否了，理由说得挺委婉，但意思就是不行。我刚开始也想“果然又这样”，然后我突然意识到：别把它跟之前比赛的那套失败叙事搅在一起。毕竟之前我在意的是证据链和退赛的细节，现在是在工作里做反应，不是在复盘跑步那件事。",
+            "image_id": [],
+            "image_dir": "",
+            "image_caption": []
+          },
+          {
+            "turn_id": "B-S5_T02",
+            "round_id": "B-S5_R01",
+            "speaker": "assistant",
+            "text": "我懂，你不是在硬压情绪，而是先把两件事“分开放”。那你被否之后，具体是怎么接下来的——是当场就把下一步写出来，还是先给自己一点缓冲？",
+            "image_id": [],
+            "image_dir": "",
+            "image_caption": []
+          },
+          {
+            "turn_id": "B-S5_T03",
+            "round_id": "B-S5_R02",
+            "speaker": "user",
+            "text": "我先冷了两三分钟，没装大度，也没跟人吵。然后我就做了很“产品设计师”的事：把被否的点拆成可改的条目。比如他们不满意的其实是交互路径太绕、指标没闭环。我就按这两个方向列了三版改法，顺手把可能的取舍也写进去。说白了，我不想让这次变成“我哪里不够”的故事，我只想让它变成“下一版怎么过”。",
+            "image_id": [],
+            "image_dir": "",
+            "image_caption": []
+          },
+          {
+            "turn_id": "B-S5_T04",
+            "round_id": "B-S5_R02",
+            "speaker": "assistant",
+            "text": "你这个处理挺干脆的：冷一会儿就切回可改的东西。\n那当时你那句最自动跳出来的念头是什么？你是怎么把它按回去的？",
+            "image_id": [],
+            "image_dir": "",
+            "image_caption": []
+          },
+          {
+            "turn_id": "B-S5_T05",
+            "round_id": "B-S5_R03",
+            "speaker": "user",
+            "text": "自动跳出来那句大概就是“是不是我又不行”。挺俗的，但就是会来。然后我就用一个挺笨的办法：把念头原样当成待办，从“我不行”改成“哪里不被接受”。因为他们说的点其实很具体，我一抓具体，就没那么容易被那种笼统自责吞掉。\n另外还有个小细节，我今天在工位上看到手机里有一张荧光黄跑鞋的照片，但我就把它当普通背景信息扫过去了，没有刻意停留，也不会把它和今天的否决做联想。",
+            "image_id": [],
+            "image_dir": "",
+            "image_caption": []
+          },
+          {
+            "turn_id": "B-S5_T06",
+            "round_id": "B-S5_R03",
+            "speaker": "assistant",
+            "text": "你把“我不行”这种抽象的东西，改成“哪里没被接受”，就一下子变得好处理了。\n那今天你看到那张荧光黄跑鞋的照片——你是怎么做到让它不顺便带节奏？",
+            "image_id": [],
+            "image_dir": "",
+            "image_caption": []
+          },
+          {
+            "turn_id": "B-S5_T07",
+            "round_id": "B-S5_R04",
+            "speaker": "user",
+            "text": "更接近平静吧。不是那种“我赢了”的平静，是那种“行，知道了”的平静。毕竟他们否的是方案，不是我这个人。文件我已经在群里发了改法和时间表，至少下一步有方向。\n我觉得这个对照挺有用：当我发现自己要往“失败=自我否定”那条路滑的时候，我就用工作这套处理方式，把自己拉回到可行动的部分。跑步那边我会慢慢复盘，但不急着拿今天来一起算。",
+            "image_id": [],
+            "image_dir": "",
+            "image_caption": []
+          },
+          {
+            "turn_id": "B-S5_T08",
+            "round_id": "B-S5_R04",
+            "speaker": "assistant",
+            "text": "听起来你已经把对照样本用起来了：当自责要往“失败=自我否定”那边滑，你就先回到可行动的部分，把跑步那条线先放一边。\n为了让这种平静更稳一点，你打算接下来怎么复用？比如明天再开会前，你会做个什么小检查？",
+            "image_id": [],
+            "image_dir": "",
+            "image_caption": []
+          }
+        ],
+        "summary": "许言把注意力转回工作：在方案被否后，他用更克制的方式处理情绪与流程，没有把失败直接连到跑鞋事件的叙事里；同时他用这个对照样本提醒自己，哪些刺激/主题要先放一放，以便稳定当前状态。"
+      }
+    ]
+  },
+  "output": {
+    "result": "revise",
+    "issues": [
+      {
+        "turn_id": "B-S6_T08",
+        "type": "turn_structure_mismatch",
+        "description": "session_plan 要求 B-S6 的 round_count=4，但实际对话在 B-S6 中出现 4 轮用户发言（R01~R04）且最后 assistant 也追加了确认总结，但未见明确把对话严格限制在 4 轮交替内；需要核对是否超出规定回合结构或是否存在与“round/turn/turn_id 交替”不一致的问题。"
+      },
+      {
+        "turn_id": "B-S6_T06",
+        "type": "overasserted_psychology",
+        "description": "Forbidden_facts 校验：case_spec 禁止出现“完成半程马拉松”。在本 session B-S6 的 turn 文本与 summary 中未直接出现该禁句，但 assistant 在 B-S6_T02、B-S6_T06、B-S6_T08 使用了“回放/脑子被拉回比赛失败”“害怕被带回比赛失败”等表述，属对用户内心心理的较强推断（虽然与上下文“退赛失败回避”相符），但在“尚未披露细节”层面可能算过度断言。建议在审核时判定证据不足风险。"
+      }
+    ]
+  }
+}

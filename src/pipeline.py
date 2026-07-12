@@ -21,7 +21,8 @@ class GenerationPipeline:
         self.naturalness = NaturalnessChecker(self.llm)
 
     def run(self, case_path: Path, output_dir: Path) -> tuple[Path, Path]:
-        case = CaseSpec.model_validate_json(case_path.read_text(encoding="utf-8"))
+        raw_case_spec = case_path.read_text(encoding="utf-8")
+        case = CaseSpec.model_validate_json(raw_case_spec)
         cfg = self.config.generation
         expected = [x.session_id for x in case.session_outlines[:cfg.session_count]]
         output_dir.mkdir(parents=True, exist_ok=True)
@@ -29,6 +30,7 @@ class GenerationPipeline:
         audit_dir.mkdir(parents=True, exist_ok=True)
         self._write_log(audit_dir / "00_original_case_spec.json", {
             "source_path": str(case_path),
+            "raw_case_spec": raw_case_spec,
             "case_spec": case.model_dump(),
             "generation_config": {
                 "session_count": cfg.session_count,
@@ -67,7 +69,8 @@ class GenerationPipeline:
                 }
                 batch = self.planner.run(batch_case, cfg.min_rounds, cfg.max_rounds, prior_plans=planner_input["prior_plans"])
                 self._write_log(audit_dir / f"01_planner_batch_{start // cfg.planner_batch_size + 1:02d}.json", {
-                    "component": "session_planner", "input": planner_input, "output": batch.model_dump(),
+                    "component": "session_planner", "llm": self._llm_metadata("session_planner"),
+                    "input": planner_input, "output": batch.model_dump(),
                 })
                 all_plans.extend(batch.plans)
                 print(f"planned {len(all_plans)}/{len(outlines)} sessions", flush=True)
@@ -101,7 +104,8 @@ class GenerationPipeline:
             }
             session = self.writer.run(case, plan.model_dump(), recent)
             self._write_log(session_log_dir / "01_writer.json", {
-                "component": "session_writer", "input": writer_input, "output": session.model_dump(),
+                "component": "session_writer", "llm": self._llm_metadata("session_writer"),
+                "input": writer_input, "output": session.model_dump(),
             })
             for cycle in range(cfg.max_revision_cycles):
                 structural = self._structural_verdict(session, plan.round_count)
@@ -117,7 +121,7 @@ class GenerationPipeline:
                     verdict = self.verifier.run(case, plan.model_dump(), session, recent)
                     verifier_kind = "session_verifier"
                     self._write_log(session_log_dir / f"{cycle + 2:02d}_cycle_{cycle + 1}_session_verifier.json", {
-                        "component": verifier_kind,
+                        "component": verifier_kind, "llm": self._llm_metadata("session_verifier"),
                         "input": {
                             "case_spec": case.model_dump(), "session_plan": plan.model_dump(),
                             "session": session.model_dump(), "recent_history": [s.model_dump() for s in recent],
@@ -129,7 +133,8 @@ class GenerationPipeline:
                 before_revision = session
                 session = self.reviser.run(case, plan.model_dump(), session, verdict)
                 self._write_log(session_log_dir / f"{cycle + 2:02d}_cycle_{cycle + 1}_reviser.json", {
-                    "component": "session_reviser", "triggered_by": verifier_kind,
+                    "component": "session_reviser", "llm": self._llm_metadata("session_reviser"),
+                    "triggered_by": verifier_kind,
                     "input": {
                         "case_spec": case.model_dump(), "session_plan": plan.model_dump(),
                         "session": before_revision.model_dump(), "issues": verdict.model_dump(),
@@ -141,7 +146,7 @@ class GenerationPipeline:
                 raise RuntimeError(f"{plan.session_id} failed deterministic structure checks: {final_structure.model_dump()}")
             natural = self.naturalness.run(case, session)
             self._write_log(session_log_dir / "90_naturalness_checker.json", {
-                "component": "naturalness_checker",
+                "component": "naturalness_checker", "llm": self._llm_metadata("naturalness_checker"),
                 "input": {"conversation_style": case.character_profile.conversation_style, "session": session.model_dump()},
                 "output": natural.model_dump(),
             })
@@ -149,7 +154,8 @@ class GenerationPipeline:
                 revised = self.reviser.run(case, plan.model_dump(), session, natural)
                 post_natural_structure = self._structural_verdict(revised, plan.round_count)
                 self._write_log(session_log_dir / "91_naturalness_reviser.json", {
-                    "component": "session_reviser", "triggered_by": "naturalness_checker",
+                    "component": "session_reviser", "llm": self._llm_metadata("session_reviser"),
+                    "triggered_by": "naturalness_checker",
                     "input": {
                         "case_spec": case.model_dump(), "session_plan": plan.model_dump(),
                         "session": session.model_dump(), "issues": natural.model_dump(),
@@ -184,7 +190,36 @@ class GenerationPipeline:
             "benchmark_path": str(benchmark_path), "qa_path": str(qa_path),
             "qa": qa.model_dump(), "eval_generated": False,
         })
+        self._write_log_index(audit_dir, case.case_id)
         return benchmark_path, qa_path
+
+    def _llm_metadata(self, component: str) -> dict:
+        component_config = self.config.components[component]
+        prompt_path = self.config.root / "prompts" / f"{component}.txt"
+        return {
+            "model": component_config.model,
+            "temperature": component_config.temperature,
+            "max_completion_tokens": component_config.max_completion_tokens,
+            "prompt_file": str(prompt_path),
+            "prompt": prompt_path.read_text(encoding="utf-8"),
+        }
+
+    @staticmethod
+    def _write_log_index(audit_dir: Path, case_id: str) -> None:
+        lines = [
+            f"# Generation logs: {case_id}", "",
+            "这些日志按真实执行顺序保存了 Spec、Planner、各 Session 组件输入/输出以及最终 QA。", "",
+            "| Log | Component |", "|---|---|",
+        ]
+        for path in sorted(audit_dir.rglob("*.json")):
+            relative = path.relative_to(audit_dir).as_posix()
+            try:
+                payload = json.loads(path.read_text(encoding="utf-8"))
+                component = payload.get("component", "pipeline")
+            except (OSError, json.JSONDecodeError):
+                component = "unknown"
+            lines.append(f"| [{relative}]({relative}) | `{component}` |")
+        (audit_dir / "README.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
     @staticmethod
     def _write_log(path: Path, value: dict) -> None:

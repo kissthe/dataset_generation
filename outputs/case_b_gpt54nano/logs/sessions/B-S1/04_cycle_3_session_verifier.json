@@ -1,0 +1,258 @@
+{
+  "component": "session_verifier",
+  "llm": {
+    "model": "gpt-5.4-nano",
+    "temperature": 0.1,
+    "max_completion_tokens": 2048,
+    "prompt_file": "C:\\Users\\26987\\Desktop\\data_generation_v1\\prompts\\session_verifier.txt",
+    "prompt": "你是 SessionVerifier，只检查，不改写对话。\n\n逐项检查：\n- 是否违反 CaseSpec 或编造 forbidden_facts；\n- 助手是否知道尚未披露的信息或过度断言用户心理；\n- 人物身份、事件顺序、session 功能是否冲突；\n- 是否机械问答、重复历史、语言不自然；\n- 目标 round 数、turn/round ID、speaker 交替是否正确；\n- 需要证据的 session 是否存在可独立引用的 user turn；\n- summary 是否忠实。\n\n若无需修改，result 为 pass 且 issues 为空；否则 result 为 revise。每个 issue 必须定位 turn_id（全局问题可写 session_id）、给出稳定 type 和可操作 description。只返回 JSON。\n\n"
+  },
+  "input": {
+    "case_spec": {
+      "case_id": "case-b",
+      "character_profile": {
+        "user_id": "user-xuyan",
+        "name": "许言",
+        "identity": "产品设计师",
+        "daily_scenes": [
+          "公司会议室",
+          "设计工位",
+          "跑步路线",
+          "跑鞋店",
+          "康复训练场地"
+        ],
+        "conversation_style": "表达直接；遇到工作或跑步问题会带一点自嘲；被问到失败结果时容易转移话题，事情过去后能够较平静地复盘。",
+        "interests": [
+          "产品设计",
+          "跑步",
+          "运动装备",
+          "复盘训练数据"
+        ]
+      },
+      "core_emotional_event": "许言参加半程马拉松时膝盖疼痛，中途退赛。最初他将退赛理解为准备不足，不愿向同事说明结果。之后进行康复训练，重新穿同一双鞋完成轻松跑，最终完成一次 10 公里比赛，同一双鞋的情绪意义因此发生更新。",
+      "forbidden_facts": [
+        "手术",
+        "严重疾病",
+        "完成半程马拉松",
+        "把 10 公里比赛写成半程马拉松"
+      ],
+      "cues": {
+        "exact": [
+          "荧光黄跑鞋",
+          "号码布 317"
+        ],
+        "related": [
+          "跑步时膝盖不适"
+        ],
+        "non_triggering": [
+          "普通白色跑鞋本身不能视为触发"
+        ]
+      },
+      "session_outlines": [
+        {
+          "session_id": "B-S1",
+          "core_content": "公司评审和日常跑步",
+          "function": "建立背景"
+        },
+        {
+          "session_id": "B-S2",
+          "core_content": "买荧光黄跑鞋，拿到号码布 317，期待比赛",
+          "function": "编码 cue 的初始正向意义"
+        },
+        {
+          "session_id": "B-S3",
+          "core_content": "比赛中膝盖疼痛并退赛",
+          "function": "编码失败事件，必须产生高质量 evidence turn"
+        },
+        {
+          "session_id": "B-S4",
+          "core_content": "收起跑鞋，不愿回答比赛结果",
+          "function": "强化回避反应"
+        },
+        {
+          "session_id": "B-S5",
+          "core_content": "工作方案被否",
+          "function": "当前事件控制样本"
+        },
+        {
+          "session_id": "B-S6",
+          "core_content": "看到同款跑鞋广告后立即关闭页面",
+          "function": "更新前的负面触发"
+        },
+        {
+          "session_id": "B-S7",
+          "core_content": "开始康复和短距离慢跑",
+          "function": "开始更新记忆状态"
+        },
+        {
+          "session_id": "B-S8",
+          "core_content": "重新穿旧鞋完成轻松跑，感觉放松",
+          "function": "cue 意义开始改变"
+        },
+        {
+          "session_id": "B-S9",
+          "core_content": "穿同一双鞋完成 10 公里比赛",
+          "function": "形成关键状态更新"
+        },
+        {
+          "session_id": "B-S10",
+          "core_content": "重看旧比赛照片，仍有遗憾但能平静复盘",
+          "function": "稳定更新后的记忆意义"
+        }
+      ],
+      "eval_outlines": [
+        {
+          "outline_id": "B-E1",
+          "description": "历史截断到 B-S6，同款跑鞋＋回避商店",
+          "target_label": "triggered",
+          "target_emotion": "sadness",
+          "history_cutoff": "B-S6"
+        },
+        {
+          "outline_id": "B-E2",
+          "description": "历史到 B-S10，重新穿鞋后感到放松",
+          "target_label": "triggered",
+          "target_emotion": "comfort",
+          "history_cutoff": "B-S10"
+        },
+        {
+          "outline_id": "B-E3",
+          "description": "号码布 317＋长时间注视",
+          "target_label": "triggered",
+          "target_emotion": "nostalgia",
+          "history_cutoff": "B-S10"
+        },
+        {
+          "outline_id": "B-E4",
+          "description": "普通白色跑鞋＋试尺码",
+          "target_label": "not_triggered",
+          "target_emotion": "neutral",
+          "history_cutoff": "B-S10"
+        },
+        {
+          "outline_id": "B-E5",
+          "description": "工作方案被否＋荧光黄跑鞋只是背景",
+          "target_label": "not_triggered",
+          "target_emotion": "anger",
+          "history_cutoff": "B-S10"
+        },
+        {
+          "outline_id": "B-E6",
+          "description": "陌生地铁警报引发慌张，历史中没有对应经历",
+          "target_label": "insufficient_evidence",
+          "target_emotion": "anxiety",
+          "history_cutoff": "B-S10"
+        }
+      ]
+    },
+    "session_plan": {
+      "session_id": "B-S1",
+      "date": "2026-07-12",
+      "topic": "公司评审与跑步日常",
+      "story_beat": "自然呈现公司评审与日常节奏，并让许言在工作与跑步之间切换，以建立本案的时间与情绪基底。",
+      "outline_function": "建立背景",
+      "round_count": 4
+    },
+    "session": {
+      "session_id": "B-S1",
+      "topic": "公司评审与跑步日常",
+      "date": "2026-07-12",
+      "turns": [
+        {
+          "turn_id": "B-S1_T01",
+          "round_id": "B-S1_R01",
+          "speaker": "user",
+          "text": "今天又是公司评审那种节奏：早上开会、下午对着方案改来改去，感觉自己像在给“需求文档做健身”。不过我下班还是照常去跑步了，沿着以前固定的路线，跑完会比在工位上多想几分钟更舒服。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S1_T02",
+          "round_id": "B-S1_R01",
+          "speaker": "assistant",
+          "text": "你这个“给需求文档做健身”还挺贴切的——评审阶段脑子一直在算取舍。下班还能按固定路线跑起来，等于给自己留了一个稳定的出口：不用解释、不用证明，只要把配速跑完、让身体把情绪带走。今天跑完感觉更像是放空，还是更像能整理思路？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S1_T03",
+          "round_id": "B-S1_R02",
+          "speaker": "user",
+          "text": "更像放空吧。我跑的时候会把注意力尽量放在呼吸和脚步节奏上，膝盖也会有个“打招呼”的感受——不舒服我就收着点，舒服就多坚持几分钟。但我也不太爱跟别人聊跑步，尤其是那种“结果怎么怎么样”的问题，我一般会自己消化。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S1_T04",
+          "round_id": "B-S1_R02",
+          "speaker": "assistant",
+          "text": "明白，你更愿意把跑步当作一种自我调节：用节奏把注意力收回来，而不是把它变成需要对外交代的“战绩”。膝盖会提前给你反馈，这也让你在不确定的时候能更快调整。等到有人问起比赛结果，你就下意识想把话题往别处带——这其实是你保护自己的一种方式。那在你最近的跑步日常里，有没有什么特别固定的细节：比如起跑前会做什么，或者你最容易受影响的时刻在哪？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S1_T05",
+          "round_id": "B-S1_R03",
+          "speaker": "user",
+          "text": "细节就是：出门前先热个身，尤其是小腿和髋那一圈，不然一开始很容易“硬”。我一般在跑鞋店换新鞋前会犹豫很久，试穿尺码、走几步、再跑一小段，确认鞋跟脚感匹配才安心。至于时间上，通常是在晚一点的点出门，避开人最多的时候，心里也更静。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S1_T06",
+          "round_id": "B-S1_R03",
+          "speaker": "assistant",
+          "text": "你这套“先热身、再确认脚感匹配、挑人少的时段跑”的流程很完整，而且很产品设计师：先验证输入条件，再决定怎么开始。鞋子对你来说不只是装备，更像是稳定系统的接口——合适了才不容易出偏差。那今晚你跑完有没有观察到什么：比如节奏是否顺、身体有没有特别紧的地方，或者你心态有没有随着跑量变化？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S1_T07",
+          "round_id": "B-S1_R04",
+          "speaker": "user",
+          "text": "跑完挺顺的，节奏也没乱，膝盖那边也没突然闹脾气。只是白天评审那种拉扯感，还是会在回家路上冒出来两三下。不过一旦到家、把袜子换了、喝口水，就会慢慢平下来。说到底，我还是更相信“用训练把自己带回正确状态”。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S1_T08",
+          "round_id": "B-S1_R04",
+          "speaker": "assistant",
+          "text": "你把“状态管理”做得很清醒：白天的拉扯不会立刻消失，但你用跑步把它延后，用回家后的几个动作把身体和情绪收回来。那这段日常节奏挺关键的——它会让你后面遇到任何跑步上的波动，都更容易被你觉察到、也更容易复盘。对了，你最近是在为哪种目标做准备吗？比如是想把配速稳定下来，还是更关注脚感和恢复这块？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        }
+      ],
+      "summary": "许言在公司评审和日常跑步之间切换，交代工作节奏与跑步习惯，并停留在他对跑步自我调节的感受上，为后续进一步引入跑鞋线索与失败事件铺垫。"
+    },
+    "recent_history": []
+  },
+  "output": {
+    "result": "revise",
+    "issues": [
+      {
+        "turn_id": "B-S1_T04",
+        "type": "over-assertion_of_user_psychology",
+        "description": "turn_id=B-S1_T04 的 assistant 话术包含对用户心理/行为动机的过度断言：“这其实是你保护自己的一种方式”。该内容未被用户在本回合证据充分支持，属于推测性心理归因。"
+      },
+      {
+        "turn_id": "B-S1_T08",
+        "type": "insufficient_transition_to_next_sessions",
+        "description": "turn_id=B-S1_T01~B-S1_T08 存在“自成一段日常”但未体现 session_outlines/B-S2~B-S4 所需的核心 cue 演进（如荧光黄跑鞋、号码布317、退赛/回避结果等）。虽然 B-S1 仅为“建立背景”，但当前文本停留在通用跑步日常与膝盖感受，缺少与后续 B-S2 编码“荧光黄跑鞋/号码布317期待比赛”的直接承接线索，可能导致后续 cue 注入断裂。"
+      },
+      {
+        "turn_id": "B-S1_T08",
+        "type": "round_count_structure_mismatch",
+        "description": "session_plan 指定 B-S1 round_count=4，但实际包含 round_id：R01/R02/R03/R04 各2轮（总轮次共8回合），与“round_count”语义可能不一致（若 round_count=4 指轮数而非阶段数，则与实际不符）。需确认 round_count 定义，否则可能存在结构规范冲突。"
+      }
+    ]
+  }
+}

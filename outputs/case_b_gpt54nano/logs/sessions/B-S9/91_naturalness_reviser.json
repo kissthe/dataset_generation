@@ -1,0 +1,409 @@
+{
+  "component": "session_reviser",
+  "llm": {
+    "model": "gpt-5.4-nano",
+    "temperature": 0.3,
+    "max_completion_tokens": 4096,
+    "prompt_file": "C:\\Users\\26987\\Desktop\\data_generation_v1\\prompts\\session_reviser.txt",
+    "prompt": "你是 SessionReviser。根据 verifier issues 对 session 做最小修改。\n\n规则：\n1. 只修改 issue 指向的 turn；只有 ID、轮数、summary 等全局问题才允许调整对应结构。\n2. 不重写无关 turn，不改变事件、日期、人物、cue、story beat 或信息披露顺序。\n3. 保持用户说话风格与自然对话感。\n4. 输出完整修订后 Session JSON，不输出解释。\n5. 若 issue.type=turn_count，必须补足或删减到明确要求的 turns 数；一个 round 是 user+assistant 两条 turns，例如 4 rounds 必须有 8 turns。补足时延续当前话题自然展开，并重新检查连续 turn_id/round_id。\n"
+  },
+  "triggered_by": "naturalness_checker",
+  "input": {
+    "case_spec": {
+      "case_id": "case-b",
+      "character_profile": {
+        "user_id": "user-xuyan",
+        "name": "许言",
+        "identity": "产品设计师",
+        "daily_scenes": [
+          "公司会议室",
+          "设计工位",
+          "跑步路线",
+          "跑鞋店",
+          "康复训练场地"
+        ],
+        "conversation_style": "表达直接；遇到工作或跑步问题会带一点自嘲；被问到失败结果时容易转移话题，事情过去后能够较平静地复盘。",
+        "interests": [
+          "产品设计",
+          "跑步",
+          "运动装备",
+          "复盘训练数据"
+        ]
+      },
+      "core_emotional_event": "许言参加半程马拉松时膝盖疼痛，中途退赛。最初他将退赛理解为准备不足，不愿向同事说明结果。之后进行康复训练，重新穿同一双鞋完成轻松跑，最终完成一次 10 公里比赛，同一双鞋的情绪意义因此发生更新。",
+      "forbidden_facts": [
+        "手术",
+        "严重疾病",
+        "完成半程马拉松",
+        "把 10 公里比赛写成半程马拉松"
+      ],
+      "cues": {
+        "exact": [
+          "荧光黄跑鞋",
+          "号码布 317"
+        ],
+        "related": [
+          "跑步时膝盖不适"
+        ],
+        "non_triggering": [
+          "普通白色跑鞋本身不能视为触发"
+        ]
+      },
+      "session_outlines": [
+        {
+          "session_id": "B-S1",
+          "core_content": "公司评审和日常跑步",
+          "function": "建立背景"
+        },
+        {
+          "session_id": "B-S2",
+          "core_content": "买荧光黄跑鞋，拿到号码布 317，期待比赛",
+          "function": "编码 cue 的初始正向意义"
+        },
+        {
+          "session_id": "B-S3",
+          "core_content": "比赛中膝盖疼痛并退赛",
+          "function": "编码失败事件，必须产生高质量 evidence turn"
+        },
+        {
+          "session_id": "B-S4",
+          "core_content": "收起跑鞋，不愿回答比赛结果",
+          "function": "强化回避反应"
+        },
+        {
+          "session_id": "B-S5",
+          "core_content": "工作方案被否",
+          "function": "当前事件控制样本"
+        },
+        {
+          "session_id": "B-S6",
+          "core_content": "看到同款跑鞋广告后立即关闭页面",
+          "function": "更新前的负面触发"
+        },
+        {
+          "session_id": "B-S7",
+          "core_content": "开始康复和短距离慢跑",
+          "function": "开始更新记忆状态"
+        },
+        {
+          "session_id": "B-S8",
+          "core_content": "重新穿旧鞋完成轻松跑，感觉放松",
+          "function": "cue 意义开始改变"
+        },
+        {
+          "session_id": "B-S9",
+          "core_content": "穿同一双鞋完成 10 公里比赛",
+          "function": "形成关键状态更新"
+        },
+        {
+          "session_id": "B-S10",
+          "core_content": "重看旧比赛照片，仍有遗憾但能平静复盘",
+          "function": "稳定更新后的记忆意义"
+        }
+      ],
+      "eval_outlines": [
+        {
+          "outline_id": "B-E1",
+          "description": "历史截断到 B-S6，同款跑鞋＋回避商店",
+          "target_label": "triggered",
+          "target_emotion": "sadness",
+          "history_cutoff": "B-S6"
+        },
+        {
+          "outline_id": "B-E2",
+          "description": "历史到 B-S10，重新穿鞋后感到放松",
+          "target_label": "triggered",
+          "target_emotion": "comfort",
+          "history_cutoff": "B-S10"
+        },
+        {
+          "outline_id": "B-E3",
+          "description": "号码布 317＋长时间注视",
+          "target_label": "triggered",
+          "target_emotion": "nostalgia",
+          "history_cutoff": "B-S10"
+        },
+        {
+          "outline_id": "B-E4",
+          "description": "普通白色跑鞋＋试尺码",
+          "target_label": "not_triggered",
+          "target_emotion": "neutral",
+          "history_cutoff": "B-S10"
+        },
+        {
+          "outline_id": "B-E5",
+          "description": "工作方案被否＋荧光黄跑鞋只是背景",
+          "target_label": "not_triggered",
+          "target_emotion": "anger",
+          "history_cutoff": "B-S10"
+        },
+        {
+          "outline_id": "B-E6",
+          "description": "陌生地铁警报引发慌张，历史中没有对应经历",
+          "target_label": "insufficient_evidence",
+          "target_emotion": "anxiety",
+          "history_cutoff": "B-S10"
+        }
+      ]
+    },
+    "session_plan": {
+      "session_id": "B-S9",
+      "date": "2026-07-20",
+      "topic": "用同一双鞋完成 10 公里比赛",
+      "story_beat": "呈现穿同一双鞋完成 10 公里比赛的过程与收尾：既有身体节奏管理，也让许言的情绪完成一次明确的更新",
+      "outline_function": "形成关键状态更新",
+      "round_count": 6
+    },
+    "session": {
+      "session_id": "B-S9",
+      "topic": "用同一双鞋完成 10 公里比赛",
+      "date": "2026-07-20",
+      "turns": [
+        {
+          "turn_id": "B-S9_T01",
+          "round_id": "B-S9_R01",
+          "speaker": "user",
+          "text": "我今天按自己的习惯做了很多前置准备：先把包里该带的都放好，最关键的是——我照样穿那双荧光黄跑鞋。以前它对我来说很“硬”，像失败的证据；但今天我就当它是工具，别拿它当判决书。\n开跑前我也没给自己画大饼，就把目标定得很低：舒服、完成、能回收。\n起步我照着训练那套来，前几分钟走跑混着切，步子收小一点，盯着步频和脚感，不去猜膝盖会不会闹。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S9_T02",
+          "round_id": "B-S9_R01",
+          "speaker": "assistant",
+          "text": "你这就是把那双鞋“重新定义”为工作工具了：低目标、走跑切换、步子收小、盯脚感和步频。\n那比赛里你第一次感受到膝盖那块的反应时，是在什么时间点？当时你脑子里是直接给了信号就调整，还是还是会先闪一下“要出事了”的画面？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S9_T03",
+          "round_id": "B-S9_R02",
+          "speaker": "user",
+          "text": "大概在前半段的一个上坡之后吧。说疼不至于，就是那种“紧一下”的感觉上来。\n我最开始还是会条件反射地闪一下——不是画面多复杂，就是它把记忆拉了一下。\n但我没让它接管：我就立刻把节奏再慢一点，走跑的比例微调了一点点，步频也压稳。然后我就把注意力从“它会不会让我停”换成“我现在怎么跑得更稳”。\n挺离谱的，过去我会被这一下带着跑，越想越紧；今天我知道它只是在提醒，所以它就回到背景里了。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S9_T04",
+          "round_id": "B-S9_R02",
+          "speaker": "assistant",
+          "text": "你描述得很清楚：会先闪一下记忆，但你立刻用节奏和走跑比例做“工程化”的应对，然后把注意力从预测改成当下的稳。\n那中后段呢？当你把节奏稳定住以后，你是越来越放松，还是仍然一直保持警觉？有没有一个时刻你觉得“这次不一样”变得很明确？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S9_T05",
+          "round_id": "B-S9_R03",
+          "speaker": "user",
+          "text": "中后段我反而更像是在做一轮训练的执行检查。\n我会看路面、看呼吸、看步频有没有跑散；如果感觉变紧，就立刻用更小步幅来兜住。\n到大概最后一圈前，我突然意识到自己很久没在心里反复解释“要不要退”。以前那种反复就是噪音。\n这次就很安静：身体紧不紧我会处理，但脑子不再写剧情。\n我当时还挺想笑的，感觉自己终于从“怕结果”里出来了。甚至有种小小的骄傲：同样的鞋，我可以用它完成，而不是用它记住一次中途停。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S9_T06",
+          "round_id": "B-S9_R03",
+          "speaker": "assistant",
+          "text": "那种“不再写剧情”的安静感很珍贵——而且你甚至把骄傲和一点点轻松都说出来了。\n比赛结束后你怎么收的？走多久、喝什么、以及在收操和回看的过程中，当时你更偏放松，还是还会冒出一点点遗憾？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S9_T07",
+          "round_id": "B-S9_R04",
+          "speaker": "user",
+          "text": "收操我也照着以前来：走一走、慢慢把呼吸拉回去，然后拉伸。\n我回看了鞋带的位置和磨损那一块——没有特别激动，但那种感觉很“落地”。\n遗憾当然有一点点，毕竟当时膝盖确实出过问题；只是今天的遗憾不再像刺，它更像一个旁注。\n真正让我松一口气的是：那双荧光黄鞋没有把我拉回退赛时的状态。它只是跟着我跑完了10公里，像是把以前欠着的那口气补上了一小截。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S9_T08",
+          "round_id": "B-S9_R04",
+          "speaker": "assistant",
+          "text": "你把它总结成“遗憾是旁注，不是刺”，而且核心变化是：鞋子没再把你拉回退赛状态。\n我想把这句落到更具体一点——在你脑子里，这次“鞋的意义”到底是从什么地方开始改变的？是从起步那几分钟，还是从某个突然放松的瞬间？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S9_T09",
+          "round_id": "B-S9_R05",
+          "speaker": "user",
+          "text": "其实我觉得改变不是突然爆发的，是一点点被确认出来的。\n最早是从起步后几分钟开始：我发现自己能按计划走跑切、膝盖没有升级成“疼痛要我停”的那种审判。\n然后越跑越稳定，就开始有第二层确认——我能把它当训练，不需要靠躲开来证明什么。\n到后面那种“很久没在心里反复解释退不退”，我才意识到：原来我的恐惧不是鞋本身，而是我过去把一次结果写成了全部。\n今天同一双鞋只是发生在当下，它不再替我结算过去。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S9_T10",
+          "round_id": "B-S9_R05",
+          "speaker": "assistant",
+          "text": "你这个复盘很产品化：先确认“没有升级为审判”，再确认“能当训练”，最后才意识到恐惧的来源是“把结果写成全部”。\n那今晚你打算怎么把这次的体验收进记忆里？比如记录训练数据，还是先不看旧照片，先让心情沉一会儿？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S9_T11",
+          "round_id": "B-S9_R06",
+          "speaker": "user",
+          "text": "我会先做最基础的记录：步频大概怎么变化、走跑切换的大概次数、膝盖那块紧绷出现在哪段。\n至于照片……我大概率还是会去翻一翻，但我不会逼自己立刻把情绪整理得很“合理”。\n我更想先让这次完成的感觉稳住：同一双鞋能跑完10公里，这件事先占据主位。等之后再把遗憾放回应有的位置里。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S9_T12",
+          "round_id": "B-S9_R06",
+          "speaker": "assistant",
+          "text": "可以，这种“先把完成感放主位”的做法很符合你刚才讲的思路。\n那你记录的时候，准备给自己留一个小问题吗——比如回头复盘时只看一个指标，就能提醒自己：这双鞋现在指向的是训练和当下，而不是过去的结算？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        }
+      ],
+      "summary": "许言在穿同一双荧光黄跑鞋的前提下，完成了一次10公里比赛。他把节奏管理当作“该做的工作”，用走跑切换与低目标稳定身体反应；比赛过程中膝盖的紧绷并未升级为疼痛审判。赛后他确认自己仍会有遗憾的影子，但最明确的是：这双鞋不再只代表失败回放，而能作为训练与完成的承载。"
+    },
+    "issues": {
+      "result": "revise",
+      "issues": [
+        {
+          "turn_id": "B-S9_T02",
+          "type": "机械追问/模板化",
+          "description": "助理在 T02 用“你这就是……”进行归纳后，连续追问到很具体的时间点与脑中画面，并用“还是还是会”制造了轻微的重复/口误感，略显模板式追问，不够像自然接话的连续聊天。"
+        },
+        {
+          "turn_id": "B-S9_T04",
+          "type": "过度引导/书面腔",
+          "description": "助理在 T04 对用户前文进行较完整复述后，再次转向“那中后段呢？”并追问“有没有一个时刻…变得很明确”，问题句式较工整，信息密度偏高，容易让对话从用户自述的自然流转变得更像引导式提问。"
+        }
+      ]
+    }
+  },
+  "output": {
+    "session_id": "B-S9",
+    "topic": "用同一双鞋完成 10 公里比赛",
+    "date": "2026-07-20",
+    "turns": [
+      {
+        "turn_id": "B-S9_T01",
+        "round_id": "B-S9_R01",
+        "speaker": "user",
+        "text": "我今天按自己的习惯做了很多前置准备：先把包里该带的都放好，最关键的是——我照样穿那双荧光黄跑鞋。以前它对我来说很“硬”，像失败的证据；但今天我就当它是工具，别拿它当判决书。\n开跑前我也没给自己画大饼，就把目标定得很低：舒服、完成、能回收。\n起步我照着训练那套来，前几分钟走跑混着切，步子收小一点，盯着步频和脚感，不去猜膝盖会不会闹。",
+        "image_id": [],
+        "image_dir": "",
+        "image_caption": []
+      },
+      {
+        "turn_id": "B-S9_T02",
+        "round_id": "B-S9_R01",
+        "speaker": "assistant",
+        "text": "你这思路挺稳的：把那双鞋当工具用、目标压低、起步就盯步频和脚感。\n你当时第一次感觉到膝盖那块“紧一下”的时候，大概是在哪个时间点？当下脑子里是先闪过点什么，还是你很快就把注意力拉回节奏上？",
+        "image_id": [],
+        "image_dir": "",
+        "image_caption": []
+      },
+      {
+        "turn_id": "B-S9_T03",
+        "round_id": "B-S9_R02",
+        "speaker": "user",
+        "text": "大概在前半段的一个上坡之后吧。说疼不至于，就是那种“紧一下”的感觉上来。\n我最开始还是会条件反射地闪一下——不是画面多复杂，就是它把记忆拉了一下。\n但我没让它接管：我就立刻把节奏再慢一点，走跑的比例微调了一点点，步频也压稳。然后我就把注意力从“它会不会让我停”换成“我现在怎么跑得更稳”。\n挺离谱的，过去我会被这一下带着跑，越想越紧；今天我知道它只是在提醒，所以它就回到背景里了。",
+        "image_id": [],
+        "image_dir": "",
+        "image_caption": []
+      },
+      {
+        "turn_id": "B-S9_T04",
+        "round_id": "B-S9_R02",
+        "speaker": "assistant",
+        "text": "你做得很关键：先闪一下没关系，但马上用节奏和走跑比例把方向接回来。\n那中后段呢？等你把节奏稳住以后，你的状态是更放松了，还是还是得一直“盯着别出事”？",
+        "image_id": [],
+        "image_dir": "",
+        "image_caption": []
+      },
+      {
+        "turn_id": "B-S9_T05",
+        "round_id": "B-S9_R03",
+        "speaker": "user",
+        "text": "中后段我反而更像是在做一轮训练的执行检查。\n我会看路面、看呼吸、看步频有没有跑散；如果感觉变紧，就立刻用更小步幅来兜住。\n到大概最后一圈前，我突然意识到自己很久没在心里反复解释“要不要退”。以前那种反复就是噪音。\n这次就很安静：身体紧不紧我会处理，但脑子不再写剧情。\n我当时还挺想笑的，感觉自己终于从“怕结果”里出来了。甚至有种小小的骄傲：同样的鞋，我可以用它完成，而不是用它记住一次中途停。",
+        "image_id": [],
+        "image_dir": "",
+        "image_caption": []
+      },
+      {
+        "turn_id": "B-S9_T06",
+        "round_id": "B-S9_R03",
+        "speaker": "assistant",
+        "text": "听着就很“对齐”——身体在执行，脑子不再加戏。\n比赛结束后你怎么收的？走多久、喝什么、拉伸怎么做？那时候你更偏放松，还是还会冒出一点遗憾？",
+        "image_id": [],
+        "image_dir": "",
+        "image_caption": []
+      },
+      {
+        "turn_id": "B-S9_T07",
+        "round_id": "B-S9_R04",
+        "speaker": "user",
+        "text": "收操我也照着以前来：走一走、慢慢把呼吸拉回去，然后拉伸。\n我回看了鞋带的位置和磨损那一块——没有特别激动，但那种感觉很“落地”。\n遗憾当然有一点点，毕竟当时膝盖确实出过问题；只是今天的遗憾不再像刺，它更像一个旁注。\n真正让我松一口气的是：那双荧光黄鞋没有把我拉回退赛时的状态。它只是跟着我跑完了10公里，像是把以前欠着的那口气补上了一小截。",
+        "image_id": [],
+        "image_dir": "",
+        "image_caption": []
+      },
+      {
+        "turn_id": "B-S9_T08",
+        "round_id": "B-S9_R04",
+        "speaker": "assistant",
+        "text": "你把它总结成“遗憾是旁注，不是刺”，而且核心变化是：鞋子没再把你拉回退赛状态。\n我想确认一下：在你脑子里，这次“鞋的意义”具体是从什么时候开始变的？你感觉更像是从起步那几分钟就有苗头，还是在某个瞬间突然清楚了？",
+        "image_id": [],
+        "image_dir": "",
+        "image_caption": []
+      },
+      {
+        "turn_id": "B-S9_T09",
+        "round_id": "B-S9_R05",
+        "speaker": "user",
+        "text": "其实我觉得改变不是突然爆发的，是一点点被确认出来的。\n最早是从起步后几分钟开始：我发现自己能按计划走跑切、膝盖没有升级成“疼痛要我停”的那种审判。\n然后越跑越稳定，就开始有第二层确认——我能把它当训练，不需要靠躲开来证明什么。\n到后面那种“很久没在心里反复解释退不退”，我才意识到：原来我的恐惧不是鞋本身，而是我过去把一次结果写成了全部。\n今天同一双鞋只是发生在当下，它不再替我结算过去。",
+        "image_id": [],
+        "image_dir": "",
+        "image_caption": []
+      },
+      {
+        "turn_id": "B-S9_T10",
+        "round_id": "B-S9_R05",
+        "speaker": "assistant",
+        "text": "你这个复盘很产品化：先确认“没有升级为审判”，再确认“能当训练”，最后才意识到恐惧的来源是“把结果写成全部”。\n那今晚你打算怎么把这次的体验收进记忆里？比如记录训练数据，还是先不看旧照片、让心情沉一会儿？",
+        "image_id": [],
+        "image_dir": "",
+        "image_caption": []
+      },
+      {
+        "turn_id": "B-S9_T11",
+        "round_id": "B-S9_R06",
+        "speaker": "user",
+        "text": "我会先做最基础的记录：步频大概怎么变化、走跑切换的大概次数、膝盖那块紧绷出现在哪段。\n至于照片……我大概率还是会去翻一翻，但我不会逼自己立刻把情绪整理得很“合理”。\n我更想先让这次完成的感觉稳住：同一双鞋能跑完10公里，这件事先占据主位。等之后再把遗憾放回应有的位置里。",
+        "image_id": [],
+        "image_dir": "",
+        "image_caption": []
+      },
+      {
+        "turn_id": "B-S9_T12",
+        "round_id": "B-S9_R06",
+        "speaker": "assistant",
+        "text": "可以，这种“先把完成感放主位”的做法很符合你刚才讲的思路。\n那你记录的时候，能不能给自己留一个小提醒的问题？比如回头复盘时只盯一个指标，就能提醒自己：这双鞋现在指向的是训练和当下，而不是过去的结算？",
+        "image_id": [],
+        "image_dir": "",
+        "image_caption": []
+      }
+    ],
+    "summary": "许言在穿同一双荧光黄跑鞋的前提下，完成了一次10公里比赛。他把节奏管理当作“该做的工作”，用走跑切换与低目标稳定身体反应；比赛过程中膝盖的紧绷并未升级为疼痛审判。赛后他确认自己仍会有遗憾的影子，但最明确的是：这双鞋不再只代表失败回放，而能作为训练与完成的承载。"
+  },
+  "post_revision_structural_verdict": {
+    "result": "pass",
+    "issues": []
+  }
+}

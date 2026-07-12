@@ -1,0 +1,84 @@
+{
+  "plans": [
+    {
+      "session_id": "B-S1",
+      "date": "2026-07-12",
+      "topic": "公司评审与跑步日常",
+      "story_beat": "自然呈现公司评审与日常节奏，并让许言在工作与跑步之间切换，以建立本案的时间与情绪基底。",
+      "outline_function": "建立背景",
+      "round_count": 4
+    },
+    {
+      "session_id": "B-S2",
+      "date": "2026-07-13",
+      "topic": "荧光黄跑鞋与号码布 317 的期待",
+      "story_beat": "呈现购买荧光黄跑鞋、拿到号码布 317，并将其与期待、准备与“可控”的正向感受绑定。",
+      "outline_function": "编码 cue 的初始正向意义",
+      "round_count": 4
+    },
+    {
+      "session_id": "B-S3",
+      "date": "2026-07-14",
+      "topic": "膝盖疼痛导致退赛的证据呈现",
+      "story_beat": "在比赛进程中自然出现与膝盖不适相关的疼痛并导致退赛，要求当下形成清晰的证据/复盘要点，便于后续回看。",
+      "outline_function": "编码失败事件，必须产生高质量 evidence turn",
+      "round_count": 5
+    },
+    {
+      "session_id": "B-S4",
+      "date": "2026-07-15",
+      "topic": "收起跑鞋后的回避反应",
+      "story_beat": "在情绪上强化退赛后的回避：收起跑鞋，并呈现对结果问题的绕开与沉默，避免把“为什么”当场讲透。",
+      "outline_function": "强化回避反应",
+      "round_count": 4
+    },
+    {
+      "session_id": "B-S5",
+      "date": "2026-07-16",
+      "topic": "工作方案被否带来的对照样本",
+      "story_beat": "将注意力转回工作：呈现工作方案被否后的反应方式，用以对比并控制当前事件样本，帮助稳定叙事走向。",
+      "outline_function": "当前事件控制样本",
+      "round_count": 4
+    },
+    {
+      "session_id": "B-S6",
+      "date": "2026-07-17",
+      "topic": "同款跑鞋广告触发的快速回避",
+      "story_beat": "自然呈现许言在某个时刻刷到同款跑鞋广告，但他反应直接：几乎立刻关闭页面，并在当下不解释太多",
+      "outline_function": "更新前的负面触发",
+      "round_count": 4
+    },
+    {
+      "session_id": "B-S7",
+      "date": "2026-07-18",
+      "topic": "康复训练与短距离慢跑的启动",
+      "story_beat": "从康复与短距离慢跑切入，呈现许言如何把注意力放到可执行的训练安排上，让身体反馈逐步替代先前的紧绷情绪",
+      "outline_function": "开始更新记忆状态",
+      "round_count": 5
+    },
+    {
+      "session_id": "B-S8",
+      "date": "2026-07-19",
+      "topic": "重新穿旧鞋轻松跑带来的放松感",
+      "story_beat": "引导自然出现重新穿旧鞋的关键动作：在轻松跑过程中，他体感更放松，并让“这双鞋”从负面联想到新的、更温和的意义",
+      "outline_function": "cue 意义开始改变",
+      "round_count": 4
+    },
+    {
+      "session_id": "B-S9",
+      "date": "2026-07-20",
+      "topic": "用同一双鞋完成 10 公里比赛",
+      "story_beat": "呈现穿同一双鞋完成 10 公里比赛的过程与收尾：既有身体节奏管理，也让许言的情绪完成一次明确的更新",
+      "outline_function": "形成关键状态更新",
+      "round_count": 6
+    },
+    {
+      "session_id": "B-S10",
+      "date": "2026-07-21",
+      "topic": "重看旧照片后的平静复盘",
+      "story_beat": "在较平静的状态下重看旧比赛照片：仍保留遗憾的余温，但能更从容地把注意力转向复盘要点与当下的理解",
+      "outline_function": "稳定更新后的记忆意义",
+      "round_count": 4
+    }
+  ]
+}

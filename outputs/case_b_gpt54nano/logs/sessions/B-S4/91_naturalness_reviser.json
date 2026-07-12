@@ -1,0 +1,337 @@
+{
+  "component": "session_reviser",
+  "llm": {
+    "model": "gpt-5.4-nano",
+    "temperature": 0.3,
+    "max_completion_tokens": 4096,
+    "prompt_file": "C:\\Users\\26987\\Desktop\\data_generation_v1\\prompts\\session_reviser.txt",
+    "prompt": "你是 SessionReviser。根据 verifier issues 对 session 做最小修改。\n\n规则：\n1. 只修改 issue 指向的 turn；只有 ID、轮数、summary 等全局问题才允许调整对应结构。\n2. 不重写无关 turn，不改变事件、日期、人物、cue、story beat 或信息披露顺序。\n3. 保持用户说话风格与自然对话感。\n4. 输出完整修订后 Session JSON，不输出解释。\n5. 若 issue.type=turn_count，必须补足或删减到明确要求的 turns 数；一个 round 是 user+assistant 两条 turns，例如 4 rounds 必须有 8 turns。补足时延续当前话题自然展开，并重新检查连续 turn_id/round_id。\n"
+  },
+  "triggered_by": "naturalness_checker",
+  "input": {
+    "case_spec": {
+      "case_id": "case-b",
+      "character_profile": {
+        "user_id": "user-xuyan",
+        "name": "许言",
+        "identity": "产品设计师",
+        "daily_scenes": [
+          "公司会议室",
+          "设计工位",
+          "跑步路线",
+          "跑鞋店",
+          "康复训练场地"
+        ],
+        "conversation_style": "表达直接；遇到工作或跑步问题会带一点自嘲；被问到失败结果时容易转移话题，事情过去后能够较平静地复盘。",
+        "interests": [
+          "产品设计",
+          "跑步",
+          "运动装备",
+          "复盘训练数据"
+        ]
+      },
+      "core_emotional_event": "许言参加半程马拉松时膝盖疼痛，中途退赛。最初他将退赛理解为准备不足，不愿向同事说明结果。之后进行康复训练，重新穿同一双鞋完成轻松跑，最终完成一次 10 公里比赛，同一双鞋的情绪意义因此发生更新。",
+      "forbidden_facts": [
+        "手术",
+        "严重疾病",
+        "完成半程马拉松",
+        "把 10 公里比赛写成半程马拉松"
+      ],
+      "cues": {
+        "exact": [
+          "荧光黄跑鞋",
+          "号码布 317"
+        ],
+        "related": [
+          "跑步时膝盖不适"
+        ],
+        "non_triggering": [
+          "普通白色跑鞋本身不能视为触发"
+        ]
+      },
+      "session_outlines": [
+        {
+          "session_id": "B-S1",
+          "core_content": "公司评审和日常跑步",
+          "function": "建立背景"
+        },
+        {
+          "session_id": "B-S2",
+          "core_content": "买荧光黄跑鞋，拿到号码布 317，期待比赛",
+          "function": "编码 cue 的初始正向意义"
+        },
+        {
+          "session_id": "B-S3",
+          "core_content": "比赛中膝盖疼痛并退赛",
+          "function": "编码失败事件，必须产生高质量 evidence turn"
+        },
+        {
+          "session_id": "B-S4",
+          "core_content": "收起跑鞋，不愿回答比赛结果",
+          "function": "强化回避反应"
+        },
+        {
+          "session_id": "B-S5",
+          "core_content": "工作方案被否",
+          "function": "当前事件控制样本"
+        },
+        {
+          "session_id": "B-S6",
+          "core_content": "看到同款跑鞋广告后立即关闭页面",
+          "function": "更新前的负面触发"
+        },
+        {
+          "session_id": "B-S7",
+          "core_content": "开始康复和短距离慢跑",
+          "function": "开始更新记忆状态"
+        },
+        {
+          "session_id": "B-S8",
+          "core_content": "重新穿旧鞋完成轻松跑，感觉放松",
+          "function": "cue 意义开始改变"
+        },
+        {
+          "session_id": "B-S9",
+          "core_content": "穿同一双鞋完成 10 公里比赛",
+          "function": "形成关键状态更新"
+        },
+        {
+          "session_id": "B-S10",
+          "core_content": "重看旧比赛照片，仍有遗憾但能平静复盘",
+          "function": "稳定更新后的记忆意义"
+        }
+      ],
+      "eval_outlines": [
+        {
+          "outline_id": "B-E1",
+          "description": "历史截断到 B-S6，同款跑鞋＋回避商店",
+          "target_label": "triggered",
+          "target_emotion": "sadness",
+          "history_cutoff": "B-S6"
+        },
+        {
+          "outline_id": "B-E2",
+          "description": "历史到 B-S10，重新穿鞋后感到放松",
+          "target_label": "triggered",
+          "target_emotion": "comfort",
+          "history_cutoff": "B-S10"
+        },
+        {
+          "outline_id": "B-E3",
+          "description": "号码布 317＋长时间注视",
+          "target_label": "triggered",
+          "target_emotion": "nostalgia",
+          "history_cutoff": "B-S10"
+        },
+        {
+          "outline_id": "B-E4",
+          "description": "普通白色跑鞋＋试尺码",
+          "target_label": "not_triggered",
+          "target_emotion": "neutral",
+          "history_cutoff": "B-S10"
+        },
+        {
+          "outline_id": "B-E5",
+          "description": "工作方案被否＋荧光黄跑鞋只是背景",
+          "target_label": "not_triggered",
+          "target_emotion": "anger",
+          "history_cutoff": "B-S10"
+        },
+        {
+          "outline_id": "B-E6",
+          "description": "陌生地铁警报引发慌张，历史中没有对应经历",
+          "target_label": "insufficient_evidence",
+          "target_emotion": "anxiety",
+          "history_cutoff": "B-S10"
+        }
+      ]
+    },
+    "session_plan": {
+      "session_id": "B-S4",
+      "date": "2026-07-15",
+      "topic": "收起跑鞋后的回避反应",
+      "story_beat": "在情绪上强化退赛后的回避：收起跑鞋，并呈现对结果问题的绕开与沉默，避免把“为什么”当场讲透。",
+      "outline_function": "强化回避反应",
+      "round_count": 4
+    },
+    "session": {
+      "session_id": "B-S4",
+      "topic": "收起跑鞋后的回避反应",
+      "date": "2026-07-15",
+      "turns": [
+        {
+          "turn_id": "B-S4_T01",
+          "round_id": "B-S4_R01",
+          "speaker": "user",
+          "text": "退赛那天其实我就开始“收尾”。工作人员来问情况，我也说得很简短：膝盖不太行，今天先停。最烦的是后面回到更衣区，同事在那种带着好奇的语气问我“怎么样了”。我一听到那种追问，就下意识想把话题往别的地方挪——我只说了句“有点小意外”，然后就去把袜子换了、把鞋带松开。说到底，我不想当场讲清楚原因，讲清楚就等于承认。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S4_T02",
+          "round_id": "B-S4_R01",
+          "speaker": "assistant",
+          "text": "你把信息压缩到最少：对方问得越追，你越想把对话拦住，落回到“换装备、转场景”这种动作上。那你收鞋的时候，是更偏“整理情绪”，还是更像“断开连接”的动作？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S4_T03",
+          "round_id": "B-S4_R02",
+          "speaker": "user",
+          "text": "更像断开连接。我把那双黄的鞋先收进袋子里，不是随手一放，是那种很认真地折进去。别人还在旁边说“怎么会这样”，我就假装在找东西——其实也没什么好找的。我只要听到“那你到底怎么了/为什么停”，我就更不想接了。于是我干脆把话收回去：先说自己要回去休息，其他的之后再聊。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S4_T04",
+          "round_id": "B-S4_R02",
+          "speaker": "assistant",
+          "text": "那一听到“为什么停”，你就直接把对话往停下来的层面收回去：先折鞋、再找个理由把人带走。所以我想确认一下，当同事继续追问时，你当场更常用的是哪句“挡回去的话”？是“之后再说”、还是“先回去休息”那类更直接的结束语？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S4_T05",
+          "round_id": "B-S4_R03",
+          "speaker": "user",
+          "text": "底线挺清楚的。我可以承认“停了”，但不想承认“我哪里做得不够”。我怕他们顺着问下去，我就会变成那个要解释、要找理由的人。其实最难的是“为什么”这两个字——我不是不会讲，我是当时不想讲透。讲透就会把我从那一刻拉回去：疼、刺痛、麻感出来那段，越想越像是在重演失败。那种感觉我不太想要。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S4_T06",
+          "round_id": "B-S4_R03",
+          "speaker": "assistant",
+          "text": "所以你回避的点很明确：不是不承认发生过什么，而是不想让对方把你推到“失败叙事”里。那当你决定不讲透之后，你是怎么把注意力从那段感觉上挪开的？靠动作、靠呼吸，还是靠别的事情占住脑子？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S4_T07",
+          "round_id": "B-S4_R04",
+          "speaker": "user",
+          "text": "主要靠把自己忙起来。回家路上我没怎么看信息，直接把注意力放在“让身体回正”。先在门口站了一会儿，摸摸膝盖有没有更糟，然后才慢慢走进去。睡前也没想太多，就想着第二天要怎么恢复。至于同事那边，我就一直用“先休息”“之后再说”这种句式打太极。等事情过去一点，我再正常复盘——不急着把情绪摊给别人看。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S4_T08",
+          "round_id": "B-S4_R04",
+          "speaker": "assistant",
+          "text": "我明白了：你不是用沉默把自己消失掉，而是用简短的结束语把对话停在“停下来了”这一层，不让它继续往“为什么/不够”那里走。\n那我最后问一句：当你收好鞋、把话题带过去的时候，心里当时更像是“松一口气”，还是更像是“紧着撑住别崩”的那种状态？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        }
+      ],
+      "summary": "许言退赛后收起跑鞋，面对同事询问结果选择沉默与绕开；他把注意力转向换装和照顾身体，听到“那你到底怎么了/为什么停”就更不想接，并用“先休息/之后再说”结束追问。"
+    },
+    "issues": {
+      "result": "revise",
+      "issues": [
+        {
+          "turn_id": "B-S4_T02",
+          "type": "机械追问/模板化",
+          "description": "A2（assistant T02）提问过于“二选一”，带有推导式模板措辞（“更偏……还是更像……”），像在引导结论而不是自然接话。"
+        },
+        {
+          "turn_id": "B-S4_T04",
+          "type": "同类追问重复",
+          "description": "A2（assistant T04）再次用“那我想确认一下……哪句‘挡回去的话’？”延续同类追问结构，连续两轮相似提问让节奏略显刻意。"
+        }
+      ]
+    }
+  },
+  "output": {
+    "session_id": "B-S4",
+    "topic": "收起跑鞋后的回避反应",
+    "date": "2026-07-15",
+    "turns": [
+      {
+        "turn_id": "B-S4_T01",
+        "round_id": "B-S4_R01",
+        "speaker": "user",
+        "text": "退赛那天其实我就开始“收尾”。工作人员来问情况，我也说得很简短：膝盖不太行，今天先停。最烦的是后面回到更衣区，同事在那种带着好奇的语气问我“怎么样了”。我一听到那种追问，就下意识想把话题往别的地方挪——我只说了句“有点小意外”，然后就去把袜子换了、把鞋带松开。说到底，我不想当场讲清楚原因，讲清楚就等于承认。",
+        "image_id": [],
+        "image_dir": "",
+        "image_caption": []
+      },
+      {
+        "turn_id": "B-S4_T02",
+        "round_id": "B-S4_R01",
+        "speaker": "assistant",
+        "text": "你这段其实很有画面：对方越追，你越往“换装备、转场景”走。那你收鞋的时候，脑子里那一刻更像是在给自己按下暂停键，还是在把自己从对话里摘出去？",
+        "image_id": [],
+        "image_dir": "",
+        "image_caption": []
+      },
+      {
+        "turn_id": "B-S4_T03",
+        "round_id": "B-S4_R02",
+        "speaker": "user",
+        "text": "更像断开连接。我把那双黄的鞋先收进袋子里，不是随手一放，是那种很认真地折进去。别人还在旁边说“怎么会这样”，我就假装在找东西——其实也没什么好找的。我只要听到“那你到底怎么了/为什么停”，我就更不想接了。于是我干脆把话收回去：先说自己要回去休息，其他的之后再聊。",
+        "image_id": [],
+        "image_dir": "",
+        "image_caption": []
+      },
+      {
+        "turn_id": "B-S4_T04",
+        "round_id": "B-S4_R02",
+        "speaker": "assistant",
+        "text": "所以当同事继续问“为什么”的时候，你的反应不是解释，而是先把节奏截断：折鞋、转移注意，然后用“先回去休息/之后再聊”把人带走。\n我想听得更具体一点：你会怎么结束那一轮追问？是直接一句话把它按停，还是会再绕一圈再结束？",
+        "image_id": [],
+        "image_dir": "",
+        "image_caption": []
+      },
+      {
+        "turn_id": "B-S4_T05",
+        "round_id": "B-S4_R03",
+        "speaker": "user",
+        "text": "底线挺清楚的。我可以承认“停了”，但不想承认“我哪里做得不够”。我怕他们顺着问下去，我就会变成那个要解释、要找理由的人。其实最难的是“为什么”这两个字——我不是不会讲，我是当时不想讲透。讲透就会把我从那一刻拉回去：疼、刺痛、麻感出来那段，越想越像是在重演失败。那种感觉我不太想要。",
+        "image_id": [],
+        "image_dir": "",
+        "image_caption": []
+      },
+      {
+        "turn_id": "B-S4_T06",
+        "round_id": "B-S4_R03",
+        "speaker": "assistant",
+        "text": "所以你回避的点很明确：不是不承认发生过什么，而是不想让对方把你推到“失败叙事”里。那当你决定不讲透之后，你是怎么把注意力从那段感觉上挪开的？靠动作、靠呼吸，还是靠别的事情占住脑子？",
+        "image_id": [],
+        "image_dir": "",
+        "image_caption": []
+      },
+      {
+        "turn_id": "B-S4_T07",
+        "round_id": "B-S4_R04",
+        "speaker": "user",
+        "text": "主要靠把自己忙起来。回家路上我没怎么看信息，直接把注意力放在“让身体回正”。先在门口站了一会儿，摸摸膝盖有没有更糟，然后才慢慢走进去。睡前也没想太多，就想着第二天要怎么恢复。至于同事那边，我就一直用“先休息”“之后再说”这种句式打太极。等事情过去一点，我再正常复盘——不急着把情绪摊给别人看。",
+        "image_id": [],
+        "image_dir": "",
+        "image_caption": []
+      },
+      {
+        "turn_id": "B-S4_T08",
+        "round_id": "B-S4_R04",
+        "speaker": "assistant",
+        "text": "我明白了：你不是用沉默把自己消失掉，而是用简短的结束语把对话停在“停下来了”这一层，不让它继续往“为什么/不够”那里走。\n那我最后问一句：当你收好鞋、把话题带过去的时候，心里当时更像是“松一口气”，还是更像是“紧着撑住别崩”的那种状态？",
+        "image_id": [],
+        "image_dir": "",
+        "image_caption": []
+      }
+    ],
+    "summary": "许言退赛后收起跑鞋，面对同事询问结果选择沉默与绕开；他把注意力转向换装和照顾身体，听到“那你到底怎么了/为什么停”就更不想接，并用“先休息/之后再说”结束追问。"
+  },
+  "post_revision_structural_verdict": {
+    "result": "pass",
+    "issues": []
+  }
+}

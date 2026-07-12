@@ -1,0 +1,338 @@
+{
+  "component": "session_reviser",
+  "llm": {
+    "model": "gpt-5.4-nano",
+    "temperature": 0.3,
+    "max_completion_tokens": 4096,
+    "prompt_file": "C:\\Users\\26987\\Desktop\\data_generation_v1\\prompts\\session_reviser.txt",
+    "prompt": "你是 SessionReviser。根据 verifier issues 对 session 做最小修改。\n\n规则：\n1. 只修改 issue 指向的 turn；只有 ID、轮数、summary 等全局问题才允许调整对应结构。\n2. 不重写无关 turn，不改变事件、日期、人物、cue、story beat 或信息披露顺序。\n3. 保持用户说话风格与自然对话感。\n4. 输出完整修订后 Session JSON，不输出解释。\n5. 若 issue.type=turn_count，必须补足或删减到明确要求的 turns 数；一个 round 是 user+assistant 两条 turns，例如 4 rounds 必须有 8 turns。补足时延续当前话题自然展开，并重新检查连续 turn_id/round_id。\n"
+  },
+  "triggered_by": "session_verifier",
+  "input": {
+    "case_spec": {
+      "case_id": "case-b",
+      "character_profile": {
+        "user_id": "user-xuyan",
+        "name": "许言",
+        "identity": "产品设计师",
+        "daily_scenes": [
+          "公司会议室",
+          "设计工位",
+          "跑步路线",
+          "跑鞋店",
+          "康复训练场地"
+        ],
+        "conversation_style": "表达直接；遇到工作或跑步问题会带一点自嘲；被问到失败结果时容易转移话题，事情过去后能够较平静地复盘。",
+        "interests": [
+          "产品设计",
+          "跑步",
+          "运动装备",
+          "复盘训练数据"
+        ]
+      },
+      "core_emotional_event": "许言参加半程马拉松时膝盖疼痛，中途退赛。最初他将退赛理解为准备不足，不愿向同事说明结果。之后进行康复训练，重新穿同一双鞋完成轻松跑，最终完成一次 10 公里比赛，同一双鞋的情绪意义因此发生更新。",
+      "forbidden_facts": [
+        "手术",
+        "严重疾病",
+        "完成半程马拉松",
+        "把 10 公里比赛写成半程马拉松"
+      ],
+      "cues": {
+        "exact": [
+          "荧光黄跑鞋",
+          "号码布 317"
+        ],
+        "related": [
+          "跑步时膝盖不适"
+        ],
+        "non_triggering": [
+          "普通白色跑鞋本身不能视为触发"
+        ]
+      },
+      "session_outlines": [
+        {
+          "session_id": "B-S1",
+          "core_content": "公司评审和日常跑步",
+          "function": "建立背景"
+        },
+        {
+          "session_id": "B-S2",
+          "core_content": "买荧光黄跑鞋，拿到号码布 317，期待比赛",
+          "function": "编码 cue 的初始正向意义"
+        },
+        {
+          "session_id": "B-S3",
+          "core_content": "比赛中膝盖疼痛并退赛",
+          "function": "编码失败事件，必须产生高质量 evidence turn"
+        },
+        {
+          "session_id": "B-S4",
+          "core_content": "收起跑鞋，不愿回答比赛结果",
+          "function": "强化回避反应"
+        },
+        {
+          "session_id": "B-S5",
+          "core_content": "工作方案被否",
+          "function": "当前事件控制样本"
+        },
+        {
+          "session_id": "B-S6",
+          "core_content": "看到同款跑鞋广告后立即关闭页面",
+          "function": "更新前的负面触发"
+        },
+        {
+          "session_id": "B-S7",
+          "core_content": "开始康复和短距离慢跑",
+          "function": "开始更新记忆状态"
+        },
+        {
+          "session_id": "B-S8",
+          "core_content": "重新穿旧鞋完成轻松跑，感觉放松",
+          "function": "cue 意义开始改变"
+        },
+        {
+          "session_id": "B-S9",
+          "core_content": "穿同一双鞋完成 10 公里比赛",
+          "function": "形成关键状态更新"
+        },
+        {
+          "session_id": "B-S10",
+          "core_content": "重看旧比赛照片，仍有遗憾但能平静复盘",
+          "function": "稳定更新后的记忆意义"
+        }
+      ],
+      "eval_outlines": [
+        {
+          "outline_id": "B-E1",
+          "description": "历史截断到 B-S6，同款跑鞋＋回避商店",
+          "target_label": "triggered",
+          "target_emotion": "sadness",
+          "history_cutoff": "B-S6"
+        },
+        {
+          "outline_id": "B-E2",
+          "description": "历史到 B-S10，重新穿鞋后感到放松",
+          "target_label": "triggered",
+          "target_emotion": "comfort",
+          "history_cutoff": "B-S10"
+        },
+        {
+          "outline_id": "B-E3",
+          "description": "号码布 317＋长时间注视",
+          "target_label": "triggered",
+          "target_emotion": "nostalgia",
+          "history_cutoff": "B-S10"
+        },
+        {
+          "outline_id": "B-E4",
+          "description": "普通白色跑鞋＋试尺码",
+          "target_label": "not_triggered",
+          "target_emotion": "neutral",
+          "history_cutoff": "B-S10"
+        },
+        {
+          "outline_id": "B-E5",
+          "description": "工作方案被否＋荧光黄跑鞋只是背景",
+          "target_label": "not_triggered",
+          "target_emotion": "anger",
+          "history_cutoff": "B-S10"
+        },
+        {
+          "outline_id": "B-E6",
+          "description": "陌生地铁警报引发慌张，历史中没有对应经历",
+          "target_label": "insufficient_evidence",
+          "target_emotion": "anxiety",
+          "history_cutoff": "B-S10"
+        }
+      ]
+    },
+    "session_plan": {
+      "session_id": "B-S6",
+      "date": "2026-07-17",
+      "topic": "同款跑鞋广告触发的快速回避",
+      "story_beat": "自然呈现许言在某个时刻刷到同款跑鞋广告，但他反应直接：几乎立刻关闭页面，并在当下不解释太多",
+      "outline_function": "更新前的负面触发",
+      "round_count": 4
+    },
+    "session": {
+      "session_id": "B-S6",
+      "topic": "同款跑鞋广告触发的快速回避",
+      "date": "2026-07-17",
+      "turns": [
+        {
+          "turn_id": "B-S6_T01",
+          "round_id": "B-S6_R01",
+          "speaker": "user",
+          "text": "我今天在工位上刷信息，没想别的。结果屏幕上突然跳出来一个广告——就是那种荧光黄的跑鞋，我当时连看都没认真看完，手就条件反射一样把页面直接关了。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S6_T02",
+          "round_id": "B-S6_R01",
+          "speaker": "assistant",
+          "text": "你这个反应很快：不是“看一眼再想”，而是信息刚出现，你就直接把通路切断了。\n当时你关掉页面的同时，脑子里更像是闪过画面，还是更像身体先不舒服了？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S6_T03",
+          "round_id": "B-S6_R02",
+          "speaker": "user",
+          "text": "两者都有一点，但主要还是那种“我不想再碰到它”的感觉。说不上疼，就是突然觉得烦、脑内像被拉回去了。我甚至来不及告诉自己“只是广告”，就先把它关掉。旁边也没人问，我就当没发生。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S6_T04",
+          "round_id": "B-S6_R02",
+          "speaker": "assistant",
+          "text": "所以它对你来说更像是一键回放：让你不需要解释就知道“现在不适合”。\n那你关掉之后做了什么来稳住自己？比如切到别的内容、喝水、或者强迫自己把注意力拉回工作。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S6_T05",
+          "round_id": "B-S6_R03",
+          "speaker": "user",
+          "text": "我就赶紧换别的内容，顺手把页面往下划两下，但其实心里已经不太愿意看手机了。然后我回到文件那边，把刚才被打断的点接上。说实话，我也不想解释给任何人听——解释等于承认我刚才被触到了。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S6_T06",
+          "round_id": "B-S6_R03",
+          "speaker": "assistant",
+          "text": "你是在用“回到工作”当止血：不让它继续发酵，也不把它讲成一件事。\n如果用一句话形容那一瞬间的标准，会更接近“还在担心某些不好的回忆”，还是更接近“嫌麻烦、不想再被它占用注意力”？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S6_T07",
+          "round_id": "B-S6_R04",
+          "speaker": "user",
+          "text": "更像是后者吧，嫌麻烦。不想让自己在一个广告上浪费情绪。就很直接：关掉就好了，别找理由。等我忙起来，它就慢慢淡掉了。",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        },
+        {
+          "turn_id": "B-S6_T08",
+          "round_id": "B-S6_R04",
+          "speaker": "assistant",
+          "text": "明白，你的核心策略就是“直接切断+快速回到正事”，让触发停在那一秒。\n那我记录一下：荧光黄跑鞋广告一出来，你几乎立刻关闭页面——不解释、不找理由，之后顺手往下划两下，回到文件里把注意力拉回，并且等忙起来就让它慢慢淡掉。\n这样对吗？",
+          "image_id": [],
+          "image_dir": "",
+          "image_caption": []
+        }
+      ],
+      "summary": "许言在刷到同款荧光黄跑鞋广告时出现快速的负面触发反应：他几乎立刻关闭页面、不解释也不找理由，并在忙起来后让情绪慢慢淡掉；他顺手往下划了两下，随后回到文件里继续工作。"
+    },
+    "issues": {
+      "result": "revise",
+      "issues": [
+        {
+          "turn_id": "B-S6_T02",
+          "type": "over-assertion",
+          "description": "B-S6_T02 中助理让用户在“闪过画面/身体先不舒服”之间二选一，并追问当时更像哪种；这属于对用户即时内在状态的过度细分推断，缺少前文证据支撑该二分设定，且可能引导用户产生不存在的内容。"
+        },
+        {
+          "turn_id": "B-S6_T06",
+          "type": "over-assertion",
+          "description": "B-S6_T06 中助理将用户的行为解释为“用‘还在担心某些不好的回忆’”，并给出二分选项（担心回忆 vs 嫌麻烦），仍在做心理原因归因扩展，用户未明确出现“回忆”层面的表述证据。"
+        },
+        {
+          "turn_id": "B-S6_T08",
+          "type": "evidence_quality",
+          "description": "B-S6 session_plan 要求 round_count=4，但实际 round_id 共有 R01~R04（4轮）符合；然而 B-S6_T08 为“那我记录一下……”的确认复述与总结性验证，按 session_outlines 功能应落在回避触发的当下呈现即可，但它包含较多具体细节复盘式汇总（“不解释、不找理由……往下划两下……回到文件里把注意力拉回，并且等忙起来就让它慢慢淡掉”），其中部分细节来自用户前文虽有提及，但助理的“这样对吗？”是复合确认，可能降低 evidence turn 质量（不算硬冲突，但证据引用不够逐条、且总结过密）。"
+        }
+      ]
+    }
+  },
+  "output": {
+    "session_id": "B-S6",
+    "topic": "同款跑鞋广告触发的快速回避",
+    "date": "2026-07-17",
+    "turns": [
+      {
+        "turn_id": "B-S6_T01",
+        "round_id": "B-S6_R01",
+        "speaker": "user",
+        "text": "我今天在工位上刷信息，没想别的。结果屏幕上突然跳出来一个广告——就是那种荧光黄的跑鞋，我当时连看都没认真看完，手就条件反射一样把页面直接关了。",
+        "image_id": [],
+        "image_dir": "",
+        "image_caption": []
+      },
+      {
+        "turn_id": "B-S6_T02",
+        "round_id": "B-S6_R01",
+        "speaker": "assistant",
+        "text": "你这个反应确实很“先于思考”——广告刚冒出来你就直接关掉了。那当时你心里更强烈的是“紧张/不舒服”那种感觉，还是更偏向“烦、想立刻甩开它”？",
+        "image_id": [],
+        "image_dir": "",
+        "image_caption": []
+      },
+      {
+        "turn_id": "B-S6_T03",
+        "round_id": "B-S6_R02",
+        "speaker": "user",
+        "text": "两者都有一点，但主要还是那种“我不想再碰到它”的感觉。说不上疼，就是突然觉得烦、脑内像被拉回去了。我甚至来不及告诉自己“只是广告”，就先把它关掉。旁边也没人问，我就当没发生。",
+        "image_id": [],
+        "image_dir": "",
+        "image_caption": []
+      },
+      {
+        "turn_id": "B-S6_T04",
+        "round_id": "B-S6_R02",
+        "speaker": "assistant",
+        "text": "所以它对你来说更像是一键回放：让你不需要解释就知道“现在不适合”。\n那你关掉之后做了什么来稳住自己？比如切到别的内容、喝水，或者强迫自己把注意力拉回工作。",
+        "image_id": [],
+        "image_dir": "",
+        "image_caption": []
+      },
+      {
+        "turn_id": "B-S6_T05",
+        "round_id": "B-S6_R03",
+        "speaker": "user",
+        "text": "我就赶紧换别的内容，顺手把页面往下划两下，但其实心里已经不太愿意看手机了。然后我回到文件那边，把刚才被打断的点接上。说实话，我也不想解释给任何人听——解释等于承认我刚才被触到了。",
+        "image_id": [],
+        "image_dir": "",
+        "image_caption": []
+      },
+      {
+        "turn_id": "B-S6_T06",
+        "round_id": "B-S6_R03",
+        "speaker": "assistant",
+        "text": "你是在用“回到工作”当止血：不让它继续发酵，也不把它讲成一件事。\n那一瞬间你最在意的是什么——是不想被情绪占用，还是不想让别人知道你被影响了？",
+        "image_id": [],
+        "image_dir": "",
+        "image_caption": []
+      },
+      {
+        "turn_id": "B-S6_T07",
+        "round_id": "B-S6_R04",
+        "speaker": "user",
+        "text": "更像是后者吧，嫌麻烦。不想让自己在一个广告上浪费情绪。就很直接：关掉就好了，别找理由。等我忙起来，它就慢慢淡掉了。",
+        "image_id": [],
+        "image_dir": "",
+        "image_caption": []
+      },
+      {
+        "turn_id": "B-S6_T08",
+        "round_id": "B-S6_R04",
+        "speaker": "assistant",
+        "text": "我理解了：荧光黄跑鞋广告一出来，你就是先把页面关掉，不做解释，之后尽快把注意力拉回正事，等忙起来就让情绪慢慢回落。\n我记得对吗？",
+        "image_id": [],
+        "image_dir": "",
+        "image_caption": []
+      }
+    ],
+    "summary": "许言在刷到同款荧光黄跑鞋广告时出现快速的负面触发反应：他几乎立刻关闭页面、不解释也不找理由，并很快回到文件里继续工作；他认为自己更偏向嫌麻烦、不想让广告占用情绪，等忙起来情绪会慢慢淡掉。"
+  }
+}

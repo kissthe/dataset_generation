@@ -1,0 +1,594 @@
+{
+  "dataset_id": "memory-trigger-dialogue-case-b",
+  "passed": true,
+  "checks": {
+    "session_ids_and_order": true,
+    "strict_chronology": true,
+    "turn_structure": true,
+    "schema_validation": true
+  },
+  "errors": [],
+  "call_records": [
+    {
+      "component": "session_planner",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_planner",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_writer",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_verifier",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_reviser",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_verifier",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_reviser",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_verifier",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_reviser",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "naturalness_checker",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_reviser",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_writer",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_verifier",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "naturalness_checker",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_reviser",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_writer",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_verifier",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_reviser",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_verifier",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_reviser",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_verifier",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_reviser",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "naturalness_checker",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_reviser",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_writer",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_verifier",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_reviser",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_verifier",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_reviser",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_verifier",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_reviser",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "naturalness_checker",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_reviser",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_writer",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_reviser",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_verifier",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_reviser",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_verifier",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_reviser",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "naturalness_checker",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_reviser",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_writer",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_verifier",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_reviser",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_verifier",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_reviser",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_verifier",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_reviser",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "naturalness_checker",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_reviser",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_writer",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_reviser",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_verifier",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_reviser",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_verifier",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_reviser",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "naturalness_checker",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_reviser",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_writer",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_verifier",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_reviser",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_verifier",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_reviser",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_verifier",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_reviser",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "naturalness_checker",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_reviser",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_writer",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_reviser",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_verifier",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_reviser",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_verifier",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "naturalness_checker",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_reviser",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_writer",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_verifier",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_reviser",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_verifier",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_reviser",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_verifier",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_reviser",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "naturalness_checker",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    },
+    {
+      "component": "session_reviser",
+      "model": "gpt-5.4-nano",
+      "attempt": 1,
+      "status": "success",
+      "error": null
+    }
+  ]
+}
