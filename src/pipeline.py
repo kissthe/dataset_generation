@@ -126,81 +126,23 @@ class GenerationPipeline:
             if [s.session_id for s in sessions] != expected[:len(sessions)]:
                 raise ValueError("checkpoint sessions are not a valid prefix of the case")
             print(f"resumed {len(sessions)}/{len(plans.plans)} completed sessions", flush=True)
+        failed_plans: list = []
         for plan in plans.plans[len(sessions):]:
             print(f"generating {plan.session_id}...", flush=True)
             recent = sessions[-cfg.context_sessions:]
             session_log_dir = audit_dir / "sessions" / plan.session_id
             session_log_dir.mkdir(parents=True, exist_ok=True)
-            writer_input = {
-                "case_spec": case.model_dump(), "session_plan": plan.model_dump(),
-                "recent_history": [s.model_dump() for s in recent],
-            }
-            session = self.writer.run(case, plan.model_dump(), recent)
-            self._write_log(session_log_dir / "01_writer.json", {
-                "component": "session_writer", "llm": self._llm_metadata("session_writer"),
-                "input": writer_input, "output": session.model_dump(),
-            })
-            for cycle in range(cfg.max_revision_cycles):
-                structural = self._structural_verdict(session, plan.round_count)
-                self._write_log(session_log_dir / f"{cycle + 2:02d}_cycle_{cycle + 1}_structural_verifier.json", {
-                    "component": "deterministic_structural_verifier",
-                    "input": {"session": session.model_dump(), "expected_round_count": plan.round_count},
-                    "output": structural.model_dump(),
+            try:
+                session = self._generate_one_session(case, plan, recent, cfg, session_log_dir)
+            except Exception as exc:
+                err_msg = f"{plan.session_id} failed and skipped: {exc}"
+                print(f"ERROR: {err_msg}", flush=True)
+                self._write_log(session_log_dir / "98_session_error.json", {
+                    "component": "pipeline", "error": err_msg,
+                    "session_id": plan.session_id,
                 })
-                if structural.result == "revise":
-                    verdict = structural
-                    verifier_kind = "deterministic_structural_verifier"
-                else:
-                    verdict = self.verifier.run(case, plan.model_dump(), session, recent)
-                    verifier_kind = "session_verifier"
-                    self._write_log(session_log_dir / f"{cycle + 2:02d}_cycle_{cycle + 1}_session_verifier.json", {
-                        "component": verifier_kind, "llm": self._llm_metadata("session_verifier"),
-                        "input": {
-                            "case_spec": case.model_dump(), "session_plan": plan.model_dump(),
-                            "session": session.model_dump(), "recent_history": [s.model_dump() for s in recent],
-                        },
-                        "output": verdict.model_dump(),
-                    })
-                if verdict.result == "pass":
-                    break
-                before_revision = session
-                session = self.reviser.run(case, plan.model_dump(), session, verdict)
-                self._write_log(session_log_dir / f"{cycle + 2:02d}_cycle_{cycle + 1}_reviser.json", {
-                    "component": "session_reviser", "llm": self._llm_metadata("session_reviser"),
-                    "triggered_by": verifier_kind,
-                    "input": {
-                        "case_spec": case.model_dump(), "session_plan": plan.model_dump(),
-                        "session": before_revision.model_dump(), "issues": verdict.model_dump(),
-                    },
-                    "output": session.model_dump(),
-                })
-            final_structure = self._structural_verdict(session, plan.round_count)
-            if final_structure.result != "pass":
-                raise RuntimeError(f"{plan.session_id} failed deterministic structure checks: {final_structure.model_dump()}")
-            natural = self.naturalness.run(case, session)
-            self._write_log(session_log_dir / "90_naturalness_checker.json", {
-                "component": "naturalness_checker", "llm": self._llm_metadata("naturalness_checker"),
-                "input": {"conversation_style": case.character_profile.conversation_style, "session": session.model_dump()},
-                "output": natural.model_dump(),
-            })
-            if natural.result == "revise":
-                revised = self.reviser.run(case, plan.model_dump(), session, natural)
-                post_natural_structure = self._structural_verdict(revised, plan.round_count)
-                self._write_log(session_log_dir / "91_naturalness_reviser.json", {
-                    "component": "session_reviser", "llm": self._llm_metadata("session_reviser"),
-                    "triggered_by": "naturalness_checker",
-                    "input": {
-                        "case_spec": case.model_dump(), "session_plan": plan.model_dump(),
-                        "session": session.model_dump(), "issues": natural.model_dump(),
-                    },
-                    "output": revised.model_dump(),
-                    "post_revision_structural_verdict": post_natural_structure.model_dump(),
-                })
-                if post_natural_structure.result == "pass":
-                    session = revised
-            self._write_log(session_log_dir / "99_final_session.json", {
-                "component": "pipeline", "output": session.model_dump(),
-            })
+                failed_plans.append(plan)
+                continue
             sessions.append(session)
             print(f"completed {plan.session_id} ({len(sessions)}/{len(plans.plans)})", flush=True)
             checkpoint_path.write_text(
@@ -214,7 +156,10 @@ class GenerationPipeline:
             item.pop("summary", None)
             dialogues.append(item)
         benchmark = Benchmark(dataset_id=dataset_id, character_profile=case.character_profile, dialogues=dialogues, eval_samples=[])
-        qa = validate_sessions(dataset_id, case, sessions, self.llm.records, expected)
+        # expected for QA only includes sessions that actually completed;
+        # failed sessions are reported separately so QA does not false-flag id mismatch.
+        completed_expected = [s.session_id for s in sessions]
+        qa = validate_sessions(dataset_id, case, sessions, self.llm.records, completed_expected)
         benchmark_path = output_dir / "benchmark.json"
         qa_path = output_dir / "qa_report.json"
         benchmark_path.write_text(benchmark.model_dump_json(indent=2), encoding="utf-8")
@@ -222,9 +167,89 @@ class GenerationPipeline:
         self._write_log(audit_dir / "99_pipeline_result.json", {
             "benchmark_path": str(benchmark_path), "qa_path": str(qa_path),
             "qa": qa.model_dump(), "eval_generated": False,
+            "failed_session_ids": [p.session_id for p in failed_plans],
+            "completed_session_count": len(sessions),
+            "planned_session_count": len(plans.plans),
         })
         self._write_log_index(audit_dir, case.case_id)
         return benchmark_path, qa_path
+
+    def _generate_one_session(self, case, plan, recent, cfg, session_log_dir) -> Session:
+        """Generate a single session through writer → revision cycles → naturalness check.
+
+        Raises on failure so the caller can decide to skip or abort.
+        """
+        writer_input = {
+            "case_spec": case.model_dump(), "session_plan": plan.model_dump(),
+            "recent_history": [s.model_dump() for s in recent],
+        }
+        session = self.writer.run(case, plan.model_dump(), recent)
+        self._write_log(session_log_dir / "01_writer.json", {
+            "component": "session_writer", "llm": self._llm_metadata("session_writer"),
+            "input": writer_input, "output": session.model_dump(),
+        })
+        for cycle in range(cfg.max_revision_cycles):
+            structural = self._structural_verdict(session, plan.round_count)
+            self._write_log(session_log_dir / f"{cycle + 2:02d}_cycle_{cycle + 1}_structural_verifier.json", {
+                "component": "deterministic_structural_verifier",
+                "input": {"session": session.model_dump(), "expected_round_count": plan.round_count},
+                "output": structural.model_dump(),
+            })
+            if structural.result == "revise":
+                verdict = structural
+                verifier_kind = "deterministic_structural_verifier"
+            else:
+                verdict = self.verifier.run(case, plan.model_dump(), session, recent)
+                verifier_kind = "session_verifier"
+                self._write_log(session_log_dir / f"{cycle + 2:02d}_cycle_{cycle + 1}_session_verifier.json", {
+                    "component": verifier_kind, "llm": self._llm_metadata("session_verifier"),
+                    "input": {
+                        "case_spec": case.model_dump(), "session_plan": plan.model_dump(),
+                        "session": session.model_dump(), "recent_history": [s.model_dump() for s in recent],
+                    },
+                    "output": verdict.model_dump(),
+                })
+            if verdict.result == "pass":
+                break
+            before_revision = session
+            session = self.reviser.run(case, plan.model_dump(), session, verdict)
+            self._write_log(session_log_dir / f"{cycle + 2:02d}_cycle_{cycle + 1}_reviser.json", {
+                "component": "session_reviser", "llm": self._llm_metadata("session_reviser"),
+                "triggered_by": verifier_kind,
+                "input": {
+                    "case_spec": case.model_dump(), "session_plan": plan.model_dump(),
+                    "session": before_revision.model_dump(), "issues": verdict.model_dump(),
+                },
+                "output": session.model_dump(),
+            })
+        final_structure = self._structural_verdict(session, plan.round_count)
+        if final_structure.result != "pass":
+            raise RuntimeError(f"{plan.session_id} failed deterministic structure checks: {final_structure.model_dump()}")
+        natural = self.naturalness.run(case, session)
+        self._write_log(session_log_dir / "90_naturalness_checker.json", {
+            "component": "naturalness_checker", "llm": self._llm_metadata("naturalness_checker"),
+            "input": {"conversation_style": case.character_profile.conversation_style, "session": session.model_dump()},
+            "output": natural.model_dump(),
+        })
+        if natural.result == "revise":
+            revised = self.reviser.run(case, plan.model_dump(), session, natural)
+            post_natural_structure = self._structural_verdict(revised, plan.round_count)
+            self._write_log(session_log_dir / "91_naturalness_reviser.json", {
+                "component": "session_reviser", "llm": self._llm_metadata("session_reviser"),
+                "triggered_by": "naturalness_checker",
+                "input": {
+                    "case_spec": case.model_dump(), "session_plan": plan.model_dump(),
+                    "session": session.model_dump(), "issues": natural.model_dump(),
+                },
+                "output": revised.model_dump(),
+                "post_revision_structural_verdict": post_natural_structure.model_dump(),
+            })
+            if post_natural_structure.result == "pass":
+                session = revised
+        self._write_log(session_log_dir / "99_final_session.json", {
+            "component": "pipeline", "output": session.model_dump(),
+        })
+        return session
 
     def _llm_metadata(self, component: str) -> dict:
         component_config = self.config.components[component]

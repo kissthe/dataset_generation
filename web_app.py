@@ -544,12 +544,30 @@ def run_generation(
     return_code = process.wait()
     if return_code == 0:
         progress.progress(1.0, text="生成完成")
-        status.success("Benchmark 与 QA 已生成。")
+        # 检查是否有 session 失败被跳过
+        pipeline_result_path = output_dir / "logs" / "99_pipeline_result.json"
+        failed_ids: list[str] = []
+        if pipeline_result_path.exists():
+            try:
+                pr = json.loads(pipeline_result_path.read_text(encoding="utf-8"))
+                failed_ids = pr.get("failed_session_ids", [])
+            except Exception:
+                pass
+        if failed_ids:
+            status.warning(f"生成完成，但有 {len(failed_ids)} 个 session 失败被跳过：{', '.join(failed_ids)}")
+        else:
+            status.success("Benchmark 与 QA 已生成。")
         render_results(output_dir)
         render_artifact_browser(output_dir)
     else:
         progress.progress(min(0.99, 0.10 + 0.84 * completed / max(total, 1)), text="生成中断")
         status.error("生成任务未完成。日志已保留；修正问题后可使用同一名称断点续跑。")
+        error_lines = [ln for ln in logs if ln.startswith("ERROR") or "Traceback" in ln or "Error" in ln]
+        if error_lines:
+            with st.expander("错误详情（最近 30 行）", expanded=True):
+                st.code("\n".join(error_lines[-30:]), language="text")
+        with st.expander("完整日志（最后 50 行）", expanded=False):
+            st.code("\n".join(logs[-50:]), language="text")
         render_artifact_browser(output_dir)
 
 
