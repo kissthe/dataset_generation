@@ -189,6 +189,8 @@ def classify_log(rel_path: str) -> tuple[str, str, str]:
             return session_id, f"{session_id} · {kind_label} (Cycle {cycle})", "🔧"
         if name == "90_naturalness_checker.json":
             return session_id, f"{session_id} · 自然度检查", "🌿"
+        if name == "91_naturalness_reviser.json":
+            return session_id, f"{session_id} · 自然度修订", "🔧"
     return Path(rel_path).stem, rel_path, "📄"
 
 
