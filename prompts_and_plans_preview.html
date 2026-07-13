@@ -2,46 +2,50 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<title>Pipeline 提示词与生成结果预览</title>
+<title>Pipeline 预览</title>
 <style>
-  * { box-sizing: border-box; }
-  body { font-family: -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; margin: 0; background: #f5f6f8; color: #1a1a1a; }
-  .tabs { display: flex; background: #fff; border-bottom: 1px solid #e0e0e0; position: sticky; top: 0; z-index: 10; }
-  .tab { padding: 14px 28px; cursor: pointer; border-bottom: 3px solid transparent; font-size: 15px; font-weight: 500; color: #666; }
-  .tab.active { color: #2563eb; border-bottom-color: #2563eb; }
-  .page { display: none; padding: 24px 32px; max-width: 1200px; margin: 0 auto; }
-  .page.active { display: block; }
-  h2 { margin-top: 0; color: #1a1a1a; border-left: 4px solid #2563eb; padding-left: 12px; }
-  h3 { margin-top: 32px; color: #333; }
-  .prompt-box { background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; white-space: pre-wrap; font-family: "Cascadia Code", Consolas, monospace; font-size: 13px; line-height: 1.7; max-height: 600px; overflow-y: auto; }
-  .plans-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; margin-top: 16px; }
-  .plan-card { background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px; }
-  .plan-header { display: flex; gap: 12px; align-items: center; margin-bottom: 8px; }
-  .plan-id { background: #2563eb; color: #fff; padding: 2px 10px; border-radius: 4px; font-size: 13px; font-weight: 600; }
-  .plan-date { color: #666; font-size: 13px; }
-  .plan-rounds { color: #888; font-size: 12px; margin-left: auto; }
-  .plan-topic { font-weight: 600; margin-bottom: 8px; color: #1a1a1a; }
-  .plan-beat, .plan-func { font-size: 13px; line-height: 1.6; color: #444; margin-bottom: 4px; }
-  .session-block { background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
-  .session-title { font-weight: 600; font-size: 16px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #eee; }
-  .turn { margin-bottom: 12px; padding: 10px 14px; border-radius: 8px; max-width: 85%; }
-  .turn.user { background: #e8f0fe; margin-right: auto; }
-  .turn.assistant { background: #f0f0f0; margin-left: auto; }
-  .turn-meta { font-size: 11px; color: #888; margin-bottom: 4px; }
-  .turn-text { font-size: 14px; line-height: 1.6; }
-  .empty { color: #888; font-style: italic; }
-  .info { background: #fffbea; border: 1px solid #f5d97a; border-radius: 6px; padding: 12px 16px; margin: 12px 0; font-size: 13px; }
+body { font-family: -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; max-width: 960px; margin: 0 auto; padding: 24px; color: #000; background: #fff; line-height: 1.6; }
+h1 { border-bottom: 2px solid #000; padding-bottom: 8px; margin-top: 32px; }
+h2 { border-bottom: 1px solid #999; padding-bottom: 4px; margin-top: 28px; }
+h3 { margin-top: 24px; }
+a { color: #00e; }
+.nav { margin: 16px 0; padding: 8px 12px; background: #f0f0f0; border: 1px solid #ccc; }
+.nav a { margin-right: 16px; }
+pre, .prompt { background: #f7f7f7; border: 1px solid #ddd; padding: 12px; white-space: pre-wrap; word-wrap: break-word; font-family: "Cascadia Code", Consolas, monospace; font-size: 13px; line-height: 1.5; max-height: 500px; overflow-y: auto; }
+.plan { border: 1px solid #999; padding: 12px; margin: 8px 0; }
+.plan-head { margin-bottom: 6px; }
+.sid { font-weight: bold; margin-right: 12px; }
+.date { color: #555; margin-right: 12px; }
+.rounds { color: #555; margin-right: 12px; }
+.status { padding: 1px 6px; border: 1px solid #999; font-size: 11px; }
+.status-ok { background: #fff; color: #000; }
+.status-crash { background: #000; color: #fff; }
+.topic { font-weight: bold; margin-bottom: 4px; }
+.beat, .func { font-size: 13px; margin-bottom: 2px; }
+.sess { border: 1px solid #999; padding: 12px; margin: 12px 0; }
+.turn { border-left: 3px solid #999; padding: 6px 10px; margin: 6px 0; }
+.turn.u { border-left-color: #006; background: #f0f0ff; }
+.turn.a { border-left-color: #060; background: #f0fff0; }
+.tmeta { font-size: 11px; color: #666; }
+.ttext { white-space: pre-wrap; }
+.crash-note { background: #fff0f0; border: 1px solid #f00; padding: 10px; margin: 12px 0; }
+.info { background: #fffff0; border: 1px solid #cc9; padding: 10px; margin: 10px 0; font-size: 14px; }
+.info p { margin: 6px 0; }
+code { background: #eee; padding: 1px 4px; }
 </style>
 </head>
 <body>
-<div class="tabs">
-  <div class="tab active" onclick="showPage(0)">提示词 & Session Plans</div>
-  <div class="tab" onclick="showPage(1)">生成结果</div>
+
+<div class="nav">
+  <a href="#planner-prompt">Planner 提示词</a>
+  <a href="#writer-prompt">Writer 提示词</a>
+  <a href="#plans">Session Plans</a>
+  <a href="#results">生成结果</a>
+  <a href="#crash">Crash 分析</a>
 </div>
 
-<div class="page active" id="page0">
-  <h2>SessionPlanner 提示词</h2>
-  <div class="prompt-box">你是长期对话数据集的 SessionPlanner。根据 CaseSpec 的人物设定和核心情绪事件，从零规划 session_count 个 session 的轻量计划。
+<h1>1. SessionPlanner 提示词</h1>
+<div class="prompt" id="planner-prompt">你是长期对话数据集的 SessionPlanner。根据 CaseSpec 的人物设定和核心情绪事件，从零规划 session_count 个 session 的轻量计划。
 
 ## 核心原则
 真实的长期聊天中，核心情绪事件只是生活的一小部分。大部分日常对话是关于工作、兴趣、时事、娱乐等无关话题。核心事件会偶尔被触发，但不会每条 session 都出现。
@@ -81,8 +85,8 @@
 - 随机吐槽：心情、小确幸、小烦恼
 </div>
 
-  <h2>SessionWriter 提示词</h2>
-  <div class="prompt-box">你是长期对话数据集的 SessionWriter。请为一个 SessionPlan 写出完整、自然的中文用户—助手对话。
+<h1>2. SessionWriter 提示词</h1>
+<div class="prompt" id="writer-prompt">你是长期对话数据集的 SessionWriter。请为一个 SessionPlan 写出完整、自然的中文用户—助手对话。
 
 ## 你的角色
 
@@ -157,220 +161,459 @@
 记住：你是朋友，不是分析师。朋友聊天不会帮对方做心理画像。
 </div>
 
-  <h2>Case A · 5 Session Plans（林澄）</h2>
-  <div class="info">核心情绪事件：林澄错过奶奶去世前最后一次通话，留有遗憾。<br>助手角色：林澄的大学室友，性格直爽，说话随意，偶尔大大咧咧，不会刻意追问情绪。</div>
-  <div class="plans-grid">
-    
-        <div class="plan-card">
-          <div class="plan-header">
-            <span class="plan-id">A-S01</span>
-            <span class="plan-date">2026-07-14</span>
-            <span class="plan-rounds">4 轮</span>
-          </div>
-          <div class="plan-topic">新烘焙店活动与海报设计的小吐槽</div>
-          <div class="plan-beat"><strong>story_beat：</strong>宿舍里晚饭后室友随口提到楼下新开的烘焙店在做活动，顺带聊到今天散步路上看到的海报设计。</div>
-          <div class="plan-func"><strong>功能：</strong>日常闲聊，展示林澄在无关话题下的自然状态。</div>
-        </div>
-
-        <div class="plan-card">
-          <div class="plan-header">
-            <span class="plan-id">A-S02</span>
-            <span class="plan-date">2026-07-16</span>
-            <span class="plan-rounds">5 轮</span>
-          </div>
-          <div class="plan-topic">热歌与短视频梗引发的通勤闲聊</div>
-          <div class="plan-beat"><strong>story_beat：</strong>学校路过自习室附近，广播里播放一段热歌，室友吐槽今天考研自习氛围太紧；随后转到大家在刷的短视频梗。</div>
-          <div class="plan-func"><strong>功能：</strong>日常闲聊，保持话题多样性，围绕展览之外的外部领域展开。</div>
-        </div>
-
-        <div class="plan-card">
-          <div class="plan-header">
-            <span class="plan-id">A-S03</span>
-            <span class="plan-date">2026-07-18</span>
-            <span class="plan-rounds">4 轮</span>
-          </div>
-          <div class="plan-topic">地铁停运与“错过”的烦恼</div>
-          <div class="plan-beat"><strong>story_beat：</strong>地铁进站时突然停运，车站广播反复提醒“请耐心等待”，室友借此提起曾经某次错过末班车的经历，林澄顺势聊到自己对“错过”的在意。</div>
-          <div class="plan-func"><strong>功能：</strong>物品/场景触发，外部环境偶发引起轻微情绪波动但不直指核心事件。</div>
-        </div>
-
-        <div class="plan-card">
-          <div class="plan-header">
-            <span class="plan-id">A-S04</span>
-            <span class="plan-date">2026-07-20</span>
-            <span class="plan-rounds">5 轮</span>
-          </div>
-          <div class="plan-topic">通话提醒截图触发的遗憾</div>
-          <div class="plan-beat"><strong>story_beat：</strong>宿舍里室友打开手机相册给大家看“最近通话记录的提醒”，恰好弹出一条与奶奶相关的旧提醒截图；林澄看到后情绪被触发，表达自己错过奶奶去世前最后一次通话的遗憾。</div>
-          <div class="plan-func"><strong>功能：</strong>核心事件相关，用户在外部诱因下表达遗憾（不得是主动回忆）。</div>
-        </div>
-
-        <div class="plan-card">
-          <div class="plan-header">
-            <span class="plan-id">A-S05</span>
-            <span class="plan-date">2026-07-22</span>
-            <span class="plan-rounds">4 轮</span>
-          </div>
-          <div class="plan-topic">安静展厅的气味与文创市集计划</div>
-          <div class="plan-beat"><strong>story_beat：</strong>博物馆实习当天下午，导览路线经过一间安静展厅，空气里有淡淡消毒水味；室友提到明天想去看个城市文创市集，林澄回应并把注意力放回展陈与日常安排。</div>
-          <div class="plan-func"><strong>功能：</strong>怀旧/收束，核心情绪逐渐平稳，由外部日常触发切回生活。</div>
-        </div>
-  </div>
-
-  <h2>Case B · 5 Session Plans（许言）</h2>
-  <div class="info">核心情绪事件：许言半马退赛，不愿向同事提及，后经康复重新穿同双鞋完成 10 公里比赛。<br>助手角色：许言的跑友兼同事，说话随意爱吐槽，自己也在跑步，聊天的画风是互怼。</div>
-  <div class="plans-grid">
-    
-        <div class="plan-card">
-          <div class="plan-header">
-            <span class="plan-id">B-S01</span>
-            <span class="plan-date">2026-07-13</span>
-            <span class="plan-rounds">5 轮</span>
-          </div>
-          <div class="plan-topic">公司会议PPT吐槽 + 跑步装备闲聊</div>
-          <div class="plan-beat"><strong>story_beat：</strong>在公司午休时聊到同事吐槽的某个会议PPT格式问题，顺带问起他最近跑步装备的更新。</div>
-          <div class="plan-func"><strong>功能：</strong>日常闲聊，展示许言在无关话题下的自然状态。</div>
-        </div>
-
-        <div class="plan-card">
-          <div class="plan-header">
-            <span class="plan-id">B-S02</span>
-            <span class="plan-date">2026-07-15</span>
-            <span class="plan-rounds">4 轮</span>
-          </div>
-          <div class="plan-topic">热歌/短视频梗 + 周末想看的影视</div>
-          <div class="plan-beat"><strong>story_beat：</strong>路过楼下咖啡店听到一段热歌，许言随口说起最近刷到的音乐/短视频梗，同时聊周末可能看什么影视。</div>
-          <div class="plan-func"><strong>功能：</strong>日常闲聊，切到外部娱乐/时事，让聊天保持轻松不触发核心情绪。</div>
-        </div>
-
-        <div class="plan-card">
-          <div class="plan-header">
-            <span class="plan-id">B-S03</span>
-            <span class="plan-date">2026-07-17</span>
-            <span class="plan-rounds">5 轮</span>
-          </div>
-          <div class="plan-topic">跑鞋店气味与陈列引发的跑步装备讨论</div>
-          <div class="plan-beat"><strong>story_beat：</strong>傍晚路过跑鞋店被店里试跑音效和陈列的同款鞋带味道吸引，停下来比对尺码与缓震差异。</div>
-          <div class="plan-func"><strong>功能：</strong>物品/场景触发，外部环境碰到跑鞋店相关细节，轻微引发情绪但不指向核心事件。</div>
-        </div>
-
-        <div class="plan-card">
-          <div class="plan-header">
-            <span class="plan-id">B-S04</span>
-            <span class="plan-date">2026-07-19</span>
-            <span class="plan-rounds">6 轮</span>
-          </div>
-          <div class="plan-topic">半马成绩统计表引发尴尬：不想向同事解释</div>
-          <div class="plan-beat"><strong>story_beat：</strong>同事在群里发半马成绩统计表并@许言，看到自己那次退赛记录后，许言当场表示尴尬和不想解释的情绪。</div>
-          <div class="plan-func"><strong>功能：</strong>核心事件相关，外部诱因触发，用户明确表达情绪并给出可引用的证据。</div>
-        </div>
-
-        <div class="plan-card">
-          <div class="plan-header">
-            <span class="plan-id">B-S05</span>
-            <span class="plan-date">2026-07-21</span>
-            <span class="plan-rounds">4 轮</span>
-          </div>
-          <div class="plan-topic">小雨通勤后跑步路线与配速复盘</div>
-          <div class="plan-beat"><strong>story_beat：</strong>清晨通勤路上遇到一阵小雨，许言聊起今天跑步的路线选择和如何调整配速与训练计划（不再提及退赛细节）。</div>
-          <div class="plan-func"><strong>功能：</strong>怀旧/收束，借助外部触发逐渐平静回到日常，弱化情绪尖点。</div>
-        </div>
-  </div>
+<h1>3. Session Plans（共 10 个）</h1>
+<div class="crash-note">
+<b>生成中断：</b>以下 session 在生成过程中 crash，未完成：B-S07, B-S08, B-S09, B-S10。
+详见页面底部"错误分析"。
 </div>
 
-<div class="page" id="page1">
-  <h2>生成结果</h2>
-  <div class="info">此处展示之前用 case_a 跑的 2-session 测试结果（outputs/test_case_a_2s）。运行完整 pipeline 后可展示更多。</div>
-  
-        <div class="session-block">
-          <div class="session-title">A-S01 · 排展忙碌里被“时间”刺到的遗憾 · 2026-07-13</div>
-          
-            <div class="turn user">
-              <div class="turn-meta">A-S01_T01 · A-S01_R01</div>
-              <div class="turn-text">我今天又在博物馆排展到快关门，顺手把之前奶奶给我的那盒旧照片翻了一下。翻到一半就被手机提示吓了一跳——有个来电记录还在那儿，时间显示得很刺眼。</div>
-            </div>
-            <div class="turn assistant">
-              <div class="turn-meta">A-S01_T02 · A-S01_R01</div>
-              <div class="turn-text">啊，这种提示确实挺难受的……你看着它会一下子就出戏。</div>
-            </div>
-            <div class="turn user">
-              <div class="turn-meta">A-S01_T03 · A-S01_R02</div>
-              <div class="turn-text">不是提醒，就是来电记录那条还在。我盯着看了一会儿，就突然想：是不是当时就来不及了……我本来想着回头再打过去，结果就没了。</div>
-            </div>
-            <div class="turn assistant">
-              <div class="turn-meta">A-S01_T04 · A-S01_R02</div>
-              <div class="turn-text">我懂……看着“还在”那种感觉最磨人。要是当时再快一点就好了。</div>
-            </div>
-            <div class="turn user">
-              <div class="turn-meta">A-S01_T05 · A-S01_R03</div>
-              <div class="turn-text">还在忙，展陈时间表我都贴在桌上了。刚才又有人问“今天这块什么时候装”，我就顺嘴回了时间，心里却又觉得很怪——时间表越正常，我越觉得当时不该拖。</div>
-            </div>
-            <div class="turn assistant">
-              <div class="turn-meta">A-S01_T06 · A-S01_R03</div>
-              <div class="turn-text">那就先把今天的活按顺序做完就行。时间表你照着用，别把这事硬扛上。</div>
-            </div>
-            <div class="turn user">
-              <div class="turn-meta">A-S01_T07 · A-S01_R04</div>
-              <div class="turn-text">行，我先把标牌贴完。就是有时候也挺烦的，忙起来没空想，手里一拿到什么旧的、或者看到那个时间，我就又回到“通话那天”了。</div>
-            </div>
-            <div class="turn assistant">
-              <div class="turn-meta">A-S01_T08 · A-S01_R04</div>
-              <div class="turn-text">懂，你那会儿就是会被它拉回来。标牌先一张张贴着，等这波结束再缓一缓；要是又冒出来，就先停两秒也行，别硬撑。</div>
-            </div>
-        </div>
-
-        <div class="session-block">
-          <div class="session-title">A-S02 · 宿舍旧物触发记忆：确认遗憾并安放 · 2026-07-14</div>
-          
-            <div class="turn user">
-              <div class="turn-meta">A-S02_T01 · A-S02_R01</div>
-              <div class="turn-text">我在宿舍整理那堆展签草稿和旧纸箱，顺手把奶奶那边的东西也翻出来了。就是……有个小录音载体在里面，我拿起来闻了一下，纸箱那味道一下就上来了。</div>
-            </div>
-            <div class="turn assistant">
-              <div class="turn-meta">A-S02_T02 · A-S02_R01</div>
-              <div class="turn-text">哎……这个味道太顶了。你先别急着把它继续翻，先把展签那边的先收一收，给自己留点空。</div>
-            </div>
-            <div class="turn user">
-              <div class="turn-meta">A-S02_T03 · A-S02_R02</div>
-              <div class="turn-text">我分了，展签那边倒是快好了。可我看到那张照片背面有字——还是奶奶的笔迹。然后我突然就又想到：她去世前最后一次通话……我那次没接上。</div>
-            </div>
-            <div class="turn assistant">
-              <div class="turn-meta">A-S02_T04 · A-S02_R02</div>
-              <div class="turn-text">嗯，我懂。你说的是最后那通电话你没接上。别硬撑着，先把那张照片放一边。</div>
-            </div>
-            <div class="turn user">
-              <div class="turn-meta">A-S02_T05 · A-S02_R03</div>
-              <div class="turn-text">对，就是最后一次。其实我也不想再讲过程了，反正结果就是——来不及。我一直以为忙起来会好点，结果不是，旧东西一出来就又回去。</div>
-            </div>
-            <div class="turn assistant">
-              <div class="turn-meta">A-S02_T06 · A-S02_R03</div>
-              <div class="turn-text">好，那我们先不碰它。你就把它先收起来，放个你不那么容易看到的地方。要是你愿意，我可以帮你把桌面顺手收一收，省得你一边难受一边还要弄。</div>
-            </div>
-            <div class="turn user">
-              <div class="turn-meta">A-S02_T07 · A-S02_R04</div>
-              <div class="turn-text">我把它单独放抽屉里了，旁边还压了个便签：‘以后家里有事先回消息。’我突然觉得……遗憾不是要我一直回看，至少能让我接下来别再拖。</div>
-            </div>
-            <div class="turn assistant">
-              <div class="turn-meta">A-S02_T08 · A-S02_R04</div>
-              <div class="turn-text">那就挺好。便签是你的决定，就让它当个提醒：接下来你怎么做更舒服、你自己定。等你把手头这阵忙完，再说其他的也不迟。</div>
-            </div>
-            <div class="turn user">
-              <div class="turn-meta">A-S02_T09 · A-S02_R05</div>
-              <div class="turn-text">行。那我把展签剩下的也搞完。等忙完我再挑一天……不现在。我想先把今天的东西都收住。</div>
-            </div>
-            <div class="turn assistant">
-              <div class="turn-meta">A-S02_T10 · A-S02_R05</div>
-              <div class="turn-text">好，你就把今天该收的收完就行。抽屉那边先不打开，今天只管把展签弄到能交差的程度。</div>
-            </div>
-        </div>
+<div class="plan">
+  <div class="plan-head">
+    <span class="sid">B-S01</span>
+    <span class="date">2026-07-13</span>
+    <span class="rounds">5轮</span>
+    <span class="status status-ok">OK</span>
+  </div>
+  <div class="topic">跑步装备小技巧（鞋带系法/包裹感）</div>
+  <div class="beat"><b>story_beat：</b>周一早上在公司打印机旁等机器复印，刷到同事分享的跑步装备小视频，提到鞋带系法的小技巧。</div>
+  <div class="func"><b>功能：</b>日常闲聊，展示用户在无关话题下的自然状态（不触发核心情绪）。</div>
+</div>
+<div class="plan">
+  <div class="plan-head">
+    <span class="sid">B-S02</span>
+    <span class="date">2026-07-15</span>
+    <span class="rounds">4轮</span>
+    <span class="status status-ok">OK</span>
+  </div>
+  <div class="topic">跑鞋店偶遇：新款缓震鞋与闷热担忧</div>
+  <div class="beat"><b>story_beat：</b>午后路过跑鞋店橱窗，听到店里播放的同一首节奏很快的歌，店员在推荐“缓震但不闷热”的新款鞋。</div>
+  <div class="func"><b>功能：</b>物品/场景触发，使用外部环境轻轻触发情绪气味但不涉及核心事件细节。</div>
+</div>
+<div class="plan">
+  <div class="plan-head">
+    <span class="sid">B-S03</span>
+    <span class="date">2026-07-17</span>
+    <span class="rounds">6轮</span>
+    <span class="status status-ok">OK</span>
+  </div>
+  <div class="topic">AI效率工具与通勤延误吐槽</div>
+  <div class="beat"><b>story_beat：</b>下班路上地铁广播反复报站延误，大家在车厢里吐槽；用户顺手聊起最近刷到的AI效率工具能把会议纪要自动整理。</div>
+  <div class="func"><b>功能：</b>日常闲聊，切到外部领域话题，保持话题多样性且不重复前一主题。</div>
+</div>
+<div class="plan">
+  <div class="plan-head">
+    <span class="sid">B-S04</span>
+    <span class="date">2026-07-19</span>
+    <span class="rounds">5轮</span>
+    <span class="status status-ok">OK</span>
+  </div>
+  <div class="topic">被同事提到相关赛事后的真实情绪（不愿细说经过）</div>
+  <div class="beat"><b>story_beat：</b>公司电梯里同事提到“上次那场半马你挺拼的”，并把一张比赛纪念海报随手贴在工位旁；用户当下情绪有波动，但仍用自嘲语气回应。</div>
+  <div class="func"><b>功能：</b>核心事件相关触发，需由外部诱因引起用户表达情绪（用户主动回忆不得超过1次）。</div>
+</div>
+<div class="plan">
+  <div class="plan-head">
+    <span class="sid">B-S05</span>
+    <span class="date">2026-07-22</span>
+    <span class="rounds">4轮</span>
+    <span class="status status-ok">OK</span>
+  </div>
+  <div class="topic">跑步训练复盘：配速策略与调整计划</div>
+  <div class="beat"><b>story_beat：</b>周末清晨在跑步路线经过一处旧标志牌（路边常见的里程点），风很大，用户提到“今天配速比想象稳”，并顺势聊起如何调整训练计划。</div>
+  <div class="func"><b>功能：</b>怀旧/收束，由外部触发让用户逐渐平静地复盘但不再主动深挖核心过程。</div>
+</div>
+<div class="plan">
+  <div class="plan-head">
+    <span class="sid">B-S06</span>
+    <span class="date">2026-07-20</span>
+    <span class="rounds">5轮</span>
+    <span class="status status-ok">OK</span>
+  </div>
+  <div class="topic">工作流程吐槽：原型评审怎么做更快</div>
+  <div class="beat"><b>story_beat：</b>在公司午休，用户聊到刚改版的办公表格/原型评审流程同事吐槽太复杂，顺带聊到自己最近在用哪种“更快做决定”的方法。</div>
+  <div class="func"><b>功能：</b>日常闲聊，展示用户在无关话题下的自然状态（不触发核心情绪）。</div>
+</div>
+<div class="plan">
+  <div class="plan-head">
+    <span class="sid">B-S07</span>
+    <span class="date">2026-07-22</span>
+    <span class="rounds">4轮</span>
+    <span class="status status-crash">CRASH</span>
+  </div>
+  <div class="topic">便利店广播的老歌，顺便聊跑步节奏</div>
+  <div class="beat"><b>story_beat：</b>傍晚路过便利店时，广播里放起一段很熟的年代感流行歌；用户提到自己对节拍很敏感，想用它调整跑步节奏。</div>
+  <div class="func"><b>功能：</b>物品/场景触发，外部环境轻轻引发情绪，但不指向核心事件细节。</div>
+</div>
+<div class="plan">
+  <div class="plan-head">
+    <span class="sid">B-S08</span>
+    <span class="date">2026-07-25</span>
+    <span class="rounds">6轮</span>
+    <span class="status status-crash">CRASH</span>
+  </div>
+  <div class="topic">AI 生成草图的短视频热梗与设计落地</div>
+  <div class="beat"><b>story_beat：</b>周末晚上一边刷短视频，用户看到一个关于“AI 生成设计草图”的挑战赛，聊到不同人怎么把想法落成原型。</div>
+  <div class="func"><b>功能：</b>日常闲聊，切到外部领域话题，保持多样性且不重复前一主题。</div>
+</div>
+<div class="plan">
+  <div class="plan-head">
+    <span class="sid">B-S09</span>
+    <span class="date">2026-07-27</span>
+    <span class="rounds">5轮</span>
+    <span class="status status-crash">CRASH</span>
+  </div>
+  <div class="topic">再次被“同款鞋感”勾起的介意感（不说经过）</div>
+  <div class="beat"><b>story_beat：</b>在跑鞋店试鞋时，店员拿出一双与“某次比赛同款脚感”的鞋垫展示给用户对比，用户下意识皱眉并直接表示自己其实有点介意；同时聊到自己不太想跟同事解释这些细节。</div>
+  <div class="func"><b>功能：</b>核心事件相关触发，用户明确表达情绪；情绪由外部物品/场景触发（不得让用户主动翻找或主动回忆经过）。</div>
+</div>
+<div class="plan">
+  <div class="plan-head">
+    <span class="sid">B-S10</span>
+    <span class="date">2026-07-30</span>
+    <span class="rounds">4轮</span>
+    <span class="status status-crash">CRASH</span>
+  </div>
+  <div class="topic">新路面带来的脚感变化：训练小总结</div>
+  <div class="beat"><b>story_beat：</b>清晨沿跑步路线经过一段新铺的路面，脚感比想象更稳；用户提到自己最近恢复得还不错，并把这段体验用轻松的方式总结成给未来训练的提醒。</div>
+  <div class="func"><b>功能：</b>怀旧/收束，用户能更平静地回顾，但仍由外部触发引出。</div>
 </div>
 
-<script>
-function showPage(i) {
-  document.querySelectorAll('.tab').forEach((t, idx) => t.classList.toggle('active', idx === i));
-  document.querySelectorAll('.page').forEach((p, idx) => p.classList.toggle('active', idx === i));
-  window.scrollTo(0, 0);
-}
-</script>
+<h1>4. 生成结果（已完成 6 个 session）</h1>
+
+<div class="sess">
+  <h3>B-S01 · 跑步装备小技巧（鞋带系法/包裹感） · 2026-07-13</h3>
+  <div class="turn u">
+  <div class="tmeta">B-S01_T01 · B-S01_R01 · user</div>
+  <div class="ttext">我在公司打印机旁等复印，机器磨磨唧唧的。我刷到隔壁同事发的跑步装备视频，讲鞋带怎么系更稳，笑死了，他还挺认真。你也会折腾这种吗？</div>
+</div>
+<div class="turn a">
+  <div class="tmeta">B-S01_T02 · B-S01_R01 · assistant</div>
+  <div class="ttext">会啊，不然跑到半路鞋带松了才是真折磨。你别说，他那个视频我也看了，感觉像在教人打“鞋带结界”。你自己平时系法是怎么搞的？</div>
+</div>
+<div class="turn u">
+  <div class="tmeta">B-S01_T03 · B-S01_R02 · user</div>
+  <div class="ttext">我就最传统那种：先交叉再拉紧，图省事。结果就是——包裹感看运气。有时候上脚很贴，有时候脚后跟像没抱住一样，还得下次调整。</div>
+</div>
+<div class="turn a">
+  <div class="tmeta">B-S01_T04 · B-S01_R02 · assistant</div>
+  <div class="ttext">你这就是“全靠缘分系鞋带”🤣。视频里不就是教你把某几段绕一下，让前掌和后跟受力更均匀吗？你要是愿意折腾，我建议你先试最简单的：鞋头那几对鞋带别全交叉到底，留一点“护住脚背”的位置。</div>
+</div>
+<div class="turn u">
+  <div class="tmeta">B-S01_T05 · B-S01_R03 · user</div>
+  <div class="ttext">听着就像给鞋做结构优化……我做产品设计都没这么细。那怎么判断系得对没？总不能每次都跑完才发现脚在骂我吧。</div>
+</div>
+<div class="turn a">
+  <div class="tmeta">B-S01_T06 · B-S01_R03 · assistant</div>
+  <div class="ttext">你可以当“验收”啊：上脚站着走两步，脚趾别在前面顶到鞋头；后跟别一蹲就往上滑。还有最直观的，跑步前一百米，感觉鞋跟那块有没有“咯噔”一下松掉。稳定了就继续，松了就回去改那两三条线。</div>
+</div>
+<div class="turn u">
+  <div class="tmeta">B-S01_T07 · B-S01_R04 · user</div>
+  <div class="ttext">行，那我今天下班试试。对了，视频里还有个点提到“鞋带包裹感”，说是要让受力别只在中间那一段。这个我懂，像你做交互，别只靠一个控件稳住体验。</div>
+</div>
+<div class="turn a">
+  <div class="tmeta">B-S01_T08 · B-S01_R04 · assistant</div>
+  <div class="ttext">哟，你还把我视频跟交互扯上了，那我是不是该鼓掌一下？不过说真的，鞋带就是这种“分散受力”。你记得别勒太死，勒到缺血跑两公里就知道啥叫翻车。</div>
+</div>
+<div class="turn u">
+  <div class="tmeta">B-S01_T09 · B-S01_R05 · user</div>
+  <div class="ttext">哈哈我知道，勒太死我脚背会抗议。那你呢？你现在用的系法是什么，给我报个“方案代号”，我好抄作业。</div>
+</div>
+<div class="turn a">
+  <div class="tmeta">B-S01_T10 · B-S01_R05 · assistant</div>
+  <div class="ttext">方案代号就叫“轻松抱后跟版”。做法很简单：后跟两侧那几根鞋带不要太松，但也别硬拉死；中间区域交叉加紧，鞋头留个小空间让脚趾活动。你照着改两次就能找到你那双鞋的脾气。晚上要不要我跟你一起下班试？</div>
+</div>
+</div>
+<div class="sess">
+  <h3>B-S02 · 跑鞋店偶遇：新款缓震鞋与闷热担忧 · 2026-07-15</h3>
+  <div class="turn u">
+  <div class="tmeta">B-S02_T01 · B-S02_R01 · user</div>
+  <div class="ttext">我刚路过你知道那种跑鞋店吗？橱窗外面放着一首超快的歌，节奏快得我以为店里在开“冲刺模式”。我站那儿听了两秒，店员就冲出来问我：要不要试试他们新款缓震鞋，说是“缓震但不闷热”。你说这词儿是不是都快写进营销嘴皮子里了？</div>
+</div>
+<div class="turn a">
+  <div class="tmeta">B-S02_T02 · B-S02_R01 · assistant</div>
+  <div class="ttext">哈哈“冲刺模式”这个形容太对了。你别说，店员那套话术我都听腻了：缓震不闷热、包裹有回弹……听完我只想问一句：那鞋底有没有真的跑起来爽？
+你要真去试，别光看宣传，直接闻一下鞋舌那块、摸摸内衬，闷热不闷热通常不靠嘴说，靠材料和做工。你最近跑步热不热？</div>
+</div>
+<div class="turn u">
+  <div class="tmeta">B-S02_T03 · B-S02_R02 · user</div>
+  <div class="ttext">热啊，最近我跑步经常一开始还行，跑到后半程脚背那一块就开始“发热预警”。我就很烦那种鞋：明明说缓震，结果里面像蒸笼，还得我下次换鞋再重新适应。
+店员说它“透气膜层”，但我听着像是给它穿了层隐形保温衣。你见过真正不闷的吗？</div>
+</div>
+<div class="turn a">
+  <div class="tmeta">B-S02_T04 · B-S02_R02 · assistant</div>
+  <div class="ttext">我见过“至少没那么闷”的，关键看两点：第一是鞋舌/鞋面有没有那种真正的开放结构（不是只靠个贴片）；第二是你脚背有没有因为包裹被压住——压住了就算透气也会闷。
+要我说，你试的时候就干两件事：穿上先站着走一走，脚背那块热不热；然后轻微做点脚踝摆动，看看有没有“闷住的死点”。
+而且你别担心，你要是觉得它闷，我就当场吐槽陪你，不让你自己尴尬。</div>
+</div>
+<div class="turn u">
+  <div class="tmeta">B-S02_T05 · B-S02_R03 · user</div>
+  <div class="ttext">那我得问得更具体点：你觉得缓震和不闷热是不是天然冲突？因为我以前买到那种软到塌的泡棉鞋，基本上都热得离谱。
+还有尺码，店员老喜欢让我“就按平时的穿”，但我上脚那一下就感觉脚背被顶着了。你说我该大半码，还是干脆换鞋型？</div>
+</div>
+<div class="turn a">
+  <div class="tmeta">B-S02_T06 · B-S02_R03 · assistant</div>
+  <div class="ttext">不完全是冲突，但确实容易被“堆料”弄成两头都没照顾好。
+缓震这事儿，材料越厚、越包裹、结构越封闭，理论上越不容易散热；所以你踩雷那种“软到塌”的，大概率就是泡棉+包裹把热留在里面了。
+尺码上我更偏向你先别急着加大半码：你要先判断是“长度不够”还是“脚背被压”。
+- 如果长度刚好但脚背顶：那往往是鞋楦/鞋型宽度或上部空间不对，不是简单大半码能救。
+- 如果脚背不顶、只是趾前挤：再考虑大半码。
+你可以试着把系带松到脚背压力最小的状态跑两分钟，再系回去感受差别——差别大的通常就说明是包裹结构的问题。</div>
+</div>
+<div class="turn u">
+  <div class="tmeta">B-S02_T07 · B-S02_R04 · user</div>
+  <div class="ttext">你说得我都想当场变成“鞋子测试员”了……我就讨厌那种试穿时看着还行，跑起来才开始烤脚的。
+行，那我下次顺路真的去试。你到时候陪我吗？我怕我一犹豫就又被店员那套“回弹给你按摩脚底”洗脑。</div>
+</div>
+<div class="turn a">
+  <div class="tmeta">B-S02_T08 · B-S02_R04 · assistant</div>
+  <div class="ttext">陪啊，你负责吐槽我负责监督：你试的时候把“脚背热不热”当第一指标，别被他们讲的“缓震黑科技”带偏。
+另外你到店里就直接问一句：鞋面通风是靠大面积透气结构，还是靠那种小贴片？店员如果只会背词，你就直接翻白眼走人。
+等你试完发我一句：站着走一走和轻微踝摆动时，脚背温度感受到底是“可控”还是“蒸笼复刻”。</div>
+</div>
+</div>
+<div class="sess">
+  <h3>B-S03 · AI效率工具与通勤延误吐槽 · 2026-07-17</h3>
+  <div class="turn u">
+  <div class="tmeta">B-S03_T01 · B-S03_R01 · user</div>
+  <div class="ttext">我快被地铁整疯了……广播一遍一遍报“延误”，还老是同一句。车厢里那种集体沉默然后集体骂街的气氛太离谱了。</div>
+</div>
+<div class="turn a">
+  <div class="tmeta">B-S03_T02 · B-S03_R01 · assistant</div>
+  <div class="ttext">你这描述就像在开“延误合唱团”🤣。我刚上车的时候也听到了，广播那语气跟在念咒一样。你今天又是哪条线？</div>
+</div>
+<div class="turn u">
+  <div class="tmeta">B-S03_T03 · B-S03_R02 · user</div>
+  <div class="ttext">我也不想说哪条线，说了你肯定也会说“我早就知道”。反正我在车厢里刷手机刷到AI效率工具，居然能把会议纪要自动整理，还能顺带提要点。我当场就想：这不就是把我们“会后谁来写”这件事外包了？</div>
+</div>
+<div class="turn a">
+  <div class="tmeta">B-S03_T04 · B-S03_R02 · assistant</div>
+  <div class="ttext">外包是吧，那挺好，反正我们同事也不太爱写纪要。等会儿它自动整理完，估计还会自动生成“后续行动：XX同事跟进（未确认）”。AI写不写都一样，只是从“手写地狱”换成“自动假靠谱”😆</div>
+</div>
+<div class="turn u">
+  <div class="tmeta">B-S03_T05 · B-S03_R03 · user</div>
+  <div class="ttext">对对对，它要真能把“未确认”这种词替换成“在我这儿已确认”，我愿意给它涨会员费。问题是我看视频说它会把语音转文字、再归纳。我就想问：那种会议上大家一边聊一边打岔，它还能靠谱吗？</div>
+</div>
+<div class="turn a">
+  <div class="tmeta">B-S03_T06 · B-S03_R03 · assistant</div>
+  <div class="ttext">靠谱不靠谱先看它有没有做“说话内容拆分”和“要点提取”的能力——你们开会那种一边聊一边插话，最怕的就是它把上下文搅成一锅粥。
+不过这种工具通常不会完美：要是语音能转得清、归纳逻辑靠谱，它就会像个勤快秘书；要是转写断句乱、归纳太发散，就会把重点写成玄学诗😂
+你要是把视频里它的具体功能点/界面截图发我，我能更准确判断它属于哪种。</div>
+</div>
+<div class="turn u">
+  <div class="tmeta">B-S03_T07 · B-S03_R04 · user</div>
+  <div class="ttext">哈哈你这么说我就放心一点。对了，我现在在地铁上没网也快没电了……所以我在想能不能用那种工具做“通勤离线版”。比如我上班路上录个语音，到了公司直接生成一份“今天要处理的事”。</div>
+</div>
+<div class="turn a">
+  <div class="tmeta">B-S03_T08 · B-S03_R04 · assistant</div>
+  <div class="ttext">你这个想法挺直的：就是把信息流先攒起来，到了公司再变成能执行的条目。
+“离线版”能不能成，主要看它是边录边处理，还是得联网在云端跑。
+你先别急着定死功能——等你把视频里那款工具名/截图发我，我们再对照它到底怎么做转写/归纳：哪些步骤能本地完成，哪些步骤必须联网。</div>
+</div>
+<div class="turn u">
+  <div class="tmeta">B-S03_T09 · B-S03_R05 · user</div>
+  <div class="ttext">行，但你别又给我推荐那种“全能但啥都不行”的。我想要的是那种：语音转写准确一点，自动归纳别太离谱，不然我会忍不住想改到半夜。
+另外地铁又报延误了，广播说“请耐心等待”，我已经把耐心用完了。</div>
+</div>
+<div class="turn a">
+  <div class="tmeta">B-S03_T10 · B-S03_R05 · assistant</div>
+  <div class="ttext">“把耐心用完了”这句很真实😂
+我不乱保证结果：你把视频工具名丢我（或者截图文案里提到的关键词也行），我就按它公开说的功能点去核对，比如有没有“分段转写/说话人区分/归纳规则可调”这些。
+至于地铁——你先顾安全和体力，想换路线就按当下车站通行情况来，别硬扛不确定的路。</div>
+</div>
+<div class="turn u">
+  <div class="tmeta">B-S03_T11 · B-S03_R06 · user</div>
+  <div class="ttext">走两公里我倒是能走……但我现在穿的鞋是我最不想在雨天验证抓地力的那双。算了，我再忍一下。
+我发你那条AI工具视频的链接，你看完帮我挑个别太离谱的。等到公司我就把通勤录音直接变成任务清单，省得我脑子被延误占用。</div>
+</div>
+<div class="turn a">
+  <div class="tmeta">B-S03_T12 · B-S03_R06 · assistant</div>
+  <div class="ttext">行，你把链接发来。你到公司照这个顺序搞就省事：录音→转写→整理成要点/任务。
+在你没给我具体内容前，我先按你关心的点去盯它：1）离线/本地能不能跑、哪些步骤需要联网；2）转写清不清楚（分段/噪声/说话人区分有没有说）；3）归纳是模板式还是自由生成、能不能调重点；4）导出结果能不能直接复制成任务清单。
+你雨天别摔，鞋子一旦不可靠真的会很影响心情。😏</div>
+</div>
+</div>
+<div class="sess">
+  <h3>B-S04 · 被同事提到相关赛事后的真实情绪（不愿细说经过） · 2026-07-19</h3>
+  <div class="turn u">
+  <div class="tmeta">B-S04_T01 · B-S04_R01 · user</div>
+  <div class="ttext">今天电梯里我刚站定，同事就突然提我上次那场半马，说“你挺拼的”。他还顺手把那张比赛纪念海报贴我工位旁边，贴得老显眼。
+我当时就……嘴上得回两句吧，但我真不想聊那段经过。你说就不能放过人吗？</div>
+</div>
+<div class="turn a">
+  <div class="tmeta">B-S04_T02 · B-S04_R01 · assistant</div>
+  <div class="ttext">哈哈海报贴工位旁边这操作也太社牛了吧🤣 你不想聊也挺正常，毕竟人家拿你当战绩在说。
+而且你那句“别放过人”本身就挺直球的——不想继续被追问、被继续解读，对吧？</div>
+</div>
+<div class="turn u">
+  <div class="tmeta">B-S04_T03 · B-S04_R02 · user</div>
+  <div class="ttext">两者都有一点。
+但我最烦的是——他那种语气像在夸我“挺拼”，可我自己知道我拼得有多狼狈。我就回了句“谢谢啊，我下次争取不丢脸”，然后继续装作在看手机。
+结果他还想接话，我就赶紧把话题往别的项目上扯。</div>
+</div>
+<div class="turn a">
+  <div class="tmeta">B-S04_T04 · B-S04_R02 · assistant</div>
+  <div class="ttext">你这“丢脸”属于自嘲得刚刚好，既不撕破脸又把人挡回去，挺你风格的。
+那海报你打算怎么处理？贴着也会提醒你，撕了又像在欲盖弥彰……要不就继续当背景噪音：看不顺眼就当它不存在，顺眼了再瞄两眼😂</div>
+</div>
+<div class="turn u">
+  <div class="tmeta">B-S04_T05 · B-S04_R03 · user</div>
+  <div class="ttext">对，就是“背景噪音”。我也就嘴硬两下。
+说真的，最难受的不是别人夸我，是我自己脑子里会不自觉回到那种状态。然后我就会想：行行行，别再让我解释了。
+我宁愿让大家以后记住的是我跑完十公里那种“正常结果”，不是那些中途的插曲。</div>
+</div>
+<div class="turn a">
+  <div class="tmeta">B-S04_T06 · B-S04_R03 · assistant</div>
+  <div class="ttext">懂你说的点：你就是不想再把细节拿出来对人讲一遍。
+今晚你下班后还跑不跑？要跑的话你就直接把路线当作“屏蔽键”，别跟海报和人讨论同一件事——我在旁边盯配速，你按你自己的节奏走就行。</div>
+</div>
+<div class="turn u">
+  <div class="tmeta">B-S04_T07 · B-S04_R04 · user</div>
+  <div class="ttext">跑，我还是跑。
+但今晚我先不搞什么“证明给谁看”，就把心率拉稳、把脚步走顺。你别问我半马怎么了，海报也别让我对着它发誓“我没事”。我只想把自己捡回来，然后该怎么跑就怎么跑。</div>
+</div>
+<div class="turn a">
+  <div class="tmeta">B-S04_T08 · B-S04_R04 · assistant</div>
+  <div class="ttext">行，那就按你说的：不复盘、不表演，只管把节奏找回来。
+你先热身十分钟别急着硬冲；我盯着配速，你就盯着脚下别跟那段不舒服较劲。等跑完再说，喝的先安排上😂</div>
+</div>
+<div class="turn u">
+  <div class="tmeta">B-S04_T09 · B-S04_R05 · user</div>
+  <div class="ttext">你这安排听着就很靠谱，终于有人不逼我讲故事了。
+海报那块我也不打算立刻“处置”，先当它是我工位旁边的一个提醒：提醒我——今天别被情绪带跑偏。
+那今晚就拜托你当我的“盯配速同事”，别等我跑崩的时候才开始安慰我。</div>
+</div>
+<div class="turn a">
+  <div class="tmeta">B-S04_T10 · B-S04_R05 · assistant</div>
+  <div class="ttext">没问题，盯配速这活我接了😂 
+到时候你就照着该跑就跑；我负责看你别把节奏跑飞，也顺便吐槽路边的风和人行道的坑。</div>
+</div>
+</div>
+<div class="sess">
+  <h3>B-S05 · 跑步训练复盘：配速策略与调整计划 · 2026-07-22</h3>
+  <div class="turn u">
+  <div class="tmeta">B-S05_T01 · B-S05_R01 · user</div>
+  <div class="ttext">我刚跑到你说的那段路线，路边那个旧标志牌还在呢，风也跟上次一样大。怪不得我今天一开始就觉得还行——配速比想象稳。</div>
+</div>
+<div class="turn a">
+  <div class="tmeta">B-S05_T02 · B-S05_R01 · assistant</div>
+  <div class="ttext">旧标志牌+大风，这画面一出来就知道你今天跑得不慌😂 你这“配速稳住”的感觉到底是怎么来的？是靠感觉扛着，还是你有在盯个什么指标？</div>
+</div>
+<div class="turn u">
+  <div class="tmeta">B-S05_T03 · B-S05_R02 · user</div>
+  <div class="ttext">我哪有意志啊，就是一开始我把配速压得比计划慢个几秒，然后看体感和心率在不在同一条线上。
+风一阵一阵的，我就不跟它较劲，感觉撑住了再慢慢往回抠回来。</div>
+</div>
+<div class="turn a">
+  <div class="tmeta">B-S05_T04 · B-S05_R02 · assistant</div>
+  <div class="ttext">明白了：你是用“配速慢一点 → 体感和心率对齐 → 再把节奏抠回来”。那你觉得今天的关键点更像是“前半程压住了”，还是“后半程还能接得上”？</div>
+</div>
+<div class="turn u">
+  <div class="tmeta">B-S05_T05 · B-S05_R03 · user</div>
+  <div class="ttext">我没那么精确，反正就是：前半程不炸，后半程还能有点余量。
+如果后半程开始变闷、步频掉，那我就认输，下次就把训练里那种“容易冲的配速段”砍掉，改成更稳的分段。
+说白了，我这周就是先把节奏跑明白，别老想着一次性解决问题。</div>
+</div>
+<div class="turn a">
+  <div class="tmeta">B-S05_T06 · B-S05_R03 · assistant</div>
+  <div class="ttext">好，这里你其实已经把策略说得很清楚了：前半程别炸，后半程要有余量；一旦步频/状态掉就把“容易冲的段”换成更稳的分段。
+那你准备怎么把它落到下周的训练结构里？给我一句你自己的版本就行。</div>
+</div>
+<div class="turn u">
+  <div class="tmeta">B-S05_T07 · B-S05_R04 · user</div>
+  <div class="ttext">我想下周这样：稳定跑照旧，但节奏跑只做短段，宁可多做几次“可控的”重复。
+另外风大这种情况我会直接把配速目标改成“体感优先”，心率偏高就立刻降。
+今天这样配速稳下来，说明我之前那个调整方向是对的：先稳，再推进。就这样，今天到这儿，别让我继续复盘到天黑。</div>
+</div>
+<div class="turn a">
+  <div class="tmeta">B-S05_T08 · B-S05_R04 · assistant</div>
+  <div class="ttext">收到，今天就收。
+你下周的落地版很明确：节奏跑改短段可控重复；大风时体感优先、心率偏高直接降。把这套跑顺了，下次我们再聊下一步怎么“推进”。</div>
+</div>
+</div>
+<div class="sess">
+  <h3>B-S06 · 工作流程吐槽：原型评审怎么做更快 · 2026-07-20</h3>
+  <div class="turn u">
+  <div class="tmeta">B-S06_T01 · B-S06_R01 · user</div>
+  <div class="ttext">午休我在改那个办公表格的原型，结果你猜怎么着——原型评审那套流程居然比我做表格还复杂。开场先复述目标、再列风险、然后每个人都要“补充一个角度”，最后讨论到表格字段命名都能吵十分钟。</div>
+</div>
+<div class="turn a">
+  <div class="tmeta">B-S06_T02 · B-S06_R01 · assistant</div>
+  <div class="ttext">哈哈你这不是评审，是开“字段命名脱口秀”吧😂 你说的那种流程我最烦：一堆铺垫，真正该拍板的东西永远最后十秒才想起来。
+你们到底谁在当裁判？还是大家轮流当裁判然后谁都不裁？</div>
+</div>
+<div class="turn u">
+  <div class="tmeta">B-S06_T03 · B-S06_R02 · user</div>
+  <div class="ttext">就是没有明确裁判。大家一边说“我们再看看数据口径”、一边又拿手机翻历史工单，翻到最后表格都快过期了。
+我现在就想搞个更快的版本：评审前先把“必须一致的点”写死，然后会议里只对那些点做决定，其它的就当建议收集，会议结束再说。</div>
+</div>
+<div class="turn a">
+  <div class="tmeta">B-S06_T04 · B-S06_R02 · assistant</div>
+  <div class="ttext">可以啊，你这个思路很像我跑步的时候：先把配速目标定了，其他风景随便看，别一开跑就开始复盘“人生为什么这么累”。
+不过我得吐槽一句：你说写死“必须一致的点”，听起来很像你会忍不住想把清单写到三页纸——然后还是慢。你准备怎么让它短？</div>
+</div>
+<div class="turn u">
+  <div class="tmeta">B-S06_T05 · B-S06_R03 · user</div>
+  <div class="ttext">我最近确实在用一种“更快做决定”的土方法，不是写三页纸。
+我会先给每个评审项配一个一句话判定标准，比如“展示口径是否一致/是否能在两次点击内完成/是否会引起误操作”。标准就一句话，没达到就直接改；达到就直接过。
+然后我把评审项控制在三到五个，超过我就知道这次评审其实是在拖延。</div>
+</div>
+<div class="turn a">
+  <div class="tmeta">B-S06_T06 · B-S06_R03 · assistant</div>
+  <div class="ttext">三到五个！这才像话🤣 你这个“判定标准一句话”比我们那套先讲背景后讲背景再讲背景强太多了。
+那你怎么收尾？因为很多人最后会开始加戏：‘等等，我觉得还能更好’。你是怎么把这种“还能更好”按住的？</div>
+</div>
+<div class="turn u">
+  <div class="tmeta">B-S06_T07 · B-S06_R04 · user</div>
+  <div class="ttext">我就一句：能不能进下一轮。不能就放进“建议池”，但这轮不讨论。
+我会在会议开始前先说清楚：我们只做决定，不做完美。要是有人想继续拓展，就让他把扩展变成下一轮的输入。
+说白了，我就是不想再让会议变成“越聊越散的集体自嗨”。</div>
+</div>
+<div class="turn a">
+  <div class="tmeta">B-S06_T08 · B-S06_R04 · assistant</div>
+  <div class="ttext">行，这个我认同，你这种话术有用，至少能把人从“闲聊模式”拽回“拍板模式”。
+不过我也要反怼：你这么搞，万一评审项太少，出了问题会不会还得你背锅？毕竟裁判少，锅也少不掉。</div>
+</div>
+<div class="turn u">
+  <div class="tmeta">B-S06_T09 · B-S06_R05 · user</div>
+  <div class="ttext">背锅肯定有，但我宁愿背“我拍板很快，但标准清楚”，也不想背“我们讨论了两小时，最后谁都没决定。
+而且我会把原型评审的输出做成一张很短的结论单：这轮通过/这轮修改/建议池有哪些。这样到时候追责也有个落点。
+你就说吧，这套要是能跑通，我下次就不想在评审里跟他们一起熬到字段命名都能变成哲学了。</div>
+</div>
+<div class="turn a">
+  <div class="tmeta">B-S06_T10 · B-S06_R05 · assistant</div>
+  <div class="ttext">结论单+通过/修改/建议池——漂亮，干脆。你这不是原型评审，是项目管理的“快递分拣台”😂
+那你明天就拿这个去试一轮：先别全公司推，就你这一个表格原型。成了我就当场帮你吐槽那套旧流程：让它知道什么叫效率。</div>
+</div>
+</div>
+
+
+<h2 id="crash">B-S07 Crash 分析</h2>
+<div class="info">
+<p><b>现象：</b>B-S07 在 cycle 3 的 session_verifier（语义校验）调用 LLM 时抛出异常，整个 pipeline 进程 crash。B-S07 及之后的 B-S08/B-S09/B-S10 都未生成。</p>
+<p><b>证据：</b>B-S07 目录下文件清单（按时间顺序）：</p>
+<pre>01_writer.json
+02_cycle_1_reviser.json
+02_cycle_1_structural_verifier.json
+03_cycle_2_reviser.json
+03_cycle_2_session_verifier.json
+03_cycle_2_structural_verifier.json
+04_cycle_3_structural_verifier.json</pre>
+<p><b>关键缺失：</b>没有 <code>04_cycle_3_session_verifier.json</code> 和 <code>04_cycle_3_reviser.json</code>，但有 <code>04_cycle_3_structural_verifier.json</code>（且 result=pass）。
+说明 structural_verifier 通过后，进入 <code>self.verifier.run(...)</code> 调用 LLM 时崩溃。</p>
+<p><b>根因：</b>pipeline.py 第 153 行 <code>self.verifier.run(case, plan.model_dump(), session, recent)</code> 抛出 RuntimeError（LLMClient 在 max_retries=3 次重试后仍失败），
+该异常在 pipeline 主循环（第 129 行 <code>for plan in plans.plans[...]</code>）中<b>未被捕获</b>，导致整个 run.py 进程退出（非 0 返回码）。</p>
+<p><b>web_app 表现：</b>web_app.py 第 543 行 <code>return_code != 0</code> 分支只显示"生成任务未完成"，未展示具体错误信息，用户体验差。</p>
+</div>
+
+<h3>建议修复</h3>
+<div class="info">
+<p><b>1. pipeline 层（治本）：</b>在 <code>for plan in plans.plans</code> 循环内用 try/except 包裹单个 session 的生成逻辑，
+单个 session 失败时记录错误、跳过该 session（或用占位 session 填充），继续后续 session。这样 B-S07 失败不会阻塞 B-S08/B-S09/B-S10。</p>
+<p><b>2. web_app 层（治标）：</b>读取子进程 stderr/stdout 最后几行，在错误分支展示给用户，方便定位。</p>
+<p><b>3. session_verifier 提示词（根因之一）：</b>cycle 2 的 session_verifier 给出的 issue 描述很长且含"虽然合理，但..."这种主观判断，
+可能导致 reviser 输出后 LLM 在 cycle 3 校验时返回无法解析的 JSON。可考虑简化 verifier 的 issue 描述风格。</p>
+</div>
+
+
 </body>
 </html>
