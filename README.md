@@ -1,6 +1,6 @@
 # 长期对话数据生成器
 
-本项目根据固定 `CaseSpec` 调用兼容 OpenAI API 的模型，生成按时间排列的长期用户—助手对话。当前版本完成纯文本 session 生成、校验、最小修订、自然度检查、结构 QA 和 benchmark JSON 输出；eval 组件的 prompt 已预留，本次测试按要求关闭 eval 生成。
+本项目根据固定 `CaseSpec` 调用兼容 OpenAI API 的模型，生成按时间排列的长期用户—助手对话。当前版本支持纯文本 session 生成，以及按需启用的结构校验、语义校验/修订、自然度检查和最终 QA；eval 组件的 prompt 已预留，本次测试按要求关闭 eval 生成。
 
 ## 项目结构
 
@@ -11,6 +11,25 @@
 - `config.json`：模型、temperature、seed、重试次数、上下文 session 数等配置。
 
 Planner 通过 `planner_batch_size` 分批生成长计划，并把已生成计划传给下一批以维持严格时间顺序，避免兼容网关的单次输出长度限制。
+
+## 最简 Spec 与故事线规划
+
+新建案例时，最简输入只需要两个字段：
+
+```json
+{
+  "name": "林澄",
+  "core_emotional_event": "林澄错过奶奶去世前最后一次通话，留有遗憾。"
+}
+```
+
+原有的嵌套 `character_profile` 格式继续兼容；`identity`、`daily_scenes`、`conversation_style`、`interests`、`persona_summary`、`traits` 和 `assistant_persona` 都是可选的人物种子。未提供时，Planner 会推断少量稳定的普通日常设定。系统只把与规划有关的 `planner_brief` 发送给 SessionPlanner，不再把 cues、eval 等后续阶段字段混入 Planner 输入。
+
+新的 SessionPlan 除了 topic 和 story_beat，还显式包含 `session_type`、`scene`、`user_intent` 与 `continuity_hook`。默认规划要求至少 70% 的 session 完全属于无关日常，并用具体场景、聊天动机和弱连续钩子形成更自然的长期故事线。旧版 `session_plans.json` 仍可读取，缺失的新字段会在载入时使用兼容默认值。
+
+调试 Planner 时，可在 Web 左侧开启“仅生成故事线 Plan”。该模式写出 `session_plans.json`、`session_plans.txt` 和 Planner 审计日志后立即停止，不调用 SessionWriter 或任何验证阶段。Web 会直接展示三类 session 的数量和每条计划的场景、聊天动机、故事节拍与后续钩子。
+
+Web 侧边栏的“页面导航”可以切换到“数据浏览与评估”。该页面会扫描输出根目录下的全部历史运行，兼容完整 benchmark、仅 Plan 和只有 checkpoint 的中断运行；可以查看隐式生活锚点、筛选 Plans、逐 Session 阅读对话、检查快速质量指标，并预览或下载运行目录中的 JSON、TXT 与审计日志。
 
 ## 运行方式
 
@@ -31,6 +50,17 @@ python run.py --case cases/case_a.json --output outputs/case_a
 
 `EvalGenerator`、`EvalVerifier` 与非 LLM 的 `GoldFinalizer` 已提供独立接口。本轮 `run_eval=false`，所以测试 benchmark 的 `eval_samples` 是空数组；后续可在 pipeline 中启用这些组件生成正式 eval。
 
+## 可选验证阶段
+
+为了便于直接调试 SessionPlanner 和 SessionWriter，额外的产物验证阶段默认全部关闭。可在 `config.json` 的 `validation` 中分别开启：
+
+- `structure`：确定性的 turn 数量、ID、round ID 和 speaker 顺序检查，失败时调用 Reviser；
+- `semantic`：调用 SessionVerifier 做语义检查，失败时调用 Reviser；
+- `naturalness`：调用 NaturalnessChecker，并按需做一次最小修订；
+- `qa`：生成最终的非 LLM `qa_report.json`。
+
+Web 页面左侧的“验证阶段（可选）”提供了对应的四个开关，设置只写入本次运行的配置快照，不会修改项目默认配置。即使全部关闭，LLM 输出仍必须通过 Pydantic 数据模型解析，以确保后续代码可以读取生成结果。
+
 ## 生成审计日志
 
-每次运行会在输出目录的 `logs/` 下保存可审阅的阶段记录：`00_original_case_spec.json` 保存原始 spec 和本次生成配置；`01_planner_*.json` 保存 planner 的分批输入输出；`sessions/<session_id>/` 保存 writer 初稿、每轮结构检查、verifier 结论、必要时的 reviser 修改、自然度检查和最终 session；`99_pipeline_result.json` 保存最终 QA 与是否生成 eval。日志不记录 API key。
+每次运行会在输出目录的 `logs/` 下保存可审阅的阶段记录：`00_original_case_spec.json` 保存原始 spec、本次生成配置及验证开关；`01_planner_*.json` 保存 planner 的分批输入输出；`sessions/<session_id>/` 始终保存 writer 初稿和最终 session，并只为实际开启的验证阶段保存检查/修订日志；`99_pipeline_result.json` 保存最终结果与本次验证开关。日志不记录 API key。

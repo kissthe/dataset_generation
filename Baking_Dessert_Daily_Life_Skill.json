@@ -1,0 +1,3396 @@
+{
+  "character_profile": {
+    "name": "Maya",
+    "persona_summary": "Maya is a 32-year-old part-time librarian and mother who has recently embraced baking as a creative outlet and a way to make special treats for her family and friends.",
+    "traits": [
+      "nurturing",
+      "methodical",
+      "enthusiastic",
+      "creative"
+    ],
+    "conversation_style": "Inquisitive and earnest, often asking for step-by-step instructions and sharing personal context for her projects. Expresses genuine excitement and appreciation for guidance."
+  },
+  "multi_session_dialogues": [
+    {
+      "session_id": "D1",
+      "date": "2024-06-24",
+      "dialogues": [
+        {
+          "round": "D1:1",
+          "user": "I am very interested in handmade baking, but I have never done it before. Can you tell me the basics of handmade baking?",
+          "assistant": "Certainly. To get started with manual baking, you need to prepare some basic tools and materials first. In terms of tools, an oven is essential, and choosing a household oven with a capacity of 30 liters or more is more suitable to ensure even heating of food. We also need an electric egg beater, which can save a lot of energy when whipping egg whites and cream. In addition, commonly used tools include flour sieves, mixing pots, baking pans, molds, etc. In terms of materials, low gluten flour, high gluten flour, butter, eggs, and granulated sugar are the basic ingredients. Low gluten flour is suitable for making cakes, while high gluten flour is used for making bread.",
+          "image_id": [
+            "D1:IMG_001"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D1_IMG_001.jpg"
+          ],
+          "image_caption": [
+            "Display counter in a bakery with wooden trays of pastries, including chocolate croissants, plain croissants, almond croissants, nut-topped pastries, and ring-shaped custard danishes, plus a sliced quiche with a serving spatula. Small labels identify items, and packaged goods and a “La boutique 18” sign appear in the background."
+          ]
+        },
+        {
+          "round": "D1:2",
+          "user": "Once the tools and materials are clear, where is the best place to start learning and making them?",
+          "assistant": "For beginners, cookies are a good choice. It is easy to make and has a high success rate. Prepare butter, low gluten flour, granulated sugar, eggs, and other ingredients. Soften the butter first, add granulated sugar and stir evenly, then add the egg mixture in multiple portions and stir. Then sieve in low gluten flour, knead it into dough, put it in a piping bag, squeeze out the shape on a baking tray, put it in a preheated oven, bake at 180 °C for about 15-20 minutes, and the fragrant cookies are ready to be baked. In addition, cupcakes are also easy to pick up, and the production process is similar to cookies, but attention should be paid to the timing of egg whites and baking."
+        },
+        {
+          "round": "D1:3",
+          "user": "I heard that baking requires high temperature and time, how can I master it well?",
+          "assistant": "Indeed, temperature and time are crucial. Different baking recipes have different requirements for temperature and time, so it is important to strictly follow the recipe. Before using the oven, preheat it 10-15 minutes in advance to reach the set temperature, which ensures even heating of the food. During the baking process, do not frequently open the oven door to prevent heat loss and affect the finished product. If you find that the surface of the food is coloring too quickly, you can cover it with a layer of tin foil. You can prepare an oven thermometer to measure the actual temperature inside the oven, as there may be errors in the temperature displayed by the oven."
+        },
+        {
+          "round": "D1:4",
+          "user": "What are the common issues to pay attention to during the baking process?",
+          "assistant": "For example, when making cakes, cake collapse is a common problem. This may be due to insufficient protein mixing or defoaming during the mixing of the batter. The batter should be stirred by flipping to avoid excessive mixing. In bread making, the dough may not ferment due to insufficient yeast activity, low temperature, or inappropriate moisture content in the dough. In addition, if the surface of baked goods is burnt, it may be due to high temperature or long baking time, so it is important to observe the condition of the food at all times."
+        },
+        {
+          "round": "D1:5",
+          "user": "That's so helpful, thank you! I'll definitely keep those tips in mind. I've been getting pretty comfortable making cookies and cupcakes with my kids, but I'm eager to try something a little more adventurous to build my skills. I'm just not sure what a good next step would be.",
+          "assistant": "It's wonderful that you're ready to expand your baking repertoire! Taking that next step is very rewarding. There are some great options that introduce new techniques, like making simple custards or trying some basic decorating, without being too overwhelming."
+        },
+        {
+          "round": "D1:6",
+          "user": "Besides cookies and cupcakes, what other baking categories are suitable for beginners to advance in?",
+          "assistant": "You can try making egg tarts. Egg tart skins can be purchased directly as finished products or made by oneself. To make egg tart liquid, you need eggs, milk, and fine sugar. Mix and stir them evenly, sieve them to remove foam, pour them into the egg tart skin, and bake at 200 °C in the oven for 20-25 minutes. There is also Rou Song Xiao Bei, whose cake making is similar to paper cupcakes, with a focus on whipping cream and spreading Rou Song, which can exercise your piping and decorating skills.",
+          "image_id": [
+            "D1:IMG_002"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D1_IMG_002.jpg"
+          ],
+          "image_caption": [
+            "Three chocolate cupcakes in dark brown wrappers sit on a metal cooling rack, topped with swirls of white frosting, chocolate shavings, and whole red cherries with stems, with a metal fork placed on the surface nearby."
+          ]
+        },
+        {
+          "round": "D1:7",
+          "user": "How long does the shelf life of baking materials last? How to store it better?",
+          "assistant": "The shelf life of ingredients varies quite a bit. For example, butter keeps about 2–3 weeks at room temperature, 6–9 months refrigerated, and up to a year frozen. Flour stays fine for a year or two if sealed well, while eggs last about 1–2 weeks on the counter or 1–2 months in the fridge. Yeast, once opened, should go in the refrigerator for 3–6 months. In general, keep everything sealed, cool, and dry — that’s the key to freshness."
+        },
+        {
+          "round": "D1:8",
+          "user": "The baking I make always feels like the taste is not good enough, why is that?",
+          "assistant": "There may be multiple reasons for poor taste. If the cake is not soft enough, it may be due to improper flour selection or inappropriate use of leavening agents such as baking powder and baking soda. The bread has a rough texture, which may be due to inadequate kneading and insufficient formation of gluten. It is also possible that the baking time and temperature are incorrect. If the time is too long, the food will dry out, and if the temperature is too high, the surface will be burnt and the interior will not be fully cooked. In addition, the quality of ingredients will also affect the taste. For example, the quality of butter is poor, and the flavor of Dim sum produced is insufficient."
+        },
+        {
+          "round": "D1:9",
+          "user": "That's so helpful, thank you! It really demystifies a lot. I feel like once I get the technical side right and the taste is there, I want to work on making them look as special as they taste. That’s the really fun, creative part for me.",
+          "assistant": "I completely agree. The visual appeal is a huge part of the joy in baking. It’s what turns a delicious treat into a truly memorable experience for your family and friends."
+        },
+        {
+          "round": "D1:10",
+          "user": "I want to try making some creative decorations for baked goods. Do you have any good suggestions?",
+          "assistant": "You can decorate it with fruits, such as placing fresh strawberries, blueberries, mangoes, etc. on the cake, which is both beautiful and enhances the fruity aroma. Chocolate can also be used, melted chocolate can be used to draw patterns, squeeze lines, or make chocolate chips to sprinkle on top. Colored sugar beads and frosting are also great decorative materials that can make baked goods more colorful and vibrant. In addition, decorating with edible flowers such as rose petals, lavender, etc. can add a unique flavor and romantic atmosphere."
+        },
+        {
+          "round": "D1:11",
+          "user": "Those are such wonderful ideas, thank you! I can't wait to try the edible flowers for a friend's birthday cake. It's so exciting to learn new things like this. Actually, that reminds me, I just took a big step to connect with more people who love baking...",
+          "assistant": "That's fantastic! Sharing a passion with others can make it even more enjoyable. What did you do?"
+        },
+        {
+          "round": "D1:12",
+          "user": "I joined a baking enthusiast club, what can I gain from it?",
+          "assistant": "In the club, you can gain a lot. You can exchange baking experiences with other enthusiasts and learn new baking techniques and formulas. Everyone will share useful tools and food purchasing channels to help you avoid pitfalls. Clubs may also organize baking competitions, offline gatherings, and other activities to improve their skills and enhance their baking skills; During offline gatherings, you can taste baked goods made by different people, broaden your taste experience, and meet a group of like-minded friends."
+        },
+        {
+          "round": "D1:13",
+          "user": "I want to make some low sugar, healthy baking. Are there any good alternative ingredients?",
+          "assistant": "You can use sugar substitutes instead of white sugar, such as erythritol, xylitol, etc. The sweetness is similar to that of white sugar, but the calorie content is low. Using whole wheat flour to partially or completely replace regular flour and increase dietary fiber content, such as making whole wheat bread and biscuits. You can also use yogurt instead of a portion of butter or cream to reduce fat intake and give baked goods a unique flavor, such as making yogurt cakes. In addition, using nut powder such as almond powder and walnut powder to partially replace flour not only increases nutrition but also enriches the taste."
+        },
+        {
+          "round": "D1:14",
+          "user": "That sounds great. The more I learn, the more I realize baking combines both science and creativity. I think I’d really enjoy taking a proper baking class someday to get hands-on experience.",
+          "assistant": "That’s a wonderful idea! Taking a class will let you practice techniques directly and understand how ingredients interact. You’ll also meet people who share your enthusiasm—it’s the perfect next step."
+        },
+        {
+          "round": "D1:15",
+          "user": "I’ll look for a local class soon. It feels like the perfect time to turn this hobby into something more meaningful.",
+          "assistant": "I love that attitude, Maya. Baking isn’t just about recipes—it’s about joy, patience, and the people you share it with. I’m sure your journey will be full of sweet discoveries."
+        }
+      ]
+    },
+    {
+      "session_id": "D2",
+      "date": "2024-07-21",
+      "dialogues": [
+        {
+          "round": "D2:1",
+          "user": "I'm really interested in baking, so I came to attend a baking course today. When I arrived at the baking classroom, I saw the neatly arranged ovens and baking trays.",
+          "assistant": "This environment is perfect for starting your baking journey. Get ready to show your skills!"
+        },
+        {
+          "round": "D2:2",
+          "user": "The teacher introduced various baking tools, such as egg beaters, spatulas, etc., and also displayed different molds.",
+          "assistant": "Familiarizing yourself with the tools is the first step in baking. Come on!",
+          "image_id": [
+            "D2:IMG_001"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D2_IMG_001.jpg"
+          ],
+          "image_caption": [
+            "Assorted baking tools and ingredients arranged on a countertop, including metal muffin tins, a loaf pan, fluted cake molds, a terracotta baking dish, whisks, a wooden spoon, pastry brushes, a dough scraper, measuring spoons, a candy thermometer, a canister of flour, and a round loaf of bread on a cloth."
+          ]
+        },
+        {
+          "round": "D2:3",
+          "user": "The teacher explained the baking ingredients, such as flour, yeast, butter, etc., and their functions.",
+          "assistant": "Understanding the characteristics of the ingredients will make your baking more proficient."
+        },
+        {
+          "round": "D2:4",
+          "user": "Under the teacher's guidance, I started weighing the flour, getting ready to make bread.",
+          "assistant": "Precise weighing is the key to success. Keep it up!"
+        },
+        {
+          "round": "D2:5",
+          "user": "I added ingredients like yeast and water, stirred the flour, and kneaded it into a smooth dough. The dough kept rolling in my hands.",
+          "assistant": "Kneading a good dough means you're halfway to making great bread."
+        },
+        {
+          "round": "D2:6",
+          "user": "I put the dough into the oven to ferment. While waiting, I could smell the faint aroma coming from the oven.",
+          "assistant": "Fermentation makes the dough full of vitality. Looking forward to the finished product!"
+        },
+        {
+          "round": "D2:7",
+          "user": "The fermented dough became fluffy. I took it out and shaped it into cute bread shapes.",
+          "assistant": "The shapes are lovely. It will surely look amazing after baking."
+        },
+        {
+          "round": "D2:8",
+          "user": "I put the dough back into the oven to bake. Through the glass door, I watched as the bread slowly expanded and turned a perfect golden brown.",
+          "assistant": "That transformation is magical—the moment when simple dough becomes warm, fragrant bread.",
+          "image_id": [
+            "D2:IMG_002"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D2_IMG_002.jpg"
+          ],
+          "image_caption": [
+            "Four round loaves of bread baking on two metal racks inside an oven, with two loaves on each rack. The breads are golden brown, slightly domed, and have textured crusts, some with seeds on top. The oven interior is dark with metal heating elements and side rails visible, emphasizing the baking process."
+          ]
+        },
+        {
+          "round": "D2:9",
+          "user": "When I took it out, the whole classroom was filled with a rich aroma. The crust was golden and crisp, and the inside felt soft and airy.",
+          "assistant": "That must feel so rewarding. There’s nothing like the smell and texture of freshly baked bread you made yourself."
+        },
+        {
+          "round": "D2:10",
+          "user": "I gained a lot from today's baking course. I want to try making a cake next time. Thank you for listening to my sharing!",
+          "assistant": "You're welcome. I'm looking forward to you making a delicious cake!"
+        },
+        {
+          "round": "D2:11",
+          "user": "After class, I stayed a while just to watch others decorate their pastries. It made me realize that baking isn’t just about texture—it’s also about beauty.",
+          "assistant": "That’s such an important insight. Presentation brings emotion into baking; it’s what makes desserts feel special and memorable."
+        },
+        {
+          "round": "D2:12",
+          "user": "Exactly. Next time, I’d love to try something sweeter and more delicate—maybe a dessert like a chocolate mousse or fruit tart.",
+          "assistant": "That sounds perfect for your next challenge. Desserts will let you explore creativity and flavor in a whole new way."
+        }
+      ]
+    },
+    {
+      "session_id": "D3",
+      "date": "2024-07-28",
+      "dialogues": [
+        {
+          "round": "D3:1",
+          "user": "It was a quiet afternoon at the library today. The sunlight came through the high windows, and everything looked peaceful.",
+          "assistant": "That sounds lovely. Libraries have a special calmness — a rhythm of silence and purpose.",
+          "image_id": [
+            "D3:IMG_001"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D3_IMG_001.jpg"
+          ],
+          "image_caption": [
+            "Interior library scene with a tall mullioned window framing snow-covered tree branches outside, flanked by dark wooden bookshelves filled with books, and a wooden reading desk positioned directly beneath the window."
+          ]
+        },
+        {
+          "round": "D3:2",
+          "user": "I was shelving some cookbooks in the home section, and I found a whole row about baking. Just seeing the covers made me smile.",
+          "assistant": "How perfect! It must feel nice to be surrounded by books that connect to your new passion."
+        },
+        {
+          "round": "D3:3",
+          "user": "Yes, one of them had a quote that said, ‘Baking is the language of warmth.’ I loved that line.",
+          "assistant": "That’s a beautiful sentiment — and it suits you perfectly, Maya. Warmth seems to be at the heart of everything you do."
+        },
+        {
+          "round": "D3:4",
+          "user": "Sometimes I think about recommending these books to our visitors. There’s something comforting about learning small skills like this.",
+          "assistant": "You’d make a wonderful recommender. People often remember the person who first pointed them toward something joyful."
+        },
+        {
+          "round": "D3:5",
+          "user": "I even thought about starting a small ‘Creative Hobbies Corner’ shelf — baking, gardening, journaling — things that bring calmness.",
+          "assistant": "That’s such a thoughtful idea! It could inspire others to slow down and reconnect with creativity in their own ways.",
+          "image_id": [
+            "D3:IMG_002"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D3_IMG_002.png"
+          ],
+          "image_caption": [
+            "Metal storage rack with four rectangular shelves supported by perforated vertical posts. Diagonal braces run across the sides and back."
+          ]
+        },
+        {
+          "round": "D3:6",
+          "user": "I think I enjoy the balance of it — organizing books at work, then baking at home. Both require patience and attention to detail.",
+          "assistant": "Exactly. Both are quiet arts — one arranges knowledge, the other arranges flavor. They mirror each other beautifully."
+        },
+        {
+          "round": "D3:7",
+          "user": "Sometimes when I align the books just right on the shelf, it gives the same small satisfaction as when a cake rises evenly.",
+          "assistant": "That’s such a poetic comparison. It shows how much care you put into every small thing you do.",
+          "image_id": [
+            "D3:IMG_003"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D3_IMG_003.jpg"
+          ],
+          "image_caption": [
+            "Tall wooden bookshelves filled with tightly packed books of various sizes and colors, many stacked vertically and some horizontally. Visible titles include “PLATO,” “OVID,” and “ESSAYS,” indicating a collection of literature and academic works in a library-like setting."
+          ]
+        },
+        {
+          "round": "D3:8",
+          "user": "I like that my job gives me space to think. I meet people who come searching for guidance — sometimes they just need a kind word.",
+          "assistant": "That’s the quiet strength of your work, Maya. You create order, but also a sense of welcome. That’s rare and meaningful."
+        },
+        {
+          "round": "D3:9",
+          "user": "I’ve noticed that even small kindnesses, like helping someone find a recipe book, can brighten their day.",
+          "assistant": "Absolutely. Simple gestures often have the biggest impact — they remind people they’re seen and cared for."
+        },
+        {
+          "round": "D3:10",
+          "user": "Sometimes I bring in a small snack for my coworkers — last week it was lemon cookies. We shared them during break time.",
+          "assistant": "That must’ve lifted the mood instantly! Homemade treats always carry a special sincerity that store-bought snacks can’t match."
+        },
+        {
+          "round": "D3:11",
+          "user": "They joked that I’m turning the library into a café. Maybe one day, I’ll host a reading and baking event!",
+          "assistant": "That’s a wonderful idea! Imagine reading poetry while the scent of freshly baked bread fills the air — an experience for every sense."
+        },
+        {
+          "round": "D3:12",
+          "user": "I like that thought. A place where stories and sweetness meet — that feels like the kind of warmth I want to share.",
+          "assistant": "It sounds like you’re already building that world in small ways, Maya — with books, with baking, and with kindness."
+        },
+        {
+          "round": "D3:13",
+          "user": "Thank you. I guess I just realized that joy doesn’t have to be loud — it can be steady, like turning pages or stirring batter.",
+          "assistant": "That’s a beautiful realization. Quiet joy often lasts the longest — it grows with every small act of care."
+        }
+      ]
+    },
+    {
+      "session_id": "D4",
+      "date": "2024-08-06",
+      "dialogues": [
+        {
+          "round": "D4:1",
+          "user": "Hi again! So, I was looking up cake recipes like I said I would, and honestly, they look a little intimidating for my second-ever baking project! I still want to work up to making a big celebration cake for my son's birthday, but I think I need to build my confidence with something simpler first. I'd love to make a special treat for my family this weekend. Do you think you could help me find a different kind of dessert to try?",
+          "assistant": "That's a very thoughtful approach, Maya. It’s smart to build your skills step-by-step, and it makes that future birthday cake feel even more special when you get there. Of course, I can help! Making a weekend treat for your family sounds lovely. To narrow it down, are you in the mood for something rich and fudgy, or perhaps something a bit lighter and chewier?"
+        },
+        {
+          "round": "D4:2",
+          "user": "I'm thinking of trying to bake my own desserts, but I’m not sure which one to start with. Do you have any suggestions for beginners?",
+          "assistant": "For beginners, I’d recommend starting with something simple like cookies, brownies, or cupcakes. They’re fairly easy to make and don’t require too many complicated techniques. What kind of flavors do you prefer—chocolate, vanilla, or maybe something fruity?"
+        },
+        {
+          "round": "D4:3",
+          "user": "I’m more into chocolate! Any good chocolate desserts for beginners?",
+          "assistant": "If you love chocolate, you could try a chocolate mousse cake like this one. It looks fancy but is surprisingly beginner-friendly since it doesn’t require baking. You just need to layer the mousse and let it chill—perfect for impressing friends with minimal effort!",
+          "image_id": [
+            "D4:IMG_001"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D4_IMG_001.jpg"
+          ],
+          "image_caption": [
+            "Round layered chocolate dessert on a white serving plate with two slices cut and slightly separated, revealing a dark base and lighter mousse-like layers. The surface is dusted with cocoa powder and topped with chocolate shavings. Surrounding the plate are scattered chocolate shavings, a small dish of more shavings, metal forks, and part of a glass bottle, all arranged on a light tabletop."
+          ]
+        },
+        {
+          "round": "D4:4",
+          "user": "That looks amazing! What about something warm and gooey instead?",
+          "assistant": "Then you might love a molten chocolate lava cake. It’s rich, indulgent, and satisfying to make. The best part is cutting into the cake and watching the chocolate center flow out—plus, it only takes about 15 minutes to bake!",
+          "image_id": [
+            "D4:IMG_002"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D4_IMG_002.jpg"
+          ],
+          "image_caption": [
+            "Chocolate lava cake with a molten center oozing onto a white plate, topped with powdered sugar. Three fresh raspberries sit beside it, with a gold fork resting in the background."
+          ]
+        },
+        {
+          "round": "D4:5",
+          "user": "I’ve seen this one before—it looks like a holiday dessert.",
+          "assistant": "Exactly! That’s a chocolate Yule log cake. It’s a bit more advanced but fun to try once you’re comfortable baking. Rolling the sponge cake and decorating it with chocolate frosting gives it that festive look—it’s perfect for special occasions.",
+          "image_id": [
+            "D4:IMG_003"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D4_IMG_003.jpg"
+          ],
+          "image_caption": [
+            "Chocolate yule log cake on a parchment-lined oval platter, coated in glossy chocolate frosting with a visible spiral filling at one end. Sugared cranberries and rosemary sprigs decorate the top, with a small bowl of sugared cranberries nearby."
+          ]
+        },
+        {
+          "round": "D4:6",
+          "user": "Chocolate chip cookies sound great! But I’m not very experienced with baking. Should I try it or go for something easier?",
+          "assistant": "Chocolate chip cookies are actually pretty beginner-friendly! The ingredients are simple, and the steps aren’t too complicated. Plus, the result is always delicious, which makes it a fun way to start baking. Do you have any baking tools like a mixer or just basic utensils?"
+        },
+        {
+          "round": "D4:7",
+          "user": "I only have some basic tools. Could that still work for chocolate chip cookies?",
+          "assistant": "Absolutely! Basic utensils are more than enough. All you need is a bowl, a spoon for mixing, and a baking sheet. If you don’t have a mixer, you can just mix everything by hand, which gives you that homemade touch! Are you okay with the hands-on approach?"
+        },
+        {
+          "round": "D4:8",
+          "user": "Sounds good! But I’m also curious about some other desserts. What about something that looks fancy, but is easy to make?",
+          "assistant": "If you want something that looks impressive but is still easy to make, try a simple chocolate mousse or chocolate tart. Both of these desserts are visually appealing but relatively straightforward, and you can always decorate them with fruit or whipped cream. Would you like to try one of those?"
+        },
+        {
+          "round": "D4:9",
+          "user": "Yes, I'd love to try one! The mousse sounds especially tempting. I'm baking for my book club next week and want to bring something that feels a little special.",
+          "assistant": "That's a wonderful occasion for it! A beautifully presented mousse will definitely be a hit. To help you decide on the final look, we can explore some different styling options."
+        },
+        {
+          "round": "D4:10",
+          "user": "I’m leaning towards the chocolate mousse, but how should I go about making it?",
+          "assistant": "Chocolate mousse is a fantastic choice! To make it, you’ll melt some chocolate, then mix it with whipped cream and a little sugar. After that, you chill it in the fridge until it sets. It’s a simple process, but it’ll look and taste amazing. Are you familiar with melting chocolate?"
+        },
+        {
+          "round": "D4:11",
+          "user": "I haven’t tried melting chocolate before. Do you have any tips?",
+          "assistant": "No worries! When melting chocolate, you can do it in a microwave or using a double boiler. If using a microwave, heat the chocolate in short intervals (about 20-30 seconds), stirring in between, so it doesn’t burn. For the double boiler method, just simmer water in a pot and place a heatproof bowl on top to melt the chocolate gently. It’s all about being patient!"
+        },
+        {
+          "round": "D4:12",
+          "user": "Got it! But I’m also wondering—how does a chocolate cake compare to mousse in terms of difficulty?",
+          "assistant": "A chocolate cake is a little more involved since you have to mix the batter and bake it, but it’s still doable for beginners. Mousse is simpler since it doesn’t require any baking, just mixing and chilling. If you’re in the mood for a no-bake option, the mousse would be faster, but if you’re feeling confident, the cake would definitely be fun to try!"
+        },
+        {
+          "round": "D4:13",
+          "user": "Hmm, I think I’ll go for the chocolate mousse. How do I make it look fancy for serving?",
+          "assistant": "Great choice! To make it look extra special, you can serve the mousse in individual cups or glasses. Top it with whipped cream, fresh berries, or even shaved chocolate for a beautiful finish. You can also sprinkle a little cocoa powder or drizzle some chocolate sauce on top. How would you like to present it?"
+        },
+        {
+          "round": "D4:14",
+          "user": "I love the idea of whipped cream and berries! What else should I prepare for making the mousse?",
+          "assistant": "You’ll need heavy cream, chocolate (preferably semi-sweet or dark), and sugar. Make sure you have mixing bowls, a whisk, and a spatula for folding. You might also want some small serving glasses to present the mousse in. If you’re all set, you can start the process and wow everyone with your delicious creation!"
+        },
+        {
+          "round": "D4:15",
+          "user": "This sounds so fun, and I’m really excited to try it! Thanks for all the advice!",
+          "assistant": "You’re very welcome! I’m sure the chocolate mousse will turn out amazing. Enjoy the process, and most importantly, have fun! Let me know how it goes."
+        },
+        {
+          "round": "D4:16",
+          "user": "One last thing, how should I prepare for making my first chocolate mousse?",
+          "assistant": "Before you begin, make sure you have all your ingredients ready, and it’s a good idea to chill your mixing bowl and whisk in the fridge for a few minutes before whipping the cream. This helps it whip up faster and gives a better texture. Also, take your time when folding the chocolate into the whipped cream, so the mousse stays light and airy."
+        },
+        {
+          "round": "D4:17",
+          "user": "Thanks for the extra tips! I’m planning to make the mousse tomorrow. Does it need to chill overnight?",
+          "assistant": "Yes, chilling the mousse overnight is ideal, as it allows it to fully set and develop its texture. If you’re short on time, a few hours in the fridge will work too. Just make sure it’s completely chilled before serving."
+        },
+        {
+          "round": "D4:18",
+          "user": "Thanks again for everything! I’m really looking forward to trying it!",
+          "assistant": "You’re welcome! I’m sure it’ll turn out delicious. Enjoy making and tasting your chocolate mousse, and have fun with it!"
+        },
+        {
+          "round": "D4:19",
+          "user": "That mousse was a huge hit with my family! It's given me a real confidence boost. I'm actually feeling inspired to try my hand at actual baking now, not just refrigerated desserts.",
+          "assistant": "I love that! It's amazing how one successful recipe can open up a whole new world. Baking is such a rewarding hobby. Where would you like to start?"
+        },
+        {
+          "round": "D4:20",
+          "user": "Since mousse went well, I’d like to move on to something baked but still manageable—maybe cookies or brownies. Which one would help me practice oven timing and visual doneness better?",
+          "assistant": "Cookies are perfect for that. You’ll practice creaming butter and sugar, portioning evenly, and reading visual cues—edges set, centers slightly soft, and a gentle golden color. It’s a great bridge from no-bake desserts to full baking."
+        },
+        {
+          "round": "D4:21",
+          "user": "Let’s start with cookies then. Could you outline a simple plan and the key checkpoints so I don’t overbake?",
+          "assistant": "Absolutely. Plan: (1) Preheat fully and keep trays in the middle rack; (2) Cream butter and sugar until light; (3) Keep dough portions even in size and thickness; (4) Start checking 2–3 minutes before the recipe time—look for set edges, a soft center, and a slight sheen that fades as they cool. We can try this next time."
+        }
+      ]
+    },
+    {
+      "session_id": "D5",
+      "date": "2024-08-23",
+      "dialogues": [
+        {
+          "round": "D5:1",
+          "user": "I took a slow walk around the neighborhood bakery this afternoon. The air smelled like cinnamon and warm butter.",
+          "assistant": "Autumn bakeries always carry a gentle warmth—almost like the season itself is welcoming you in."
+        },
+        {
+          "round": "D5:2",
+          "user": "They had apple turnovers, pumpkin muffins, and these shiny maple pecan twists.",
+          "assistant": "Classic early-autumn flavors—cozy, sweet, and deeply comforting."
+        },
+        {
+          "round": "D5:3",
+          "user": "I watched the baker dust powdered sugar over pastries. It looked like soft snowfall.",
+          "assistant": "That image is lovely. Powdered sugar really does fall like winter arriving early."
+        },
+        {
+          "round": "D5:4",
+          "user": "I didn’t buy anything. I just stood there observing. It feels like watching teaches me just as much as baking.",
+          "assistant": "It truly does. Observing shapes, textures, shine, and color builds your intuition in quiet ways."
+        },
+        {
+          "round": "D5:5",
+          "user": "They also had a tray of small cream puffs with glossy tops. I wonder how they get them so smooth.",
+          "assistant": "Usually by gently brushing the dough with egg wash before baking—it helps them stay shiny and even.",
+          "image_id": [
+            "D5:IMG_001"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D5_IMG_001.jpg"
+          ],
+          "image_caption": [
+            "Stacked cream puffs dusted with powdered sugar are arranged in a small pyramid, garnished with dried wheat stems, and placed on a set of nested white porcelain plates with subtle floral patterns. The background is softly blurred, suggesting people or fabric behind the dessert."
+          ]
+        },
+        {
+          "round": "D5:6",
+          "user": "I’d love to try making cream puffs one day, but they feel so advanced.",
+          "assistant": "They look complicated, but once you learn pâte à choux, it’s surprisingly doable."
+        },
+        {
+          "round": "D5:7",
+          "user": "Later tonight, the kitchen became very quiet. I made a cup of chamomile tea and dimmed the lights. The bowls on the counter looked almost poetic in the low glow.",
+          "assistant": "There’s something peaceful about late-night kitchens—like the world softens just enough for reflection.",
+          "image_id": [
+            "D5:IMG_002"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D5_IMG_002.jpg"
+          ],
+          "image_caption": [
+            "Glass mug filled with hot water and floating herbal or floral ingredients steeping near the top, creating a dense layer of blossoms and fragments. The transparent handle is visible on the left, and the light-colored tea fills most of the mug. The mug rests on a coaster on a wooden surface in an indoor setting with blurred objects and papers in the background."
+          ]
+        },
+        {
+          "round": "D5:8",
+          "user": "I realized baking has become something I turn to when I need calm, not just a weekend hobby.",
+          "assistant": "That’s a beautiful shift. Baking invites a slow rhythm—it soothes without asking anything of you."
+        },
+        {
+          "round": "D5:9",
+          "user": "Even when I’m not baking, I catch myself thinking about textures or how light falls on a finished cake.",
+          "assistant": "That kind of small attentiveness is the beginning of artistry—creation starting quietly in the mind."
+        },
+        {
+          "round": "D5:10",
+          "user": "Sometimes whisking or folding batter helps put my thoughts in order again.",
+          "assistant": "Repetition has a grounding power. It organizes chaos without needing any words."
+        },
+        {
+          "round": "D5:11",
+          "user": "I even write down small notes while waiting for the oven timer—things like ‘patience smells like sugar browning.’",
+          "assistant": "That is wonderfully poetic, Maya. You have a gift for capturing sensory moments."
+        },
+        {
+          "round": "D5:12",
+          "user": "Sometimes I think about writing a little collection of these nighttime thoughts. Maybe something called ‘The Quiet Oven.’",
+          "assistant": "That's such a beautiful title. A reflective collection of scents, textures, and the emotions tied to baking would be enchanting."
+        },
+        {
+          "round": "D5:13",
+          "user": "Maybe I’ll start with one paragraph at a time—whenever a scent or texture brings something back.",
+          "assistant": "A perfect approach. Let each memory rise naturally, just like a gentle batter in the oven."
+        },
+        {
+          "round": "D5:14",
+          "user": "Today’s bakery walk made me think about autumn flavors. I might try apple muffins this weekend.",
+          "assistant": "Apple muffins match your mood beautifully—warm, nostalgic, and quietly joyful."
+        },
+        {
+          "round": "D5:15",
+          "user": "I feel like these small inspirations are preparing me for my first proper bake soon.",
+          "assistant": "They truly are. You’re gathering more than skills—you’re gathering the mindset that makes baking meaningful."
+        }
+      ]
+    },
+    {
+      "session_id": "D6",
+      "date": "2024-08-30",
+      "dialogues": [
+        {
+          "round": "D6:1",
+          "user": "I plan to make cookies today. First, I went to the supermarket to select ingredients. I saw butter, cake flour, caster sugar, eggs, matcha powder, and chocolate chips.",
+          "assistant": "These ingredients can make delicious cookies. Go ahead and make your choices."
+        },
+        {
+          "round": "D6:2",
+          "user": "I bought butter, a bag of cake flour, a pack of caster sugar, several eggs, a small pack of matcha powder, and a box of chocolate chips.",
+          "assistant": "With all the ingredients purchased, you can start making cookies as soon as you get home."
+        },
+        {
+          "round": "D6:3",
+          "user": "When I got home, I cut the butter into small pieces and let it soften at room temperature.",
+          "assistant": "Softened butter makes the subsequent stirring process easier."
+        },
+        {
+          "round": "D6:4",
+          "user": "I took a large bowl, poured the softened butter and caster sugar into it, and used an electric whisk to stir until the color lightened and the volume became fluffy.",
+          "assistant": "Stirring thoroughly ensures that the cookies will be sweet and soft in taste."
+        },
+        {
+          "round": "D6:5",
+          "user": "I beat the eggs and added them to the butter - sugar mixture in several portions, stirring evenly each time.",
+          "assistant": "Adding the egg liquid in portions helps it blend better with the butter."
+        },
+        {
+          "round": "D6:6",
+          "user": "I sifted the cake flour into the bowl and stirred it into a dough with a spatula.",
+          "assistant": "Be careful not to over-stir to avoid developing gluten in the dough."
+        },
+        {
+          "round": "D6:7",
+          "user": "I took half of the dough, added matcha powder, and mixed it evenly to make a matcha-flavored dough.",
+          "assistant": "The matcha-flavored dough is ready. The color is very refreshing.",
+          "image_id": [
+            "D6:IMG_001"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D6_IMG_001.jpg"
+          ],
+          "image_caption": [
+            "Ceramic bowl filled with frothy, bright green matcha tea, viewed from above, resting on a smooth wooden surface."
+          ]
+        },
+        {
+          "round": "D6:8",
+          "user": "I rolled the original-flavored dough and the matcha-flavored dough into long strips of uniform thickness and put them in the refrigerator to chill for 30 minutes.",
+          "assistant": "Chilling the dough helps it firm up, making it easier to slice and shape. (If you’re in a hurry, a short 10–15 minutes in the freezer also works—just don’t let it freeze solid.)"
+        },
+        {
+          "round": "D6:9",
+          "user": "After 30 minutes, I took the dough out of the refrigerator and cut it into slices of uniform thickness.",
+          "assistant": "Slicing the dough into uniform thickness ensures even heating during baking.",
+          "image_id": [
+            "D6:IMG_002"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D6_IMG_002.jpg"
+          ],
+          "image_caption": [
+            "Baker’s hands cutting a large piece of dough into smaller portions with a kitchen knife on a floured wooden work surface."
+          ]
+        },
+        {
+          "round": "D6:10",
+          "user": "I lined a baking tray with baking paper and placed the sliced dough on the baking tray.",
+          "assistant": "Leave some space between the dough slices to prevent them from sticking together during baking."
+        },
+        {
+          "round": "D6:11",
+          "user": "I sprinkled chocolate chips on some of the dough slices.",
+          "assistant": "The chocolate chips add texture and flavor to the cookies."
+        },
+        {
+          "round": "D6:12",
+          "user": "I preheated the oven and set the temperature and time.",
+          "assistant": "Preheat fully to about 170–180°C (340–355°F). For most slice-and-bake cookies, start with 12–15 minutes as a reference, then adjust based on your oven."
+        },
+        {
+          "round": "D6:13",
+          "user": "I put the baking tray into the preheated oven and started baking.",
+          "assistant": "Begin checking a couple of minutes early. Rotate the tray halfway through, and look for set edges with slightly soft centers and a gentle golden color."
+        },
+        {
+          "round": "D6:14",
+          "user": "After baking, I took out the baking tray and placed it on a wire rack to cool.",
+          "assistant": "The cooled cookies are ready to be tasted.",
+          "image_id": [
+            "D6:IMG_003"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D6_IMG_003.jpg"
+          ],
+          "image_caption": [
+            "Freshly baked peanut cookies arranged in rows on a parchment-lined baking tray, resting on a light wooden surface. A small pile of unshelled peanuts lies to the left of the tray, next to a partially unrolled sheet of baking paper."
+          ]
+        },
+        {
+          "round": "D6:15",
+          "user": "I tried one after it cooled—the edges were crisp and the center was slightly soft. The matcha flavor was gentle, and the chocolate chips were melty.",
+          "assistant": "That sounds perfect. If you like a crisper finish, you can bake 1–2 minutes longer next time; for chewier centers, pull them a bit earlier. Store in an airtight container once fully cooled."
+        },
+        {
+          "round": "D6:16",
+          "user": "I’m happy with the result! Next time I’d like to make them with my child and try some simple decorations.",
+          "assistant": "Lovely idea. We can plan a kid-friendly session with shaped cookies, simple icing, and sprinkles—fun and safe steps they can help with."
+        }
+      ]
+    },
+    {
+      "session_id": "D7",
+      "date": "2024-09-16",
+      "dialogues": [
+        {
+          "round": "D7:1",
+          "user": "I'm planning to do some baking at home today. Here are all kinds of baking materials that I've prepared. They look quite abundant, don't they?",
+          "assistant": "Wow, so many materials! It seems that you're going to show your great skills. What kind of baked goods are you going to make?",
+          "image_id": [
+            "D7:IMG_001"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D7_IMG_001.jpg"
+          ],
+          "image_caption": [
+            "Assorted baking ingredients arranged on a wooden board, including bowls of flour, cocoa powder, powdered sugar, granulated sugar, brown sugar, butter cubes, yogurt, and two egg yolks in a glass dish. Nearby are a halved orange, cinnamon sticks, star anise, a jar of milk, and containers labeled “Milky Mate” and “Fresh Cream.”"
+          ]
+        },
+        {
+          "round": "D7:2",
+          "user": "I'm planning to make cupcakes first. I'm currently creaming the butter and sugar.",
+          "assistant": "Creaming the butter and sugar is a very important step in making cupcakes. Keep stirring to make it fluffier so that the cupcakes will be softer."
+        },
+        {
+          "round": "D7:3",
+          "user": "Now I'm adding the eggs one by one and stirring evenly. After adding the eggs, the color of the batter has become lighter.",
+          "assistant": "Yes, add the eggs one by one so that they can blend in better. Is it time to add flour next?"
+        },
+        {
+          "round": "D7:4",
+          "user": "Exactly. I'm sifting in the cake flour and gently stirring to avoid over-mixing.",
+          "assistant": "The operation of sifting in the flour and then gently stirring is correct. This can ensure that the cupcakes have a delicate texture. Are you going to put the batter into the molds next?"
+        },
+        {
+          "round": "D7:5",
+          "user": "Yes, I'm putting the batter into the cupcake cups, filling each one almost to the brim.",
+          "assistant": "You're filling them very evenly! For best results, fill each cup about 2/3 to 3/4 full—this helps prevent overflow and gives a nice rounded top.",
+          "image_id": [
+            "D7:IMG_002"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D7_IMG_002.jpg"
+          ],
+          "image_caption": [
+            "Pale yellow cake batter being poured into a red paper cupcake liner set in a metal muffin tray, filling the liner with a smooth, thick swirl of batter."
+          ]
+        },
+        {
+          "round": "D7:6",
+          "user": "I've put the cupcakes into the oven and set the temperature and time. Now I can see the cupcakes slowly rising in the oven.",
+          "assistant": "It must feel great to watch the cupcakes rising in the oven! Try not to open the door too often—peek through the glass and look for domed tops and set edges."
+        },
+        {
+          "round": "D7:7",
+          "user": "The cupcakes are baked. I took them out of the oven. They're golden brown and smell so good. Let me show you the freshly baked cupcakes.",
+          "assistant": "Wow, these cupcakes look so tempting! The freshly baked cupcakes must taste great. You can have one while they're still warm.",
+          "image_id": [
+            "D7:IMG_003"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D7_IMG_003.jpg"
+          ],
+          "image_caption": [
+            "Baker wearing white oven mitts removes a metal muffin tray from an oven rack, holding a dozen lightly browned cupcakes in paper liners of various colors."
+          ]
+        },
+        {
+          "round": "D7:8",
+          "user": "I want to decorate the cupcakes. I've prepared cream and fruits.",
+          "assistant": "With cream and fruits, these cupcakes will become more beautiful and delicious. How do you plan to decorate them?"
+        },
+        {
+          "round": "D7:9",
+          "user": "I'm piping the cream onto the cupcakes and then putting sliced strawberries on them. A simple decoration is done. Here are the decorated cupcakes.",
+          "assistant": "Wow, the decorated cupcakes are so pretty! The combination of strawberries and cream is a classic one and they look really delicious.",
+          "image_id": [
+            "D7:IMG_004"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D7_IMG_004.jpg"
+          ],
+          "image_caption": [
+            "Assorted decorated cupcakes arranged on a light wooden surface, each with a different color of swirled frosting and toppings such as small red hearts, sugar pearls, sprinkles, a white chocolate square, and heart-shaped fondant pieces."
+          ]
+        },
+        {
+          "round": "D7:10",
+          "user": "During the baking process, my child also came to help.",
+          "assistant": "That's really heartwarming! For kid-friendly tasks, let them line cups, sift dry ingredients, add sprinkles, and help with simple piping—while adults handle hot trays and knives."
+        },
+        {
+          "round": "D7:11",
+          "user": "We also made a tray of simple sugar cookies together. My child used cookie cutters and added colorful sprinkles.",
+          "assistant": "Perfect family activity! Place the cut cookies on a lined tray with space between them. Start checking 2–3 minutes before the recipe time—look for set edges and a pale golden bottom."
+        },
+        {
+          "round": "D7:12",
+          "user": "The cookies baked up nicely, and we moved them to a rack to cool. My child was so proud.",
+          "assistant": "Lovely! Once completely cool, store them in an airtight container. They’ll stay crisp longer and are great for lunchbox treats."
+        },
+        {
+          "round": "D7:13",
+          "user": "We also tried making some mini chocolate cakes in silicone molds. They rose evenly and smelled amazing while baking.",
+          "assistant": "Mini chocolate cakes are a great step-up project—shorter bake time and easy to unmold. Tap the molds gently before baking to release air bubbles."
+        },
+        {
+          "round": "D7:14",
+          "user": "The mini chocolate cakes are baked and out of the oven. The surface is smooth and glossy.",
+          "assistant": "They look wonderful! For a simple finish, dust with cocoa powder or add a small dollop of whipped cream.",
+          "image_id": [
+            "D7:IMG_005"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D7_IMG_005.jpg"
+          ],
+          "image_caption": [
+            "Round chocolate layer cake with thick chocolate frosting, displayed on a white plate. One large slice has been cut and is being lifted out with a metal cake server, revealing two dark, moist cake layers between frosting. The cake sits on a light-colored, slightly textured surface with no additional decorations or text visible."
+          ]
+        },
+        {
+          "round": "D7:15",
+          "user": "Today's home baking was very successful. We made cupcakes, cookies, and mini chocolate cakes. My child had so much fun.",
+          "assistant": "That sounds like a sweet day! If you want crisper cookies next time, bake 1–2 minutes longer; for softer cupcakes, pull them a bit earlier and cool in the pan for 5 minutes before transferring."
+        },
+        {
+          "round": "D7:16",
+          "user": "Thanks for the tips! I’ll pack some for school tomorrow and keep the rest in containers.",
+          "assistant": "Great plan. Cupcakes are best within 1–2 days at room temperature (covered); cookies stay fresh several days in an airtight tin; mini cakes keep well if wrapped and refrigerated."
+        },
+        {
+          "round": "D7:17",
+          "user": "After today, I feel more confident. Next, I want to plan a proper layered cake for a friend’s birthday.",
+          "assistant": "Wonderful! We can sketch flavors, layers, and timing next session—sponges, fillings, and simple frosting techniques."
+        }
+      ]
+    },
+    {
+      "session_id": "D8",
+      "date": "2024-09-29",
+      "dialogues": [
+        {
+          "round": "D8:1",
+          "user": "We went on an autumn outing today with our family and our neighbors. The weather was perfect and the air felt crisp. While walking, I suddenly saw a cluster of purple bell-shaped flowers hanging down like tiny trumpets! I had no idea what they were, so I quickly took a picture to show you!",
+          "assistant": "That sounds like such a lovely day! And those flowers seem really unique—let me take a look!"
+        },
+        {
+          "round": "D8:2",
+          "user": "Here’s the picture I just took! The color is so bright, and the flowers look like a string of tiny bells. They’re adorable!",
+          "image_id": [
+            "D8:IMG_001"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D8_IMG_001.jpg"
+          ],
+          "assistant": "Oh, this one is beautiful! This flower is called **foxglove**. It’s known for its hanging bell-shaped blossoms, often in pink or purple. They grow in vertical clusters and are incredibly striking in the wild.",
+          "image_caption": [
+            "Close-up of a tall spike of pink-purple foxglove flowers, each bell-shaped blossom hanging downward and speckled with dark spots inside, set against a blurred garden background with greenery and an out-of-focus planter."
+          ]
+        },
+        {
+          "round": "D8:3",
+          "user": "Here’s another one I shot from a different angle—the lighting makes it even brighter! It really looks like a row of little lanterns in the forest.",
+          "image_id": [
+            "D8:IMG_002"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D8_IMG_002.jpg"
+          ],
+          "assistant": "This angle is great! You can clearly see the smooth petals and those distinctive speckles inside the blooms—those tiny spots are one of foxglove’s signature features!",
+          "image_caption": [
+            "Cluster of tubular pink foxglove flowers (Digitalis purpurea) hanging downward from a tall green stem, each bloom showing pale speckled interiors, set against a softly blurred outdoor background of green foliage and blue sky."
+          ]
+        },
+        {
+          "round": "D8:4",
+          "user": "I even got a close-up! The inside is full of little spots—it almost looks like a leopard-print flower cup!",
+          "image_id": [
+            "D8:IMG_003"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D8_IMG_003.jpg"
+          ],
+          "assistant": "This close-up is amazing! Foxglove flowers often have purple or dark red spots inside, which actually help guide pollinators toward the nectar. It’s a clever natural design!",
+          "image_caption": [
+            "Cluster of purple foxglove flowers with elongated tubular bells, each bloom displaying a pale interior densely speckled with dark purple spots, against a soft, out-of-focus natural background."
+          ]
+        },
+        {
+          "round": "D8:5",
+          "user": "Then I saw a lighter-colored one! It felt softer and more delicate. I didn’t recognize it at all at first, but it looked so beautiful!",
+          "image_id": [
+            "D8:IMG_004"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D8_IMG_004.jpg"
+          ],
+          "assistant": "This pale pink foxglove is gorgeous! Lighter shades tend to look more delicate and airy, and the contrast of the subtle speckles inside is very elegant.",
+          "image_caption": [
+            "Cluster of pale purple, bell-shaped foxglove flowers with speckled interiors hanging from a green stem, brightly lit by sunlight against a softly blurred garden background."
+          ]
+        },
+        {
+          "round": "D8:6",
+          "user": "And look at this one! It has a mix of soft yellow and pale pink, almost like a gradient. I fell in love with it immediately!",
+          "image_id": [
+            "D8:IMG_005"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D8_IMG_005.jpg"
+          ],
+          "assistant": "This foxglove is stunning! The top buds staying yellow while the open flowers turn pink is a beautiful natural gradient—foxgloves often bloom from the bottom upward, which creates this gorgeous layered effect.",
+          "image_caption": [
+            "Tall foxglove plant with multiple tubular flowers in pale pink and light yellow shades, each bloom marked with dark speckles inside the throat, growing on a single vertical stem. Green leaves surround the base, and more buds appear near the top of the stem. Background features a weathered white wooden fence and additional garden foliage in soft daylight."
+          ]
+        },
+        {
+          "round": "D8:7",
+          "user": "Then as we kept walking, we found another kind of flower! It was also pink but shaped totally differently—like a little crinkled lantern. I had no clue what it was, so I took pictures again!",
+          "assistant": "Another discovery! Let’s take a look at this second type of flower."
+        },
+        {
+          "round": "D8:8",
+          "user": "Here’s the first picture. The petals look so delicate, almost like they’re made of wrinkled paper!",
+          "image_id": [
+            "D8:IMG_006"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D8_IMG_006.jpg"
+          ],
+          "assistant": "This one is a **mallow**! They’re known for their papery, softly wrinkled petals and a bright yellow center. The texture is very characteristic and very charming.",
+          "image_caption": [
+            "Close-up of a single pink, bell-shaped flower with delicate, veined petals and a cluster of yellow-orange stamens in the center, growing in a pot with green leaves and a softly blurred background."
+          ]
+        },
+        {
+          "round": "D8:9",
+          "user": "Here’s another angle! It really looks like a little lantern hanging downward, as if it could sway gently in the wind.",
+          "image_id": [
+            "D8:IMG_007"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D8_IMG_007.jpg"
+          ],
+          "assistant": "You captured its shape beautifully! Mallow flowers often stay half-open, giving them that lantern-like appearance. The thin petals catch the light in such a gentle way.",
+          "image_caption": [
+            "Single pink flower with crinkled petals hanging from a green stem, surrounded by several broad, heart-shaped green leaves; blurred dark foliage forms the background."
+          ]
+        },
+        {
+          "round": "D8:10",
+          "user": "Then I spotted a brighter red one! It looked like a tiny, vibrant lantern full of warmth—I couldn’t resist taking a photo!",
+          "image_id": [
+            "D8:IMG_008"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D8_IMG_008.jpg"
+          ],
+          "assistant": "Red mallow flowers are so eye-catching! The deeper color makes the wrinkled petal texture even more pronounced, and the golden center stands out beautifully.",
+          "image_caption": [
+            "Red, bell-shaped flower with wrinkled petals and a yellow, textured center hanging from a green stem, surrounded by broad green leaves and blurred garden foliage in the background."
+          ]
+        },
+        {
+          "round": "D8:11",
+          "user": "I’m honestly surprised we saw two completely different types of pretty pink flowers in one outing! The kids were cheering every time they found a new bloom.",
+          "assistant": "It sounds like the perfect autumn walk! Foxglove’s elegant, cascading bells and mallow’s delicate paper-like blossoms each have their own charm."
+        },
+        {
+          "round": "D8:12",
+          "user": "Yes! Our neighbor joked that the trail today felt like a 'flower road.' I never expected to see such beautiful wildflowers. I feel like learning all their names now!",
+          "assistant": "You’ve already taken the perfect first step—your observation is excellent! Feel free to send me any flowers you discover. I’d love to identify them with you."
+        },
+        {
+          "round": "D8:13",
+          "user": "The kids were also curious and kept asking, 'What’s this one called?' I think they’ll remember today for a long time.",
+          "assistant": "Moments like this become such warm childhood memories—exploring nature together sparks curiosity in the best way."
+        },
+        {
+          "round": "D8:14",
+          "user": "Thank you for explaining everything along the way. I feel like I completed a mini 'wildflower discovery class' today!",
+          "assistant": "Haha, then I’m honored to be your ‘field botany assistant’ for the day! Your photos really captured the flowers beautifully."
+        },
+        {
+          "round": "D8:15",
+          "user": "Today was really joyful—picnic, hiking, chatting with our neighbors, and the kids running around laughing.",
+          "assistant": "It truly sounds like the perfect autumn day—beautiful weather, lovely company, and nature offering surprises around every corner."
+        },
+        {
+          "round": "D8:16",
+          "user": "I’ll probably sort through the photos when I get home. Maybe you can help me check if I missed any interesting details?",
+          "assistant": "Of course! Send me any extra photos and I’ll gladly help analyze each flower’s characteristics."
+        },
+        {
+          "round": "D8:17",
+          "user": "Great! I’m so happy with today’s adventure. I want to keep identifying flowers on future outings!",
+          "assistant": "I’ll be looking forward to joining you on every new discovery—there are so many beautiful plants waiting to be found!"
+        },
+        {
+          "round": "D8:18",
+          "user": "Oh by the way, our neighbors brought their Beagle today! His name is Karl, and he was trotting around the picnic blanket the whole time. He looked so gentle and curious—I had to take a picture of him!",
+          "image_id": [
+            "D8:IMG_009"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D8_IMG_009.jpg"
+          ],
+          "assistant": "Aww, Karl looks absolutely adorable! Such a classic Beagle—those expressive eyes, soft ears, and the warm tan-and-white coat. He has such a calm, thoughtful gaze in this photo.",
+          "image_caption": [
+            "Side profile of a tricolor beagle with brown, white, and black fur, long floppy ears, and alert eyes, standing outdoors against a blurred green background."
+          ]
+        },
+        {
+          "round": "D8:19",
+          "user": "Right? He's so charming. While I was taking this picture, the kids kept calling his name and he just sat there quietly like a little gentleman.",
+          "assistant": "That’s very Beagle-like—gentle, friendly, and very patient with children. They’re known for their sweet temperament and intelligence."
+        },
+        {
+          "round": "D8:20",
+          "user": "After seeing him today, I suddenly remembered that I still have some old photos of Karl when he was just a tiny puppy. I dug through my phone and found one!",
+          "assistant": "Oh that sounds precious—puppy photos are always heart-melting. Let me see!"
+        },
+        {
+          "round": "D8:21",
+          "user": "Here it is! Look how small he was! His paws were so tiny, and he used to climb on everyone’s lap whenever he wanted attention.",
+          "image_id": [
+            "D8:IMG_010"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D8_IMG_010.jpg"
+          ],
+          "assistant": "Oh my goodness—this is unbelievably cute! Little Karl looks like a plush toy here. His round puppy face, soft coat, and those big curious eyes… it’s amazing how Beagle puppies always look so innocent and full of wonder.",
+          "image_caption": [
+            "Small brown-and-white beagle puppy standing with its front paws on a person’s lap, looking directly at the camera, outdoors on green grass near a blue chair or mat."
+          ]
+        },
+        {
+          "round": "D8:22",
+          "user": "I know! Seeing today’s grown-up Karl and comparing him to this tiny puppy picture makes me feel like time has flown by so quickly.",
+          "assistant": "It really does—dogs grow up so fast, but each stage has its own charm. From the playful puppy phase to the calm, loyal adult dog, Karl seems to have kept his sweet personality through all the years."
+        },
+        {
+          "round": "D8:23",
+          "user": "Yeah… it felt kind of nostalgic. Watching him walk next to the kids today reminded me of how small he used to be.",
+          "assistant": "Moments like this really highlight how pets become part of our timeline—almost like bookmarks of different chapters in our lives. Karl has clearly grown into a wonderful companion for the whole neighborhood."
+        },
+        {
+          "round": "D8:24",
+          "user": "It made today's outing feel even warmer. Flowers, sunshine, friends, and Karl trotting around—everything just felt simple and happy.",
+          "assistant": "That sounds truly heartwarming. A beautiful autumn day filled with nature, laughter, and memories—both old and new. Karl definitely added an extra layer of sweetness to your outing."
+        }
+      ]
+    },
+    {
+      "session_id": "D9",
+      "date": "2024-10-07",
+      "dialogues": [
+        {
+          "round": "D9:1",
+          "user": "Recently, I’ve been wanting to try making a cake myself. I’ve heard that homemade cakes taste better. Where do you think I should start?",
+          "assistant": "Making your own cake is definitely rewarding, and you can adjust the taste exactly to your liking. What kind of cake are you thinking of? Something like a sponge cake, chiffon cake, or perhaps something more complex like a mousse cake?"
+        },
+        {
+          "round": "D9:2",
+          "user": "I think I’ll start with something simple, like a sponge cake. It looks easier for a beginner like me.",
+          "assistant": "That’s a great choice! Sponge cakes are classic and quite straightforward—you just need eggs, sugar, flour, and a bit of patience while whisking. The texture is light yet slightly dense, making it perfect for layering with cream or fruits once you get the hang of it.",
+          "image_id": [
+            "D9:IMG_001"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D9_IMG_001.jpg"
+          ],
+          "image_caption": [
+            "Round yellow sponge cake on a white plate with one large triangular slice cut and slightly pulled out, revealing its airy interior. The cake sits on a wooden surface with eggs, a white bowl, and a burlap sack in the blurred background."
+          ]
+        },
+        {
+          "round": "D9:3",
+          "user": "I’ve also seen chiffon cakes; they look really soft and fluffy. Are they much harder to make?",
+          "assistant": "Not much harder at all! Chiffon cakes use oil and whipped egg whites, which give them that extra airy and springy texture. They’re a bit more delicate than sponge cakes, but once you learn to handle the batter gently, you’ll love how light and moist they turn out.",
+          "image_id": [
+            "D9:IMG_002"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D9_IMG_002.jpg"
+          ],
+          "image_caption": [
+            "Round sponge cake with a central hole, dusted with powdered sugar, displayed on a clear glass cake stand. One wedge-shaped slice has been cut and slightly pulled out, revealing a light yellow, airy interior. The cake stand rests on a smooth, light gray marble countertop with no additional items or text in the scene."
+          ]
+        },
+        {
+          "round": "D9:4",
+          "user": "I prefer vanilla flavor. It seems more classic and would also go well with some fruits or cream decorations.",
+          "assistant": "Vanilla cakes are very versatile, and both fruits and cream pair perfectly with them. Are you planning to make a single-layer cake, or perhaps something with multiple layers, like a birthday cake?"
+        },
+        {
+          "round": "D9:5",
+          "user": "I think I’ll go with a single layer since I’m just testing it out and don’t want to make it too complicated.",
+          "assistant": "Sounds great! A single-layer cake is easier to manage, and you can really focus on the flavor and decoration. For vanilla, you could add vanilla extract for extra fragrance. Have you thought about simple decorations?"
+        },
+        {
+          "round": "D9:6",
+          "user": "I was thinking about decorating it with some fruits, like strawberries or blueberries. They look refreshing and are also pretty.",
+          "assistant": "Yes, strawberries and blueberries have such a great color contrast, and the tartness of the fruit will complement the soft cake. Are you thinking of placing the fruits directly on top, or would you like to make a fruit jam or jelly for the decoration?",
+          "image_id": [
+            "D9:IMG_003"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D9_IMG_003.jpg"
+          ],
+          "image_caption": [
+            "Single-layer sponge cake on a white pedestal stand, topped with a thick layer of whipped cream and a mound of sliced strawberries plus one whole berry. The cake sits on a marble surface with white flowers and a green cloth."
+          ]
+        },
+        {
+          "round": "D9:7",
+          "user": "I think I’ll try making a fruit jam. It seems like the jam would have a stronger flavor and fruitiness.",
+          "assistant": "Fruit jam is indeed a great option for adding depth, and it’s also pretty easy to make. You could choose strawberry jam or mix a few fruits for a colorful jam. Do you plan to spread it directly on the cake, or would you prefer a layered effect?"
+        },
+        {
+          "round": "D9:8",
+          "user": "I want to go for a layered effect. It seems like it would have more visual impact.",
+          "assistant": "That’s a fantastic idea! A layered effect looks beautiful and gives the cake a rich flavor. You could layer the jam and cream together with the vanilla cake for a delicious and textured result. Are you thinking of using fresh cream for the decoration?"
+        },
+        {
+          "round": "D9:9",
+          "user": "Yes, I think cream would add more richness and make the cake feel fuller. But how should I whip the cream?",
+          "assistant": "Whipping cream is crucial. It’s best to use a chilled whisk and cold heavy cream. Start mixing on low speed, and when the cream starts to thicken, increase the speed. Whip it until it forms stiff peaks, and then it’ll be perfect for decorating your cake."
+        },
+        {
+          "round": "D9:10",
+          "user": "Do I need to pay attention to the time when whipping the cream? I’m worried about over-whipping it.",
+          "assistant": "Yes, over-whipping is something to be careful of. If you whip it too much, it can turn into butter, and you’ll lose that smooth cream texture. Once you notice the cream becoming firm and smooth, you can stop. Start slow and keep an eye on the cream to avoid over-whipping."
+        },
+        {
+          "round": "D9:11",
+          "user": "Got it, thanks! I want to take some photos of the cake-making process and share them with my friends. By the way, is there any specific shape I should use for the cake?",
+          "assistant": "That sounds like a lot of fun! The shape of the cake really depends on the pan you use. You can go with round, square, or even heart-shaped pans. If you want to be more creative, you can cut the cake into different shapes yourself."
+        },
+        {
+          "round": "D9:12",
+          "user": "I think I’ll use a round pan. It’s simple and classic, and it should be easier to cut.",
+          "assistant": "Round pans are the most common choice and easy to cut into portions. Once it’s done, you can snap some photos of it—it should look really beautiful. Have you thought about adding any special ingredients to your cake?"
+        },
+        {
+          "round": "D9:13",
+          "user": "I’ve seen some cakes with crushed nuts on top. It seems like that would add texture and a nice aroma.",
+          "assistant": "Crushed nuts are a great choice! Almond slices, walnuts, or pistachios can add a lovely crunch and complement the soft texture of the vanilla cake. The nutty aroma pairs wonderfully with the cake's light texture.",
+          "image_id": [
+            "D9:IMG_004"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D9_IMG_004.jpg"
+          ],
+          "image_caption": [
+            "A three-layer nut cake with white frosting and a large wedge removed, revealing light-colored sponge with finely chopped nuts between frosting layers. The cake is topped with chopped nuts and displayed on a decorative pedestal stand, surrounded by whole nuts on a wooden surface."
+          ]
+        },
+        {
+          "round": "D9:14",
+          "user": "I think I’ll use pistachio crumbs. That will make the cake look even more unique.",
+          "assistant": "Pistachios not only taste delicious, but they’ll also add a pop of green, giving the cake a more layered appearance. You can sprinkle the pistachio crumbs over the cream or layer them on top of the jam for a beautiful effect."
+        },
+        {
+          "round": "D9:15",
+          "user": "That sounds perfect! The cake should taste amazing when it’s done. By the way, should I also use powdered sugar or syrup to sweeten it?",
+          "assistant": "Both powdered sugar and syrup are good ways to add sweetness. Powdered sugar is great for decorating the top of the cake, and just a light dusting adds sweetness and visual appeal. Syrup can help keep the cake moist, especially if you layer it between the cake layers."
+        },
+        {
+          "round": "D9:16",
+          "user": "When should I add the powdered sugar? Should I sprinkle it on after finishing the cake?",
+          "assistant": "You can sprinkle powdered sugar on after decorating the cake, as the last step. This will make it look more refined and add a subtle sweetness. You could also sprinkle some on the cake while it’s cooling down before adding the rest of the decorations."
+        },
+        {
+          "round": "D9:17",
+          "user": "Okay, that sounds like it will look beautiful! I can’t wait to get started. One more thing, should I pay attention to the temperature while making the cake?",
+          "assistant": "Yes, temperature is really important. Baking temperature usually ranges from 160–180°C, depending on your recipe. Also, make sure the batter is at room temperature before baking. If it’s too cold or too warm, it can affect the rising process."
+        },
+        {
+          "round": "D9:18",
+          "user": "Got it! If I control the temperature, the cake should turn out fine. Do you think I should take some pictures of the cake-making process and document it?",
+          "assistant": "Absolutely! Capturing the process of making the cake will be so much fun, and the finished product will look fantastic in photos. You can take pictures at different stages—from mixing the batter to when it comes out of the oven, and then the decorating process."
+        },
+        {
+          "round": "D9:19",
+          "user": "Alright, I’ll definitely take some photos! If it turns out well, it’ll probably be my proudest creation!",
+          "assistant": "I’m sure it’ll turn out amazing! Once you finish, share the photos—it’ll inspire others too. And if you want to try new cakes later, I can help you plan those as well."
+        },
+        {
+          "round": "D9:20",
+          "user": "I’m gathering ingredients tomorrow—eggs, flour, fresh cream, and some strawberries. I’ll start baking in the morning!",
+          "assistant": "That’s the spirit! Prepare everything in advance, and don’t forget to preheat the oven 10–15 minutes early for consistent results. You’re all set for a beautiful first cake."
+        },
+        {
+          "round": "D9:21",
+          "user": "Thanks! I’ll take step-by-step photos and maybe let my child help decorate the top. It’ll be fun to make it a little family project again.",
+          "assistant": "That’s wonderful—baking together makes it even more special. I can’t wait to see how your first homemade cake turns out!"
+        }
+      ]
+    },
+    {
+      "session_id": "D10",
+      "date": "2024-11-03",
+      "dialogues": [
+        {
+          "round": "D10:1",
+          "user": "I want to make a cake by myself today. First, I went to the bakery to buy ingredients. I bought cake flour, eggs, butter, caster sugar, milk, and corn oil.",
+          "assistant": "With all the ingredients ready, you can start your cake-making journey right away."
+        },
+        {
+          "round": "D10:2",
+          "user": "When I got home, I took the butter out of the fridge and let it soften at room temperature.",
+          "assistant": "Softened butter makes the subsequent operations more convenient.",
+          "image_id": [
+            "D10:IMG_001"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D10_IMG_001.jpg"
+          ],
+          "image_caption": [
+            "Several pale yellow cubes of butter stacked in a clear glass bowl on a dark countertop."
+          ]
+        },
+        {
+          "round": "D10:3",
+          "user": "I took several eggs and separated the egg whites from the yolks, putting them into two clean and dry bowls respectively.",
+          "assistant": "Separating the egg whites and yolks is a crucial step."
+        },
+        {
+          "round": "D10:4",
+          "user": "I added corn oil and milk to the egg yolks and stirred them evenly.",
+          "assistant": "Stir well to fully blend the egg yolk mixture."
+        },
+        {
+          "round": "D10:5",
+          "user": "I sifted in the cake flour and gently stirred it into a smooth egg yolk batter with a whisk or a spatula.",
+          "assistant": "Pay attention to the stirring technique to avoid overworking the flour and developing gluten."
+        },
+        {
+          "round": "D10:6",
+          "user": "I whipped the egg whites with a whisk, adding caster sugar in three portions, until stiff peaks formed.",
+          "assistant": "Well-whipped egg whites are the key to a fluffy cake. Keep it up!",
+          "image_id": [
+            "D10:IMG_002"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D10_IMG_002.jpg"
+          ],
+          "image_caption": [
+            "Metal whisk attachment coated with thick whipped cream or meringue held above a stainless steel mixing bowl filled with the same mixture on a kitchen countertop."
+          ]
+        },
+        {
+          "round": "D10:7",
+          "user": "I took one-third of the whipped egg whites and added them to the egg yolk batter, then folded them in gently with a spatula.",
+          "assistant": "When folding, be gentle to avoid deflating the batter."
+        },
+        {
+          "round": "D10:8",
+          "user": "I poured the folded batter into the remaining egg whites and continued to fold them in evenly to form a smooth cake batter.",
+          "assistant": "The cake batter is ready. You're one step closer to a delicious cake."
+        },
+        {
+          "round": "D10:9",
+          "user": "I lined the bottom and sides of the cake pan with baking paper and poured the cake batter into the pan.",
+          "assistant": "Lining both the bottom and sides makes it easier to remove the cake later and keeps the surface neat."
+        },
+        {
+          "round": "D10:10",
+          "user": "I tapped the cake pan on the table a few times to remove air bubbles.",
+          "assistant": "Removing air bubbles will result in a smoother cake."
+        },
+        {
+          "round": "D10:11",
+          "user": "I preheated the oven and set the temperature and time.",
+          "assistant": "Preheating the oven ensures even baking of the cake."
+        },
+        {
+          "round": "D10:12",
+          "user": "I placed the cake pan in the preheated oven and started baking.",
+          "assistant": "Be patient and avoid opening the oven door too often. Looking forward to the cake coming out of the oven.",
+          "image_id": [
+            "D10:IMG_003"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D10_IMG_003.jpg"
+          ],
+          "image_caption": [
+            "Two round cakes baking in metal pans on an oven rack, with their tops risen and lightly browned, illuminated by the oven’s interior light and surrounded by the metallic walls and fan of the oven."
+          ]
+        },
+        {
+          "round": "D10:13",
+          "user": "After baking, I took out the cake and placed it on a wire rack to cool.",
+          "assistant": "Cooling the cake properly helps it set and improves the texture."
+        },
+        {
+          "round": "D10:14",
+          "user": "After the cake cooled down, I spread cream on the surface and added fruits according to my preference.",
+          "assistant": "The decorated cake looks amazing. Enjoy it!"
+        },
+        {
+          "round": "D10:15",
+          "user": "I lightly brushed the surface with syrup before spreading the cream to keep it moist.",
+          "assistant": "That’s a great idea! Brushing syrup adds light sweetness and keeps the cake tender."
+        },
+        {
+          "round": "D10:16",
+          "user": "After decorating, I chilled the cake briefly to let the cream set.",
+          "assistant": "Good move! Chilling helps the cream stabilize and makes it easier to slice cleanly."
+        },
+        {
+          "round": "D10:17",
+          "user": "The cake turned out soft, with a pleasant aroma and fresh fruit flavor. I'm really satisfied with it.",
+          "assistant": "Congratulations on your successful first cake! It must taste as good as it looks."
+        },
+        {
+          "round": "D10:18",
+          "user": "I’d like to try making a layer cake or add some jam in between.",
+          "assistant": "That’s a great next step! A layer of jam will make the flavor richer. We can go through that process together next time."
+        }
+      ]
+    },
+    {
+      "session_id": "D11",
+      "date": "2024-11-14",
+      "dialogues": [
+        {
+          "round": "D11:1",
+          "user": "Thanksgiving break is coming up, and a lot of shops are already teasing holiday deals. I’m thinking of treating myself to some new winter clothes during the sales instead of just buying things for everyone else this time.",
+          "assistant": "I love that idea—self-care via warm clothes! Do you have any specific styles in mind, or are you still browsing?"
+        },
+        {
+          "round": "D11:2",
+          "user": "I’ve narrowed it down to two categories: open-front coats and open-knit cowl neck sweaters. I saved a few pictures of coats that I really like. Let me show you the first one—it’s a clean black open-front coat, pretty minimal and easy to style.",
+          "image_id": [
+            "D11:IMG_001"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D11_IMG_001.jpg"
+          ],
+          "assistant": "This black open-front coat is super versatile—very streamlined, with a simple cut and no belt, so it’s great for layering over sweaters or thinner tops. The dark color makes it easy to match with almost anything and gives a bit of a city-chic vibe.",
+          "image_caption": [
+            "Woman standing against a plain white background, wearing a long black open-front coat over a dark gray top, light blue skinny jeans, and black ankle boots. Her hands are in the coat pockets, and her face is partially out of frame at the top."
+          ]
+        },
+        {
+          "round": "D11:3",
+          "user": "Here’s the second coat—this one has a bold leopard print all over. It looks fun and a little wild compared to my usual style.",
+          "image_id": [
+            "D11:IMG_002"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D11_IMG_002.jpg"
+          ],
+          "assistant": "This leopard-print open-front coat is definitely a statement piece. It still has that relaxed, drapey shape, but the print makes it more fashion-forward and playful. It would be perfect if you want something that instantly dresses up jeans and a simple tee.",
+          "image_caption": [
+            "Young woman standing against a plain light background, wearing a long, open-front leopard-print coat over a gray crew-neck top and dark blue jeans, with her hands resting at the sides of the coat."
+          ]
+        },
+        {
+          "round": "D11:4",
+          "user": "The third one is a textured gray coat. It looks kind of cozy and a bit slouchy, very casual. I like the laid-back feeling.",
+          "image_id": [
+            "D11:IMG_003"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D11_IMG_003.jpg"
+          ],
+          "assistant": "This gray open-front coat has that soft, almost bouclé texture, which makes it look really warm and comfortable. The relaxed fit and slightly longer length give it an effortless, off-duty look—great for weekends, coffee runs, or library days.",
+          "image_caption": [
+            "Woman posing against a plain white background, wearing a gray wide-brim hat, a long textured gray coat over a white top, and dark skinny pants, with one hand touching her hat and the other resting on her hip."
+          ]
+        },
+        {
+          "round": "D11:5",
+          "user": "Coat number four is a light beige trench-style open-front coat with a belt. It feels a little more polished and dressy.",
+          "image_id": [
+            "D11:IMG_004"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D11_IMG_004.jpg"
+          ],
+          "assistant": "This beige coat leans more toward a trench silhouette. The belt lets you cinch the waist for shape, which is flattering and a bit more formal. It’s perfect for days when you want to look put-together—like work, meetings at the library, or going out to dinner.",
+          "image_caption": [
+            "Woman standing against a white background, facing forward, wearing a light beige belted trench-style coat over a black and white horizontal striped turtleneck top, with blue pants partially visible."
+          ]
+        },
+        {
+          "round": "D11:6",
+          "user": "Here’s the fifth coat: a simple light gray open-front coat with big pockets. It looks very practical and soft.",
+          "image_id": [
+            "D11:IMG_005"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D11_IMG_005.jpg"
+          ],
+          "assistant": "This light gray one is very classic—clean lines, no visible closures, and roomy pockets. It’s the kind of coat you can throw over anything and still look neat. The neutral color keeps it calm and understated.",
+          "image_caption": [
+            "Mannequin wearing a long, light gray open-front cardigan or coat with a wide shawl collar, long sleeves, and two front patch pockets, displayed against a plain light background."
+          ]
+        },
+        {
+          "round": "D11:7",
+          "user": "And finally, the sixth coat—this one is in a bright yellow-green shade with a drapey front. It’s so cheerful compared to the others.",
+          "image_id": [
+            "D11:IMG_006"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D11_IMG_006.jpg"
+          ],
+          "assistant": "This bright coat is such a mood booster! The color makes it stand out in a crowd and could really brighten up gray winter days. The draped front gives it a modern, creative feel—great if you want something artsy and bold.",
+          "image_caption": [
+            "Woman standing against a plain white background, wearing a long yellow open-front coat over a gray top and dark knee-length skirt. She carries a black crossbody bag and wears black ankle boots, looking directly at the camera."
+          ]
+        },
+        {
+          "round": "D11:8",
+          "user": "So those are my open-front coat options. I’m torn between getting something practical and something with more personality.",
+          "assistant": "To summarize: the black and light gray coats are the most versatile and minimal; the gray textured one and the beige belted one are cozy yet polished; the leopard print and the bright yellow-green coat are your statement pieces. It might help to think about how often you’ll wear each style and how comfortable you feel standing out in bolder colors and prints."
+        },
+        {
+          "round": "D11:9",
+          "user": "That’s true. For everyday life, I usually wear jeans, sweaters, and comfortable shoes—nothing too flashy. But a small part of me wants something just a bit more interesting than plain black.",
+          "assistant": "In that case, the textured gray coat feels like a great middle ground: more visually interesting than solid black but still subtle enough for daily wear. The beige belted coat is also a nice option if you want a slightly dressier, feminine look without going too bold."
+        },
+        {
+          "round": "D11:10",
+          "user": "Now let me show you the second category: open-knit cowl neck sweaters. Here’s the first one—an oversized teal sweater with a big cowl neck and front pockets. It looks incredibly snuggly.",
+          "image_id": [
+            "D11:IMG_007"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D11_IMG_007.jpg"
+          ],
+          "assistant": "This teal open-knit cowl neck sweater looks super cozy. The loose fit and front pockets make it feel like a wearable blanket, and the cowl neck adds warmth around the neck without needing a scarf. The color is soft but still has personality.",
+          "image_caption": [
+            "Woman with long blond hair wearing an oversized teal knit turtleneck sweater with front pockets, paired with black pants, standing against a plain white background."
+          ]
+        },
+        {
+          "round": "D11:11",
+          "user": "The second sweater is the same style but in a bright red. It feels very festive—perfect for the holiday season.",
+          "image_id": [
+            "D11:IMG_008"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D11_IMG_008.jpg"
+          ],
+          "assistant": "The red version is definitely more eye-catching and very on-theme for Thanksgiving and winter holidays. It has the same cozy, roomy shape, but the color makes it feel energetic and cheerful in photos and gatherings.",
+          "image_caption": [
+            "Woman with long wavy blond hair wearing a loose, long red sweater with a high collar and front pocket, standing against a plain white background with one hand in the pocket and the other resting at her side, accessorized with stacked bracelets."
+          ]
+        },
+        {
+          "round": "D11:12",
+          "user": "And the third sweater is a dark navy cowl neck knit. It has a slimmer fit and looks a little more refined than the oversized ones.",
+          "image_id": [
+            "D11:IMG_009"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D11_IMG_009.jpg"
+          ],
+          "assistant": "This navy cowl neck sweater is more fitted and has a sleek, slightly edgy look. The dark color is easy to match, and the knit texture keeps it from feeling too plain. It would be great for days when you want something cozy but not too bulky.",
+          "image_caption": [
+            "Young woman with long dark hair stands against a plain white background, wearing a dark textured turtleneck sweater and a green-and-black plaid garment at the waist. She is turned slightly sideways, gazing toward the camera with one hand near her mouth and the other resting on her arm, displaying multiple rings."
+          ]
+        },
+        {
+          "round": "D11:13",
+          "user": "So for sweaters, I’m hesitating between playful color and something that works with everything. I want pieces I’ll actually wear a lot this winter.",
+          "assistant": "If you want high wearability, the navy sweater is the safest choice—it pairs well with jeans, skirts, and even layered under your coats. The teal has a gentle pop of color and feels relaxed, while the red is ideal if you want a festive statement piece for parties and family gatherings."
+        },
+        {
+          "round": "D11:14",
+          "user": "Given everything we’ve looked at, which open-front coat would you choose for me?",
+          "assistant": "Based on your usual casual style and your wish for something slightly more interesting than plain black, I’d recommend the **textured gray open-front coat**. It’s cozy, relaxed, and has enough texture to feel special, but the neutral color keeps it easy to wear with your everyday outfits."
+        },
+        {
+          "round": "D11:15",
+          "user": "That makes sense. And what about the sweaters—if I only pick one, which do you think fits me best?",
+          "assistant": "I’d go with the **teal open-knit cowl neck sweater**. The color is soft but still adds warmth and personality, and the oversized cut seems perfect for curling up with a book, baking days, or casual outings. It feels very “you”: cozy, gentle, and practical with a touch of charm."
+        },
+        {
+          "round": "D11:16",
+          "user": "So your final picks are the textured gray open-front coat and the teal cowl neck sweater?",
+          "assistant": "Exactly—one relaxed, textured coat for layering and one super cozy teal sweater for everyday comfort. Together they’d make a really nice winter combo: you could wear the cowl neck sweater under the coat and be perfectly warm for Thanksgiving walks and post-baking errands."
+        },
+        {
+          "round": "D11:17",
+          "user": "I love that combination. It feels comforting just thinking about it. I’ll wait for the Thanksgiving discounts and then add those two to my cart.",
+          "assistant": "Great plan! When the sales start, you’ll already know exactly what to grab—no decision stress, just a little gift to yourself for getting through a busy year."
+        },
+        {
+          "round": "D11:18",
+          "user": "Thank you for helping me sort this out. It’s fun planning cozy winter outfits while also planning holiday baking.",
+          "assistant": "You’re welcome! Cozy clothes plus warm baked goods sounds like the perfect Thanksgiving break. I can’t wait to hear how both your shopping and your baking turn out."
+        },
+        {
+          "round": "D11:19",
+          "user": "Actually… while browsing a bit more, I found two additional Open-Knit Cowl Neck Sweaters that I hadn’t seen earlier. Now I’m tempted again. Can I show them to you?",
+          "assistant": "Of course! Show me the new ones—let’s compare them with the previous three and see if any of these change the final decision."
+        },
+        {
+          "round": "D11:20",
+          "user": "Here’s the first one. It’s a soft blush pink cowl neck sweater. The knit looks airy and the color feels really gentle and feminine. I’m surprised I didn’t notice it earlier!",
+          "image_id": [
+            "D11:IMG_010"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D11_IMG_010.jpg"
+          ],
+          "assistant": "This blush pink sweater is stunning—soft, romantic, and very flattering. The color brightens the face, and the loose open knit makes it feel light but still cozy. It also has a modern, slightly bohemian vibe, especially with that relaxed cowl neck.",
+          "image_caption": [
+            "Young woman modeling a pale pink chunky knit cowl‑neck sweater, paired with a long pendant necklace, light denim shorts, and a black wide‑brimmed hat. She stands against a plain white background. Smaller thumbnail images on the right show front, full‑length, and side views of the same outfit."
+          ]
+        },
+        {
+          "round": "D11:21",
+          "user": "And here’s the second new one—a charcoal gray version. It looks more fitted and structured than the others, almost like something I could wear to work or for slightly more formal settings.",
+          "image_id": [
+            "D11:IMG_011"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D11_IMG_011.jpg"
+          ],
+          "assistant": "This charcoal sweater is definitely more polished. The darker tone gives it a clean, refined look, and the knit pattern is more structured. It feels like the kind of sweater that transitions well between casual and semi-dressy occasions.",
+          "image_caption": [
+            "Woman standing against a plain white background, wearing a dark long-sleeve knit sweater with a cowl neck and patterned front, paired with a light gray knee-length skirt."
+          ]
+        },
+        {
+          "round": "D11:22",
+          "user": "Now I’m confused again… These two are so different in energy. The pink one feels soft and dreamy, while the charcoal gray one feels classic and mature.",
+          "assistant": "You’re absolutely right. The pink one gives you warmth and softness—great for gentle winter moods, cozy weekends, or pairing with lighter colors. The charcoal one is sleek, minimal, and versatile for colder months."
+        },
+        {
+          "round": "D11:23",
+          "user": "Given these new options, do you think your original choice of the teal sweater still holds? Or should I reconsider?",
+          "assistant": "Now that you’ve added these two into the mix, my recommendation definitely shifts. The blush pink cowl neck sweater stands out the most. It keeps that cozy oversized feeling like the teal one, but the color elevates it—softer, more flattering, and more distinctive for winter. It also pairs beautifully with both dark and light coats."
+        },
+        {
+          "round": "D11:24",
+          "user": "So you think the blush pink one fits me best overall?",
+          "assistant": "Yes. It combines everything you liked about the teal version—comfort, looseness, warmth—but adds a gentle elegance and brightness that feels very 'you.' It makes a lovely contrast with the textured gray coat as well. So my updated pick for your Open-Knit Cowl Neck Sweater is **the blush pink one**."
+        },
+        {
+          "round": "D11:25",
+          "user": "That actually sounds perfect. I love that combination—soft pink under a gray textured coat. I think I’ll follow your updated recommendation.",
+          "assistant": "Great choice! That pairing will look effortlessly cozy and stylish all winter. And now when the Thanksgiving sales begin, you’ll be fully ready to grab your favorites with confidence."
+        }
+      ]
+    },
+    {
+      "session_id": "D12",
+      "date": "2024-12-25",
+      "dialogues": [
+        {
+          "round": "D12:1",
+          "user": "Merry Christmas! I'm baking a birthday cake for my friend! It's a surprise, and I'm both excited and a little nervous. I really hope it turns out well.",
+          "assistant": "That’s such a thoughtful idea! Baking a surprise cake shows real care. What kind of cake are you planning to make?"
+        },
+        {
+          "round": "D12:2",
+          "user": "I'm making a chocolate cake—it's my friend's favorite. I think I’ll follow a simple recipe this time.",
+          "assistant": "Chocolate cake is a timeless classic! Keeping it simple is smart—it’ll help you focus on texture and taste. Have you thought about the frosting?"
+        },
+        {
+          "round": "D12:3",
+          "user": "I was thinking of using vanilla buttercream frosting. It’s easy to make, but I’m not sure if it goes well with chocolate cake.",
+          "assistant": "Vanilla buttercream actually pairs wonderfully with chocolate—it balances out the richness perfectly!"
+        },
+        {
+          "round": "D12:4",
+          "user": "Here’s a picture of the cake batter. It looks a bit darker than I expected, but the recipe said that’s fine.",
+          "assistant": "It looks rich and chocolatey! The dark color is probably just from the cocoa powder type you used—no need to worry.",
+          "image_id": [
+            "D12:IMG_001"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D12_IMG_001.jpg"
+          ],
+          "image_caption": [
+            "Bowl filled with moist, crumbled chocolate cake or brownie pieces, some areas glossy with melted chocolate, with a metal spoon resting on top. The spoon’s handle is engraved with the word “happy.”"
+          ]
+        },
+        {
+          "round": "D12:5",
+          "user": "I'm going to bake the cake in two round pans so I can make it a layer cake. It’ll look more beautiful that way.",
+          "assistant": "That’s a great idea! Two layers will make the cake look more professional and add visual appeal."
+        },
+        {
+          "round": "D12:6",
+          "user": "I just took the cakes out of the oven—they smell amazing! But they came out a little uneven.",
+          "assistant": "Don’t worry! That happens often. You can gently level the tops with a serrated knife once they’ve cooled down."
+        },
+        {
+          "round": "D12:7",
+          "user": "Here’s a picture of the chocolate buttercream frosting I made. I changed my mind—it felt like a better match for the cake.",
+          "assistant": "Excellent decision! Chocolate buttercream is rich, smooth, and matches perfectly with your cake.",
+          "image_id": [
+            "D12:IMG_002"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D12_IMG_002.jpg"
+          ],
+          "image_caption": [
+            "Close-up of a chocolate cupcake topped with a tall swirl of smooth chocolate frosting, filling most of the frame with a slightly blurred background."
+          ]
+        },
+        {
+          "round": "D12:8",
+          "user": "I'm having a bit of trouble leveling the cake layers. They keep crumbling—it’s harder than I thought.",
+          "assistant": "That’s very normal! Make sure the cakes are fully cool, then use a long serrated knife and gentle sawing motions. You’ll get the hang of it with practice."
+        },
+        {
+          "round": "D12:9",
+          "user": "I'm starting to frost the cake now. It’s a little messy, but I’m trying my best.",
+          "assistant": "Messy is completely fine at this stage! Use an offset spatula or knife to smooth it out—it’ll look great once finished."
+        },
+        {
+          "round": "D12:10",
+          "user": "Here’s a picture of the cake with its first layer of frosting. It’s not perfect, but I’m proud of it.",
+          "assistant": "It’s coming along beautifully! Every layer of frosting makes a difference. You’re doing great!",
+          "image_id": [
+            "D12:IMG_003"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D12_IMG_003.jpg"
+          ],
+          "image_caption": [
+            "Hand decorating a round white-frosted cake with a piping bag, adding light green icing swirls along the side. A border of small white icing pearls lines the base of the cake, which sits on a plain cake board."
+          ]
+        },
+        {
+          "round": "D12:11",
+          "user": "I'm adding sprinkles to the cake—they’ll make it look more festive for the birthday party!",
+          "assistant": "Perfect choice! Sprinkles always bring cheer and celebration to a cake."
+        },
+        {
+          "round": "D12:12",
+          "user": "I’m trying to write 'Happy Birthday' on the cake using a piping bag, but my hand keeps shaking. It’s harder than I thought!",
+          "assistant": "That’s totally okay! Writing with a piping bag takes patience. Try practicing on parchment paper first—it really helps."
+        },
+        {
+          "round": "D12:13",
+          "user": "I put the cake in the fridge for a while so the frosting can set before the final decorations.",
+          "assistant": "Good call. Chilling helps the buttercream firm up—it’ll be easier to work with later.",
+          "image_id": [
+            "D12:IMG_004"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D12_IMG_004.jpg"
+          ],
+          "image_caption": [
+            "Tall, silver, side‑by‑side refrigerator with two smooth, flat doors and a narrow vertical gap between them, standing on small black feet against a plain white background."
+          ]
+        },
+        {
+          "round": "D12:14",
+          "user": "I’m a little disappointed with how the writing turned out—it’s not as neat as I wanted. I’ll try to do it better next time.",
+          "assistant": "Don’t be too hard on yourself. Decorating takes time to master. What matters most is the heart and effort you put into it!"
+        },
+        {
+          "round": "D12:15",
+          "user": "I added some candles to the cake—it’s ready for the party now! I’m so excited.",
+          "assistant": "Candles are the perfect finishing touch. It’s going to be such a lovely surprise!"
+        },
+        {
+          "round": "D12:16",
+          "user": "My friend loved the cake! She said it was delicious and was really touched that I made it myself.",
+          "assistant": "That’s wonderful to hear! Seeing someone enjoy what you made is one of the best feelings in baking."
+        },
+        {
+          "round": "D12:17",
+          "user": "Next time, I think I’ll decorate it with fresh fruit instead of sprinkles—maybe strawberries or blueberries. It’ll be healthier too.",
+          "assistant": "Fresh fruit will be a beautiful and refreshing choice! It adds color, flavor, and a lovely natural touch."
+        },
+        {
+          "round": "D12:18",
+          "user": "That’s settled then—fruit for the next one! But honestly, looking at this cake right now, I just feel so accomplished. Every step was worth it.",
+          "assistant": "That sense of accomplishment is what baking’s all about—turning effort, care, and creativity into something joyful to share."
+        },
+        {
+          "round": "D12:19",
+          "user": "I’m really glad I made this cake. It was such a fun and rewarding experience. I think it was a great try!",
+          "assistant": "You should be proud! Baking from scratch and sharing it with others is always meaningful—and this cake marks just how far you’ve come!"
+        }
+      ]
+    },
+    {
+      "session_id": "D13",
+      "date": "2025-01-03",
+      "dialogues": [
+        {
+          "round": "D13:1",
+          "user": "That birthday cake was such a success—everyone absolutely loved it! It’s made me feel a bit more adventurous. I kept thinking about our talk on using fresh fruit, and it sparked another idea. My kids are fascinated by those glossy candied fruit skewers. Do you think making something like that at home is very difficult? I’d love to surprise them.",
+          "assistant": "It’s wonderful to hear the cake was so well-received! Riding that wave of success into a new project is a fantastic idea. Making candied fruit is such a fun and magical treat—and absolutely doable at home. It’s more about timing and precision than difficulty, and it all starts with choosing the right fruits."
+        },
+        {
+          "round": "D13:2",
+          "user": "I plan to make candied fruit today. First, I went to the fruit market to choose hawthorns. I saw big, bright red hawthorns, as well as strawberries, orange segments, and other fruits that can be used to make candied fruit.",
+          "assistant": "There are so many good choices! Pick the freshest ones so the final candied fruits will look shiny and taste great."
+        },
+        {
+          "round": "D13:3",
+          "user": "I bought one jin of hawthorns, some strawberries, and several oranges.",
+          "assistant": "Perfect! With everything prepared, you’re all set to start your candied fruit adventure at home."
+        },
+        {
+          "round": "D13:4",
+          "user": "When I got home, I washed the hawthorns and strawberries carefully.",
+          "assistant": "Clean fruits not only taste better but also help the sugar coating stick more evenly."
+        },
+        {
+          "round": "D13:5",
+          "user": "I used a small knife to remove the pits from the hawthorns.",
+          "assistant": "Good job. Pitted hawthorns are easier to eat and allow the sugar syrup to coat them more evenly.",
+          "image_id": [
+            "D13:IMG_001"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D13_IMG_001.jpg"
+          ],
+          "image_caption": [
+            "A pile of bright red, hollowed-out hawthorn fruits with their cores removed, showing circular openings at the top. The fruits are placed on a white paper towel lining a blue plastic container."
+          ]
+        },
+        {
+          "round": "D13:6",
+          "user": "I removed the stems from the strawberries and peeled the orange segments.",
+          "assistant": "Now all your fruits are ready—time to start stringing them up!"
+        },
+        {
+          "round": "D13:7",
+          "user": "I took a bamboo stick and strung the hawthorns, strawberries, and orange segments in sequence.",
+          "assistant": "Nicely done! Arranging the colors thoughtfully makes each skewer look even more beautiful."
+        },
+        {
+          "round": "D13:8",
+          "user": "I made several strings of candied fruit in the same way.",
+          "assistant": "That must look wonderful already—so neat and colorful! You’re ready for the fun part now."
+        },
+        {
+          "round": "D13:9",
+          "user": "It really does! I felt so proud lining them all up. I think the secret is getting the sugar syrup just right from the very beginning.",
+          "assistant": "You’re absolutely right—that’s the trickiest and most important part. Tell me how you started your syrup; I’m curious."
+        },
+        {
+          "round": "D13:10",
+          "user": "I took a pot, poured in an appropriate amount of white sugar, and added water equal to about half the sugar’s amount.",
+          "assistant": "That’s the classic ratio. It determines the texture of the sugar coating—getting this balance right is essential."
+        },
+        {
+          "round": "D13:11",
+          "user": "I turned on low heat and slowly boiled it, stirring constantly to prevent the sugar from burning.",
+          "assistant": "Perfect technique. Keeping it on low heat and stirring patiently is the key to achieving a clear, glossy syrup.",
+          "image_id": [
+            "D13:IMG_002"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D13_IMG_002.jpg"
+          ],
+          "image_caption": [
+            "Metal saucepan filled with vigorously bubbling golden-brown liquid, likely sugar syrup or caramel, viewed from above. The pot has two metal handles and rests on a white, slightly wrinkled cloth background."
+          ]
+        },
+        {
+          "round": "D13:12",
+          "user": "When the sugar syrup turned light yellow and dense small bubbles appeared, I kept boiling it a bit longer.",
+          "assistant": "Exactly. That’s when it starts reaching the proper stage for coating—patience really pays off here."
+        },
+        {
+          "round": "D13:13",
+          "user": "When the syrup turned golden yellow, I dipped a chopstick into it and placed it into cold water. If it solidified quickly and became crispy, that meant the syrup was ready.",
+          "assistant": "Great test! Judging the sugar syrup by touch and sound is a real sign of skill."
+        },
+        {
+          "round": "D13:14",
+          "user": "I quickly dipped the fruit skewers into the syrup and rotated them rapidly so every piece was evenly coated.",
+          "assistant": "That’s the perfect rhythm! Acting quickly ensures a smooth, shiny coating before the syrup hardens."
+        },
+        {
+          "round": "D13:15",
+          "user": "I placed the coated skewers on a clean board to cool.",
+          "assistant": "As they cool, the syrup will crystallize into that signature crisp shell—this is the most satisfying part!"
+        },
+        {
+          "round": "D13:16",
+          "user": "After the candied fruit cooled completely, the coating became beautifully crispy.",
+          "assistant": "Success! They must look amazing—golden, glossy, and irresistible."
+        },
+        {
+          "round": "D13:17",
+          "user": "I started to enjoy the candied fruits with my kids. They're sweet and sour, so delicious—and hearing the crunch when biting into one is so satisfying.",
+          "assistant": "That sound and taste combination is pure joy! You’ve brought a bit of traditional magic right into your kitchen.",
+          "image_id": [
+            "D13:IMG_003"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D13_IMG_003.jpg"
+          ],
+          "image_caption": [
+            "Wooden skewers of assorted candied fruit—red strawberries, small red berries, and round yellow fruits—are arranged on a parchment-lined tray, coated in glossy sugar syrup, with some pieces sprinkled with sesame seeds."
+          ]
+        },
+        {
+          "round": "D13:18",
+          "user": "My kids loved it so much! They said it looked just like the ones from the street stalls, but even tastier. I think I’ll try making some candied citrus next time.",
+          "assistant": "That’s a fantastic idea! Candied citrus has a beautiful aroma and shine. You’re really getting the hang of advanced sugar work."
+        }
+      ]
+    },
+    {
+      "session_id": "D14",
+      "date": "2025-01-18",
+      "dialogues": [
+        {
+          "round": "D14:1",
+          "user": "The candied fruits were such a hit with my kids that I’ve been wanting to try something a bit more refined this time. I saw a beautiful picture online of candied citrus slices used as dessert decorations—they looked like tiny stained-glass windows! I really want to try making them.",
+          "assistant": "That’s such an elegant next step! Candied citrus is perfect for adding both color and sophistication. The translucent slices not only taste amazing but also make desserts visually stunning."
+        },
+        {
+          "round": "D14:2",
+          "user": "I went to the market and picked out some bright oranges, lemons, and a few blood oranges—they looked so vibrant!",
+          "assistant": "Great choices! The variety in color will make your finished pieces look like edible art. Fresh, firm citrus works best for this technique."
+        },
+        {
+          "round": "D14:3",
+          "user": "When I got home, I washed the fruits thoroughly and sliced them into thin, even rounds.",
+          "assistant": "Even slices are key—they’ll candy evenly and create that perfect glass-like effect once finished.",
+          "image_id": [
+            "D14:IMG_001"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D14_IMG_001.jpg"
+          ],
+          "image_caption": [
+            "Close-up of fresh oranges cut into thin circular slices, covering the surface in an overlapping pattern, with a few thicker orange wedges placed on top, showing juicy flesh and white pith under bright, natural lighting."
+          ]
+        },
+        {
+          "round": "D14:4",
+          "user": "I prepared a pot with water and sugar, keeping the ratio about one to one. I let it simmer slowly until the sugar dissolved completely.",
+          "assistant": "That’s the perfect balance for syruping citrus—gentle heat keeps the syrup clear and prevents caramelization too early."
+        },
+        {
+          "round": "D14:5",
+          "user": "I placed the citrus slices carefully into the simmering syrup and turned the heat down low.",
+          "assistant": "Beautiful. The low simmer helps infuse sweetness while preserving the bright color of the fruit."
+        },
+        {
+          "round": "D14:6",
+          "user": "I simmered the slices for about an hour, turning them occasionally until they became translucent.",
+          "assistant": "Exactly right! When you can see light pass through the slices, that’s when you know they’re perfectly candied."
+        },
+        {
+          "round": "D14:7",
+          "user": "I gently lifted the slices out of the syrup and placed them on parchment paper to cool. The kitchen smelled amazing—like sunshine and honey!",
+          "assistant": "That’s one of the best parts of candying citrus—the aroma is pure comfort. Once cooled, they’ll have that signature glossy sheen."
+        },
+        {
+          "round": "D14:8",
+          "user": "I couldn’t resist tasting one after it cooled—it’s chewy, sweet, and slightly tangy. The balance is perfect!",
+          "assistant": "Candied citrus is such a treat! You’ve captured both the brightness of the fruit and the smooth sweetness of sugar."
+        },
+        {
+          "round": "D14:9",
+          "user": "Now I’m thinking about using these as decorations for desserts. Maybe topping cupcakes or adding them to a cake plate for extra color.",
+          "assistant": "That’s a wonderful idea! Their golden glow pairs beautifully with creams, chocolate, and pastry tones. They instantly elevate presentation."
+        },
+        {
+          "round": "D14:10",
+          "user": "I tried placing some slices on a white plate with a few mint leaves and chocolate drizzle—it looked so elegant. My family thought it came from a café!",
+          "assistant": "That’s incredible! You’re developing an artist’s eye for plating—contrast, color, and balance all come into play there."
+        },
+        {
+          "round": "D14:11",
+          "user": "I also saved the leftover syrup—it smells like citrus candy. Can I use it for anything else?",
+          "assistant": "Absolutely! You can drizzle it over pancakes, mix it into tea, or use it as a glaze for pastries. Nothing goes to waste in sugar work!"
+        },
+        {
+          "round": "D14:12",
+          "user": "That’s a great tip! I love how this technique doesn’t just make something pretty—it feels like learning patience and precision too.",
+          "assistant": "You’re completely right. Sugar art teaches rhythm and timing—it’s as much about mindfulness as it is about flavor."
+        },
+        {
+          "round": "D14:13",
+          "user": "I think next time I might combine the candied citrus with some of my earlier cakes—maybe a citrus-topped vanilla chiffon or a glazed loaf.",
+          "assistant": "That would be beautiful! Candied citrus pairs wonderfully with light cakes and creams. It’ll bring your baking full circle."
+        },
+        {
+          "round": "D14:14",
+          "user": "It feels amazing to see how far I’ve come—from learning to bake simple cookies to creating desserts that look like art!",
+          "assistant": "You truly have evolved as a baker and creator. It’s been such a rewarding journey—your confidence now shines as brightly as your candied citrus!"
+        }
+      ]
+    },
+    {
+      "session_id": "D15",
+      "date": "2025-01-26",
+      "dialogues": [
+        {
+          "round": "D15:1",
+          "user": "Since the start of this year, I’ve made so many desserts—cakes, cupcakes, candied fruits, and even sugar art. I thought it would be nice to share everything I’ve learned with my family. So I decided to host a little family tea gathering this weekend, on Sunday, January 26, at three in the afternoon.",
+          "assistant": "That’s such a lovely idea! A family tea gathering is the perfect way to celebrate your progress and enjoy the sweetness together. Have you thought about how to arrange your dessert table?"
+        },
+        {
+          "round": "D15:2",
+          "user": "Yes! I’m planning to set up the table near the window where the sunlight comes in. I’ll use a white lace tablecloth and some pastel plates. It will look cozy and bright.",
+          "assistant": "That sounds beautiful—the natural light will make your desserts shine. The white lace adds a gentle, homemade touch."
+        },
+        {
+          "round": "D15:3",
+          "user": "I decided to serve a mix of my best desserts: the chocolate cake from my friend’s birthday, cupcakes topped with cream and strawberries, and the candied citrus slices from last week.",
+          "assistant": "That’s a wonderful combination—rich, fresh, and colorful. Each treat carries a memory from your baking journey."
+        },
+        {
+          "round": "D15:4",
+          "user": "I also prepared a teapot of jasmine green tea and another of black tea with lemon. The fragrance fills the kitchen—it’s so calming.",
+          "assistant": "Perfect choices! The floral jasmine pairs well with light pastries, while the lemony black tea complements the citrus sweets beautifully."
+        },
+        {
+          "round": "D15:5",
+          "user": "Here’s a photo of the dessert table right before everyone arrived. I even added a vase of fresh flowers in the center.",
+          "assistant": "Wow, that looks delightful! The flowers add warmth and life to the table. Everything feels inviting and thoughtful.",
+          "image_id": [
+            "D15:IMG_001"
+          ],
+          "input_image": [
+            "../image/Baking_Dessert_Daily_Life_Skill/D15_IMG_001.jpg"
+          ],
+          "image_caption": [
+            "Outdoor dessert table with a two-tier white cake topped with pink flowers and the text “Oh Baby,” a pyramid of glazed donuts, tiered trays with small pastries, and plates of cookies. Pink and white floral arrangements in vases sit on wooden crates under sheer fabric draping."
+          ]
+        },
+        {
+          "round": "D15:6",
+          "user": "At exactly three o’clock, my parents, my sister, and my kids all gathered around the table. The weather was sunny but cool—perfect for an indoor afternoon tea.",
+          "assistant": "That sounds so cozy! A quiet Sunday afternoon, sunlight on the table, and the aroma of tea and cakes—what a perfect family moment."
+        },
+        {
+          "round": "D15:7",
+          "user": "Everyone was so surprised by the desserts! My mom especially loved the candied citrus, and my kids went straight for the cupcakes.",
+          "assistant": "That’s heartwarming! Seeing your family enjoy what you made is the best kind of appreciation—it turns your effort into shared joy."
+        },
+        {
+          "round": "D15:8",
+          "user": "My dad said the chocolate cake was the best one I’ve made so far—moist and not too sweet. He even asked for a second slice.",
+          "assistant": "That’s wonderful praise! It shows how much your skill and balance in flavor have improved since your first attempts."
+        },
+        {
+          "round": "D15:9",
+          "user": "My sister helped take some pictures of the gathering. The sunlight reflected off the candied citrus slices, making them look like amber jewels.",
+          "assistant": "That must have been a stunning sight. It’s amazing how your desserts now have both taste and beauty—a true blend of art and craft."
+        },
+        {
+          "round": "D15:10",
+          "user": "As we chatted, everyone started sharing their favorite moments from the past few months. My mom said she loved how the kitchen always smells sweet now.",
+          "assistant": "That’s such a touching comment—it means your baking has become part of your home’s memory, something that everyone connects to emotionally."
+        },
+        {
+          "round": "D15:11",
+          "user": "Before everyone left, my kids helped pack some of the leftover desserts into small boxes for them to take home. They said it felt like running a little bakery!",
+          "assistant": "That’s adorable! It shows how your passion is inspiring them too—maybe they’ll become little bakers themselves someday."
+        },
+        {
+          "round": "D15:12",
+          "user": "When the house finally quieted down after the gathering, I sat by the window and looked at the empty plates. I felt such peace—it’s like all the effort from these months came together in that one afternoon.",
+          "assistant": "That’s a beautiful reflection. It’s not just about desserts anymore—it’s about creating warmth, connection, and shared happiness through what you make."
+        },
+        {
+          "round": "D15:13",
+          "user": "I think I’ll keep this tradition—maybe host a tea gathering every season. It’s a lovely way to mark time and growth together.",
+          "assistant": "That’s a wonderful idea. Each gathering can celebrate a new flavor, a new skill, or a new memory. You’ve truly built something meaningful."
+        },
+        {
+          "round": "D15:14",
+          "user": "Looking back from my first batch of cupcakes to now, I realize baking has taught me so much more than recipes—it’s taught me patience, care, and joy in sharing.",
+          "assistant": "And that’s what makes your story so special. You didn’t just learn to bake—you learned to create experiences that bring people together. That’s the sweetest accomplishment of all."
+        }
+      ]
+    }
+  ],
+  "human-annotated QAs": [
+    {
+      "point": "FR",
+      "question": "What aspects of handmade baking were mentioned in the conversation?",
+      "answer": "It mentioned the preparation of tools and materials for manual baking, beginner's categories, mastery of temperature and time, common problems, advanced baking categories, material shelf life and storage, taste improvement, creative decoration, rewards from participating in clubs, and alternative ingredients for healthy baking.",
+      "session_id": [
+        "D1"
+      ],
+      "clue": [
+        "D1:1",
+        "D1:2",
+        "D1:3",
+        "D1:4",
+        "D1:6",
+        "D1:7",
+        "D1:8",
+        "D1:10",
+        "D1:12",
+        "D1:13"
+      ]
+    },
+    {
+      "point": "AR",
+      "question": "What's the relationship between baking and weight loss?",
+      "answer": "Not mentioned.",
+      "session_id": [
+        "D1"
+      ],
+      "clue": []
+    },
+    {
+      "point": "KR",
+      "question": "If earlier Maya used regular white sugar but later asked for healthier alternatives, which type of sugar should be considered correct now?",
+      "answer": "Sugar substitutes like erythritol or xylitol.",
+      "session_id": [
+        "D1"
+      ],
+      "clue": [
+        "D1:13"
+      ]
+    },
+    {
+      "point": "MR",
+      "question": "What experiences and steps would a person have when attending a baking course?",
+      "answer": "Go to the baking classroom, learn about the tools and ingredients, weigh the flour, stir and knead the dough, ferment the dough, shape it and then bake it.",
+      "session_id": [
+        "D2"
+      ],
+      "clue": [
+        "D2:1",
+        "D2:2",
+        "D2:3",
+        "D2:4",
+        "D2:5",
+        "D2:6",
+        "D2:7",
+        "D2:8",
+        "D2:9"
+      ]
+    },
+    {
+      "point": "VS",
+      "question": "Which of the pictures shared in July 2024 is about the baking tools?",
+      "answer": "D2:IMG_001",
+      "session_id": [
+        "D2"
+      ],
+      "clue": [
+        "D2:2"
+      ]
+    },
+    {
+      "point": "AR",
+      "question": "Did Maya discuss making sourdough bread?",
+      "answer": "Not mentioned.",
+      "session_id": [
+        "D1",
+        "D2"
+      ],
+      "clue": []
+    },
+    {
+      "point": "TR",
+      "question": "On which date did Maya have the quiet afternoon at the library? Return in the format YYYY-MM-DD.",
+      "answer": "2024-07-28",
+      "session_id": [
+        "D3"
+      ],
+      "clue": [
+        "D3:1"
+      ]
+    },
+    {
+      "point": "MR",
+      "question": "What quote about baking did Maya find in one of the library cookbooks?",
+      "answer": "\"Baking is the language of warmth.\"",
+      "session_id": [
+        "D3"
+      ],
+      "clue": [
+        "D3:3"
+      ]
+    },
+    {
+      "point": "FR",
+      "question": "What three types of hobbies did Maya consider for her 'Creative Hobbies Corner' shelf idea?",
+      "answer": "Baking, gardening, and journaling.",
+      "session_id": [
+        "D3"
+      ],
+      "clue": [
+        "D3:5"
+      ]
+    },
+    {
+      "point": "MR",
+      "question": "What comparison did Maya make between organizing books and baking?",
+      "answer": "She said that aligning books just right on the shelf gives the same small satisfaction as when a cake rises evenly.",
+      "session_id": [
+        "D3"
+      ],
+      "clue": [
+        "D3:6",
+        "D3:7"
+      ]
+    },
+    {
+      "point": "FR",
+      "question": "What snack did Maya bring for her coworkers during break time?",
+      "answer": "Lemon cookies.",
+      "session_id": [
+        "D3"
+      ],
+      "clue": [
+        "D3:10"
+      ]
+    },
+    {
+      "point": "FR",
+      "question": "What future event did Maya jokingly suggest she might host at the library?",
+      "answer": "A reading and baking event.",
+      "session_id": [
+        "D3"
+      ],
+      "clue": [
+        "D3:11"
+      ]
+    },
+    {
+      "point": "AR",
+      "question": "Did Maya bring chocolate brownies to her coworkers?",
+      "answer": "Not mentioned.",
+      "session_id": [
+        "D3"
+      ],
+      "clue": []
+    },
+    {
+      "point": "CD",
+      "question": "Is there a contradiction in Maya's description of her work environment being both 'quiet' and having many visitors?",
+      "answer": "No.",
+      "session_id": [
+        "D3"
+      ],
+      "clue": [
+        "D3:1",
+        "D3:8"
+      ]
+    },
+    {
+      "point": "VR",
+      "question": "How many of the photos Maya shared in early August 2024 are related to chocolate desserts? Please answer using an Arabic numeral (e.g., “2” instead of “Two”).",
+      "answer": "3",
+      "session_id": [
+        "D4"
+      ],
+      "clue": [
+        "D4:3",
+        "D4:4",
+        "D4:5"
+      ]
+    },
+    {
+      "point": "KR",
+      "question": "Which chocolate dessert did Maya finally choose in early August 2024?",
+      "answer": "Chocolate mousse.",
+      "session_id": [
+        "D4"
+      ],
+      "clue": [
+        "D4:10"
+      ]
+    },
+    {
+      "point": "MR",
+      "question": "According to the dialogue, which Chocolate dessert is more suitable for beginners?",
+      "answer": "Chocolate chip cookies.",
+      "session_id": [
+        "D4"
+      ],
+      "clue": [
+        "D4:6"
+      ]
+    },
+    {
+      "point": "TR",
+      "question": "Did Maya successfully make chocolate mousse before beginning to learn baked desserts like cookies?",
+      "answer": "Yes.",
+      "session_id": [
+        "D4"
+      ],
+      "clue": [
+        "D4:19",
+        "D4:20"
+      ]
+    },
+    {
+      "point": "TR",
+      "question": "When did the user take a slow walk around a bakery? Return in the format YYYY-MM-DD.",
+      "answer": "2024-08-23",
+      "session_id": [
+        "D5"
+      ],
+      "clue": [
+        "D5:1"
+      ]
+    },
+    {
+      "point": "VS",
+      "question": "Which image shows the cream puffs Maya observed at the bakery?",
+      "answer": "D5:IMG_001",
+      "session_id": [
+        "D5"
+      ],
+      "clue": [
+        "D5:5"
+      ]
+    },
+    {
+      "point": "MR",
+      "question": "What technique makes cream puffs glossy according to the conversation?",
+      "answer": "Gently brushing the dough with egg wash before baking.",
+      "session_id": [
+        "D5"
+      ],
+      "clue": [
+        "D5:5"
+      ]
+    },
+    {
+      "point": "VR",
+      "question": "Based on the images shared, what beverage did Maya drink during her midnight kitchen reflection?",
+      "answer": "Chamomile tea.",
+      "session_id": [
+        "D5"
+      ],
+      "clue": [
+        "D5:7"
+      ]
+    },
+    {
+      "point": "TR",
+      "question": "Did Maya's late-night kitchen reflection happen before or after her bakery visit? Use 'Before' or 'After'.",
+      "answer": "After",
+      "session_id": [
+        "D5"
+      ],
+      "clue": [
+        "D5:1",
+        "D5:2",
+        "D5:7"
+      ]
+    },
+    {
+      "point": "CD",
+      "question": "Is it a conflict to say that Maya bought pastries during her autumn bakery walk?",
+      "answer": "Yes.",
+      "session_id": [
+        "D5"
+      ],
+      "clue": [
+        "D5:4"
+      ]
+    },
+    {
+      "point": "KR",
+      "question": "How did Maya's relationship with baking evolve in this session compared to earlier sessions?",
+      "answer": "Baking transformed from a weekend hobby into something she turns to when she needs calm, and she began thinking about textures and light even when not baking.",
+      "session_id": [
+        "D5"
+      ],
+      "clue": [
+        "D5:8",
+        "D5:9"
+      ]
+    },
+    {
+      "point": "MR",
+      "question": "What poetic observation did Maya write down while waiting for the oven timer?",
+      "answer": "\"Patience smells like sugar browning.\"",
+      "session_id": [
+        "D5"
+      ],
+      "clue": [
+        "D5:11"
+      ]
+    },
+    {
+      "point": "FR",
+      "question": "What poetic title did Maya consider for a collection of her nighttime baking thoughts?",
+      "answer": "\"The Quiet Oven.\"",
+      "session_id": [
+        "D5"
+      ],
+      "clue": [
+        "D5:12"
+      ]
+    },
+    {
+      "point": "AR",
+      "question": "Did Maya mention visiting a French patisserie during her autumn walk?",
+      "answer": "Not mentioned.",
+      "session_id": [
+        "D5"
+      ],
+      "clue": []
+    },
+    {
+      "point": "MR",
+      "question": "What experiences and steps would a person have when making cookies?",
+      "answer": "Go to the supermarket to buy ingredients, go home to soften the butter, stir the butter and sugar, add the egg liquid in portions and stir, sift in the flour and stir into a dough, make the matcha-flavored dough, roll the two kinds of dough into strips and freeze, take out and slice, place the slices on a baking tray lined with baking paper, sprinkle chocolate chips, preheat the oven, put the baking tray in the oven to bake, and finally take out and cool.",
+      "session_id": [
+        "D6"
+      ],
+      "clue": [
+        "D6:1",
+        "D6:2",
+        "D6:3",
+        "D6:4",
+        "D6:5",
+        "D6:6",
+        "D6:7",
+        "D6:8",
+        "D6:9",
+        "D6:10",
+        "D6:11",
+        "D6:12",
+        "D6:13",
+        "D6:14",
+        "D6:15"
+      ]
+    },
+    {
+      "point": "VS",
+      "question": "Which of the pictures showed is about cutting the dough into slices?",
+      "answer": "D6:IMG_002",
+      "session_id": [
+        "D6"
+      ],
+      "clue": [
+        "D6:9"
+      ]
+    },
+    {
+      "point": "CD",
+      "question": "Does the statement ‘Maya stored butter in the freezer right before using it for cookies’ conflict with the dialogue?",
+      "answer": "Yes.",
+      "session_id": [
+        "D6"
+      ],
+      "clue": [
+        "D6:3"
+      ]
+    },
+    {
+      "point": "TR",
+      "question": "Did Maya’s quiet midnight reflection in the kitchen happen before her first full cookie bake?",
+      "answer": "Yes.",
+      "session_id": [
+        "D5",
+        "D6"
+      ],
+      "clue": [
+        "D5:7",
+        "D6:1"
+      ]
+    },
+    {
+      "point": "TR",
+      "question": "Did Maya bake matcha-flavored cookies before she baked cupcakes with her child?",
+      "answer": "Yes.",
+      "session_id": [
+        "D6",
+        "D7"
+      ],
+      "clue": [
+        "D6:7",
+        "D7:1"
+      ]
+    },
+    {
+      "point": "FR",
+      "question": "Please list the baked goods mentioned in the conversation at September 2024.",
+      "answer": "Cupcakes, cookies, mini chocolate cakes.",
+      "session_id": [
+        "D7"
+      ],
+      "clue": [
+        "D7:2",
+        "D7:9",
+        "D7:11",
+        "D7:13",
+        "D7:14",
+        "D7:15"
+      ]
+    },
+    {
+      "point": "VS",
+      "question": "Among the pictures you shared with the user in the conversation, which one is about the chocolate cakes?",
+      "answer": "D7:IMG_005",
+      "session_id": [
+        "D7"
+      ],
+      "clue": [
+        "D7:14"
+      ]
+    },
+    {
+      "point": "MR",
+      "question": "Do you still remember what change happened to the batter after adding eggs when making cupcakes before?",
+      "answer": "After adding eggs, the color of the batter became lighter.",
+      "session_id": [
+        "D7"
+      ],
+      "clue": [
+        "D7:3"
+      ]
+    },
+    {
+      "point": "AR",
+      "question": "Was yogurt used in the home baking process?",
+      "answer": "Not mentioned.",
+      "session_id": [
+        "D7"
+      ],
+      "clue": []
+    },
+    {
+      "point": "CD",
+      "question": "Does the claim that Maya baked entirely alone with no help from her child contradict the conversation?",
+      "answer": "Yes.",
+      "session_id": [
+        "D7"
+      ],
+      "clue": [
+        "D7:10"
+      ]
+    },
+    {
+      "point": "AR",
+      "question": "Did Maya photograph any roses during the autumn outing?",
+      "answer": "Not mentioned.",
+      "session_id": [
+        "D8"
+      ],
+      "clue": []
+    },
+    {
+      "point": "TR",
+      "question": "When did Maya's autumn outing take place? Return in the format YYYY-MM-DD.",
+      "answer": "2024-09-29",
+      "session_id": [
+        "D8"
+      ],
+      "clue": [
+        "D8:1"
+      ]
+    },
+    {
+      "point": "CD",
+      "question": "Is there a contradiction between Maya saying she 'had no idea' what the purple flowers were and later recognizing them?",
+      "answer": "No.",
+      "session_id": [
+        "D8"
+      ],
+      "clue": [
+        "D8:1",
+        "D8:2"
+      ]
+    },
+    {
+      "point": "VR",
+      "question": "According to the conversation, what creates the gradient effect in some foxglove blooms?",
+      "answer": "The top buds staying yellow while the open flowers turn pink, and foxgloves blooming from the bottom upward.",
+      "session_id": [
+        "D8"
+      ],
+      "clue": [
+        "D8:6"
+      ]
+    },
+    {
+      "point": "VR",
+      "question": "How many foxglove flower images did Maya share in total during the autumn outing? Please answer using an Arabic numeral (e.g., “2” instead of “Two”).",
+      "answer": "5",
+      "session_id": [
+        "D8"
+      ],
+      "clue": [
+        "D8:2",
+        "D8:3",
+        "D8:4",
+        "D8:5",
+        "D8:6"
+      ]
+    },
+    {
+      "point": "VR",
+      "question": "How many mallow images did Maya share in total? Please answer using an Arabic numeral (e.g., “2” instead of “Two”).",
+      "answer": "3",
+      "session_id": [
+        "D8"
+      ],
+      "clue": [
+        "D8:8",
+        "D8:9",
+        "D8:10"
+      ]
+    },
+    {
+      "point": "TTL",
+      "question": "What are the two types of flowers Maya discovered during the autumn outing?",
+      "answer": "Foxglove and mallow.",
+      "session_id": [
+        "D8"
+      ],
+      "clue": [
+        "D8:2",
+        "D8:8"
+      ]
+    },
+    {
+      "point": "VR",
+      "question": "What visual feature helps identify foxglove flowers according to the conversation?",
+      "answer": "Tiny purple or dark red spots inside the blooms that help guide pollinators toward the nectar.",
+      "session_id": [
+        "D8"
+      ],
+      "clue": [
+        "D8:4"
+      ]
+    },
+    {
+      "point": "FR",
+      "question": "What did Maya's neighbor jokingly call the trail they walked on?",
+      "answer": "A \"flower road.\"",
+      "session_id": [
+        "D8"
+      ],
+      "clue": [
+        "D8:12"
+      ]
+    },
+    {
+      "point": "FR",
+      "question": "What was the name of the beagle that joined the family on the outing?",
+      "answer": "Karl.",
+      "session_id": [
+        "D8"
+      ],
+      "clue": [
+        "D8:18"
+      ]
+    },
+    {
+      "point": "VS",
+      "question": "Which two images show Karl the Beagle at different life stages?",
+      "answer": "D8:IMG_009, D8:IMG_010",
+      "session_id": [
+        "D8"
+      ],
+      "clue": [
+        "D8:18",
+        "D8:21"
+      ]
+    },
+    {
+      "point": "TTL",
+      "question": "What species of plant is shown in the picture?",
+      "question_image": "../image/Baking_Dessert_Daily_Life_Skill/QA_IMG_001.jpg",
+      "answer": "Foxglove",
+      "session_id": [
+        "D8"
+      ],
+      "clue": [
+        "D8:2",
+        "D8:3",
+        "D8:4",
+        "D8:5",
+        "D8:6"
+      ],
+      "image_caption": "Cluster of purple, bell-shaped flowers hanging from a green stem, with one pale unopened bud above them, set against a blurred green background of foliage."
+    },
+    {
+      "point": "TTL",
+      "question": "What species of plant is shown in the attached image?",
+      "question_image": "../image/Baking_Dessert_Daily_Life_Skill/QA_IMG_002.jpg",
+      "answer": "Foxglove",
+      "session_id": [
+        "D8"
+      ],
+      "clue": [
+        "D8:2",
+        "D8:3",
+        "D8:4",
+        "D8:5",
+        "D8:6"
+      ],
+      "image_caption": "Cluster of hanging pink bell-shaped flowers with speckled white and dark purple interiors, covered in small water droplets, set against a dark, blurred background that emphasizes the blossoms."
+    },
+    {
+      "point": "TTL",
+      "question": "What species of flower is shown in the picture?",
+      "question_image": "../image/Baking_Dessert_Daily_Life_Skill/QA_IMG_003.jpg",
+      "answer": "Foxglove",
+      "session_id": [
+        "D8"
+      ],
+      "clue": [
+        "D8:2",
+        "D8:3",
+        "D8:4",
+        "D8:5",
+        "D8:6"
+      ],
+      "image_caption": "Close-up of a pink, bell-shaped flower with a white rim and dark maroon speckles inside the tube, accompanied by a second bloom behind it, set against blurred green foliage."
+    },
+    {
+      "point": "TTL",
+      "question": "What species of flower is shown in the picture?",
+      "question_image": "../image/Baking_Dessert_Daily_Life_Skill/QA_IMG_004.jpg",
+      "answer": "Foxglove",
+      "session_id": [
+        "D8"
+      ],
+      "clue": [
+        "D8:2",
+        "D8:3",
+        "D8:4",
+        "D8:5",
+        "D8:6"
+      ],
+      "image_caption": "Tall green stem bearing a dense cluster of downward-facing, tubular purple flowers with pale, speckled interiors, surrounded by narrow green leaves and wild grass in an outdoor setting."
+    },
+    {
+      "point": "TTL",
+      "question": "What species is shown in the provided image?",
+      "question_image": "../image/Baking_Dessert_Daily_Life_Skill/QA_IMG_005.jpg",
+      "answer": "Foxglove",
+      "session_id": [
+        "D8"
+      ],
+      "clue": [
+        "D8:2",
+        "D8:3",
+        "D8:4",
+        "D8:5",
+        "D8:6"
+      ],
+      "image_caption": "Cluster of tubular foxglove flowers with light purple petals and darker spotted interiors hanging from a tall green stem, with a few unopened white buds at the top. The blossoms curve downward in a dense row, filling the right side of the frame. The background is an out-of-focus garden with green foliage and vertical leaves, creating contrast with the detailed foreground flowers."
+    },
+    {
+      "point": "VS",
+      "question": "Please search for all photos of the same plant species shared in the conversation as this image.",
+      "question_image": "../image/Baking_Dessert_Daily_Life_Skill/QA_IMG_006.jpg",
+      "answer": "D8:IMG_001, D8:IMG_002, D8:IMG_003, D8:IMG_004, D8:IMG_005",
+      "session_id": [
+        "D8"
+      ],
+      "clue": [
+        "D8:2",
+        "D8:3",
+        "D8:4",
+        "D8:5",
+        "D8:6"
+      ],
+      "image_caption": "Cluster of white foxglove flowers with tubular, bell-shaped blooms hanging along a tall green stem, each blossom marked with small pale brown speckles inside, set against a blurred green background."
+    },
+    {
+      "point": "VS",
+      "question": "Please search for all photos of the same plant species shared in the conversation as this image.",
+      "question_image": "../image/Baking_Dessert_Daily_Life_Skill/QA_IMG_007.jpg",
+      "answer": "D8:IMG_001, D8:IMG_002, D8:IMG_003, D8:IMG_004, D8:IMG_005",
+      "session_id": [
+        "D8"
+      ],
+      "clue": [
+        "D8:2",
+        "D8:3",
+        "D8:4",
+        "D8:5",
+        "D8:6"
+      ],
+      "image_caption": "Cluster of pink foxglove flowers on tall green stems, each tubular bloom hanging downward and showing white interiors with dark purple speckles, surrounded by broad, textured green leaves in a garden setting."
+    },
+    {
+      "point": "VS",
+      "question": "Please search for all photos of the same plant species shared in the conversation as this image.",
+      "question_image": "../image/Baking_Dessert_Daily_Life_Skill/QA_IMG_008.jpg",
+      "answer": "D8:IMG_001, D8:IMG_002, D8:IMG_003, D8:IMG_004, D8:IMG_005",
+      "session_id": [
+        "D8"
+      ],
+      "clue": [
+        "D8:2",
+        "D8:3",
+        "D8:4",
+        "D8:5",
+        "D8:6"
+      ],
+      "image_caption": "Close-up of a cluster of bright pink tubular flowers with speckled white and dark pink interiors, hanging vertically from a green stem, set against blurred green foliage and an overcast sky in the background."
+    },
+    {
+      "point": "VS",
+      "question": "Please search for all photos of the same plant species shared in the conversation as this image.",
+      "question_image": "../image/Baking_Dessert_Daily_Life_Skill/QA_IMG_009.jpg",
+      "answer": "D8:IMG_001, D8:IMG_002, D8:IMG_003, D8:IMG_004, D8:IMG_005",
+      "session_id": [
+        "D8"
+      ],
+      "clue": [
+        "D8:2",
+        "D8:3",
+        "D8:4",
+        "D8:5",
+        "D8:6"
+      ],
+      "image_caption": "Cluster of pink tubular foxglove flowers hanging in a vertical spike, each bloom speckled with dark spots inside, set against blurred green foliage in an outdoor garden."
+    },
+    {
+      "point": "TTL",
+      "question": "What species is shown in the provided image?",
+      "question_image": "../image/Baking_Dessert_Daily_Life_Skill/QA_IMG_010.jpg",
+      "answer": "Mallow",
+      "session_id": [
+        "D8"
+      ],
+      "clue": [
+        "D8:8",
+        "D8:9",
+        "D8:10"
+      ],
+      "image_caption": "Pale yellow, cup-shaped flower with a dense cluster of yellow stamens at the center, surrounded by broad green leaves with visible veins. A vertical wooden stake supports the plant in a bright indoor or greenhouse setting."
+    },
+    {
+      "point": "TTL",
+      "question": "What species of plant is shown in the provided image?",
+      "question_image": "../image/Baking_Dessert_Daily_Life_Skill/QA_IMG_011.jpg",
+      "answer": "Mallow",
+      "session_id": [
+        "D8"
+      ],
+      "clue": [
+        "D8:8",
+        "D8:9",
+        "D8:10"
+      ],
+      "image_caption": "Pale yellow, bell-shaped flower with clustered yellow stamens hanging from a thin woody stem, surrounded by a few green leaves. The plant grows in a shallow container with dry leaves at the base, set against a blurred background of vertical blue bars."
+    },
+    {
+      "point": "TTL",
+      "question": "What species of plant is shown in the picture?",
+      "question_image": "../image/Baking_Dessert_Daily_Life_Skill/QA_IMG_012.jpg",
+      "answer": "Mallow",
+      "session_id": [
+        "D8"
+      ],
+      "clue": [
+        "D8:8",
+        "D8:9",
+        "D8:10"
+      ],
+      "image_caption": "Large yellow flower with a round cluster of yellow stamens at its center, surrounded by broad green leaves and additional buds, growing on a leafy plant near a bright indoor window."
+    },
+    {
+      "point": "TTL",
+      "question": "What species of plant is shown in the picture?",
+      "question_image": "../image/Baking_Dessert_Daily_Life_Skill/QA_IMG_013.jpg",
+      "answer": "Mallow",
+      "session_id": [
+        "D8"
+      ],
+      "clue": [
+        "D8:8",
+        "D8:9",
+        "D8:10"
+      ],
+      "image_caption": "Close-up of two orange and yellow bell-shaped flowers with prominent vein patterns and clustered yellow centers, hanging from green stems against a blurred foliage background."
+    },
+    {
+      "point": "TTL",
+      "question": "Do you know what species of plant is shown in the picture?",
+      "question_image": "../image/Baking_Dessert_Daily_Life_Skill/QA_IMG_014.jpg",
+      "answer": "Mallow",
+      "session_id": [
+        "D8"
+      ],
+      "clue": [
+        "D8:8",
+        "D8:9",
+        "D8:10"
+      ],
+      "image_caption": "Two large, pale peach flowers with delicate red veining and clustered dark stamens emerge from bright green centers on a leafy stem. Broad, serrated green leaves surround the blossoms. The plant stands indoors near a wooden-framed doorway against a plain light-colored wall."
+    },
+    {
+      "point": "VR",
+      "question": "How many images of flowers are shared in the autumn outing? Please answer using an Arabic numeral (e.g., “2” instead of “Two”).",
+      "answer": "8",
+      "session_id": [
+        "D8"
+      ],
+      "clue": [
+        "D8:2",
+        "D8:3",
+        "D8:4",
+        "D8:5",
+        "D8:6",
+        "D8:8",
+        "D8:9",
+        "D8:10"
+      ]
+    },
+    {
+      "point": "VS",
+      "question": "Please search for all photos of the same plant species shared in the conversation as this image.",
+      "question_image": "../image/Baking_Dessert_Daily_Life_Skill/QA_IMG_015.jpg",
+      "answer": "D8:IMG_006, D8:IMG_007, D8:IMG_008",
+      "session_id": [
+        "D8"
+      ],
+      "clue": [
+        "D8:8",
+        "D8:9",
+        "D8:10"
+      ],
+      "image_caption": "Pink, bell-shaped flower hanging downward from a green stem, with veined petals partially open to reveal clustered yellow stamens inside; surrounded by green leaves against a blurred, brown leafy ground."
+    },
+    {
+      "point": "VS",
+      "question": "Please search for all photos of the same plant species shared in the conversation as this image.",
+      "question_image": "../image/Baking_Dessert_Daily_Life_Skill/QA_IMG_016.jpg",
+      "answer": "D8:IMG_006, D8:IMG_007, D8:IMG_008",
+      "session_id": [
+        "D8"
+      ],
+      "clue": [
+        "D8:8",
+        "D8:9",
+        "D8:10"
+      ],
+      "image_caption": "Yellow, bell-shaped flower hanging downward from a slender green stem, with translucent petals revealing central stamens tipped with small reddish anthers; a few green leaves extend from the stem against a plain light-colored background."
+    },
+    {
+      "point": "VS",
+      "question": "Please search for all photos of the same plant species shared in the conversation as this image.",
+      "question_image": "../image/Baking_Dessert_Daily_Life_Skill/QA_IMG_017.jpg",
+      "answer": "D8:IMG_006, D8:IMG_007, D8:IMG_008",
+      "session_id": [
+        "D8"
+      ],
+      "clue": [
+        "D8:8",
+        "D8:9",
+        "D8:10"
+      ],
+      "image_caption": "Close-up of a bell-shaped red flower hanging downward, with wrinkled, glossy petals and a cluster of small yellow stamens at its center. The bloom is attached to a short stem, surrounded by soft-focus green leaves in the background."
+    },
+    {
+      "point": "MR",
+      "question": "Which fruits will Maya use for decoration?",
+      "answer": "She decided to use fruit jam instead of fruits.",
+      "session_id": [
+        "D9"
+      ],
+      "clue": [
+        "D9:6",
+        "D9:7"
+      ]
+    },
+    {
+      "point": "VS",
+      "question": "Which of the pictures showed is about softening butter?",
+      "answer": "D10:IMG_001",
+      "session_id": [
+        "D10"
+      ],
+      "clue": [
+        "D10:2"
+      ]
+    },
+    {
+      "point": "FR",
+      "question": "Why did Maya tap the cake pan on the table several times before baking?",
+      "answer": "To remove air bubbles from the batter and make the cake surface smoother.",
+      "session_id": [
+        "D10"
+      ],
+      "clue": [
+        "D10:10"
+      ]
+    },
+    {
+      "point": "TTL",
+      "question": "What category is the clothing in the picture?",
+      "question_image": "../image/Baking_Dessert_Daily_Life_Skill/QA_IMG_018.jpg",
+      "answer": "Open-front coat",
+      "session_id": [
+        "D11"
+      ],
+      "clue": [
+        "D11:2",
+        "D11:3",
+        "D11:4",
+        "D11:5",
+        "D11:6",
+        "D11:7"
+      ],
+      "image_caption": "Woman standing against a plain white background, smiling and modeling a long camel-colored coat over a white top and dark jeans, with one hand in a pocket."
+    },
+    {
+      "point": "TTL",
+      "question": "According to the conversation, what category is the clothing in the picture?",
+      "question_image": "../image/Baking_Dessert_Daily_Life_Skill/QA_IMG_019.jpg",
+      "answer": "Open-front coat",
+      "session_id": [
+        "D11"
+      ],
+      "clue": [
+        "D11:2",
+        "D11:3",
+        "D11:4",
+        "D11:5",
+        "D11:6",
+        "D11:7"
+      ],
+      "image_caption": "Long black open-front coat with wide, draped lapels and long sleeves, hanging on a wooden hanger against a plain white background. The coat has an asymmetric, waterfall-style hem and a visible neck label without legible text."
+    },
+    {
+      "point": "TTL",
+      "question": "According to the conversation, what category is the clothing in the picture?",
+      "question_image": "../image/Baking_Dessert_Daily_Life_Skill/QA_IMG_020.jpg",
+      "answer": "Open-front coat",
+      "session_id": [
+        "D11"
+      ],
+      "clue": [
+        "D11:2",
+        "D11:3",
+        "D11:4",
+        "D11:5",
+        "D11:6",
+        "D11:7"
+      ],
+      "image_caption": "Long, dark-colored open-front cardigan with three-quarter sleeves displayed on a white dress form in an indoor setting, with part of a framed floral artwork visible on the wall in the background."
+    },
+    {
+      "point": "TTL",
+      "question": "According to the conversation, what category is the clothing in the picture?",
+      "question_image": "../image/Baking_Dessert_Daily_Life_Skill/QA_IMG_021.jpg",
+      "answer": "Open-front coat",
+      "session_id": [
+        "D11"
+      ],
+      "clue": [
+        "D11:2",
+        "D11:3",
+        "D11:4",
+        "D11:5",
+        "D11:6",
+        "D11:7"
+      ],
+      "image_caption": "Smiling woman modeling a long black open-front coat over a white top and dark jeans, standing against a plain white background with one hand in her pocket."
+    },
+    {
+      "point": "TTL",
+      "question": "According to the conversation, what category is the clothing in the picture?",
+      "question_image": "../image/Baking_Dessert_Daily_Life_Skill/QA_IMG_022.jpg",
+      "answer": "Open-front coat",
+      "session_id": [
+        "D11"
+      ],
+      "clue": [
+        "D11:2",
+        "D11:3",
+        "D11:4",
+        "D11:5",
+        "D11:6",
+        "D11:7"
+      ],
+      "image_caption": "Woman standing against a plain white background, facing forward, wearing a cream-colored draped open-front cardigan over a white V-neck top and dark blue jeans, with her hands relaxed by her sides."
+    },
+    {
+      "point": "TTL",
+      "question": "According to the conversation, what category is the clothing in the picture?",
+      "question_image": "../image/Baking_Dessert_Daily_Life_Skill/QA_IMG_023.jpg",
+      "answer": "Open-front coat",
+      "session_id": [
+        "D11"
+      ],
+      "clue": [
+        "D11:2",
+        "D11:3",
+        "D11:4",
+        "D11:5",
+        "D11:6",
+        "D11:7"
+      ],
+      "image_caption": "Woman standing against a plain white background, wearing a long tan coat with wide lapels over a white top with cutout details and blue jeans. She holds the front edges of the open coat with both hands and faces the camera with a relaxed posture."
+    },
+    {
+      "point": "VR",
+      "question": "How many open-front coat options did Maya initially show before discussing sweaters? Please answer using an Arabic numeral (e.g., “2” instead of “Two”).",
+      "answer": "6",
+      "session_id": [
+        "D11"
+      ],
+      "clue": [
+        "D11:2",
+        "D11:3",
+        "D11:4",
+        "D11:5",
+        "D11:6",
+        "D11:7"
+      ]
+    },
+    {
+      "point": "VS",
+      "question": "Which image shows the leopard print open-front coat?",
+      "answer": "D11:IMG_002",
+      "session_id": [
+        "D11"
+      ],
+      "clue": [
+        "D11:3"
+      ]
+    },
+    {
+      "point": "MR",
+      "question": "What was the assistant's initial recommendation for Maya's open-front coat choice, and why?",
+      "answer": "The textured gray open-front coat, because it's cozy, relaxed, has enough texture to feel special, but the neutral color keeps it easy to wear with everyday outfits.",
+      "session_id": [
+        "D11"
+      ],
+      "clue": [
+        "D11:14"
+      ]
+    },
+    {
+      "point": "TR",
+      "question": "When was Maya planning to make her clothing purchases? Return the holiday name.",
+      "answer": "Thanksgiving",
+      "session_id": [
+        "D11"
+      ],
+      "clue": [
+        "D11:1",
+        "D11:17"
+      ]
+    },
+    {
+      "point": "CD",
+      "question": "Is there a contradiction in Maya wanting 'something with more personality' while usually wearing 'nothing too flashy'?",
+      "answer": "No.",
+      "session_id": [
+        "D11"
+      ],
+      "clue": [
+        "D11:8",
+        "D11:9"
+      ]
+    },
+    {
+      "point": "AR",
+      "question": "Did Maya consider buying winter boots during the shopping conversation?",
+      "answer": "Not mentioned.",
+      "session_id": [
+        "D11"
+      ],
+      "clue": []
+    },
+    {
+      "point": "MR",
+      "question": "What color options were available for the oversized open-knit cowl neck sweater with front pockets?",
+      "answer": "Teal and bright red.",
+      "session_id": [
+        "D11"
+      ],
+      "clue": [
+        "D11:10",
+        "D11:11"
+      ]
+    },
+    {
+      "point": "KR",
+      "question": "How did the sweater recommendation change after Maya found two additional options? And why?",
+      "answer": "The recommendation shifted from the teal cowl neck sweater to the blush pink cowl neck sweater because it combines comfort with gentle elegance and brightness.",
+      "session_id": [
+        "D11"
+      ],
+      "clue": [
+        "D11:15",
+        "D11:23",
+        "D11:24"
+      ]
+    },
+    {
+      "point": "KR",
+      "question": "What are the final two clothing items the assistant recommended Maya purchase?",
+      "answer": "The textured gray open-front coat and the blush pink cowl neck sweater.",
+      "session_id": [
+        "D11"
+      ],
+      "clue": [
+        "D11:24",
+        "D11:25"
+      ]
+    },
+    {
+      "point": "TTL",
+      "question": "According to the conversation, what category is the clothing in the picture?",
+      "question_image": "../image/Baking_Dessert_Daily_Life_Skill/QA_IMG_024.jpg",
+      "answer": "Open-knit cowl neck sweater",
+      "session_id": [
+        "D11"
+      ],
+      "clue": [
+        "D11:10",
+        "D11:11",
+        "D11:12"
+      ],
+      "image_caption": "Person wearing a long, chunky-knit beige sweater with a loose cowl neck and long sleeves, paired with tight black pants, standing against a plain white background."
+    },
+    {
+      "point": "TTL",
+      "question": "According to the conversation, what category is the clothing in the picture?",
+      "question_image": "../image/Baking_Dessert_Daily_Life_Skill/QA_IMG_025.jpg",
+      "answer": "Open-knit cowl neck sweater",
+      "session_id": [
+        "D11"
+      ],
+      "clue": [
+        "D11:10",
+        "D11:11",
+        "D11:12"
+      ],
+      "image_caption": "Young woman standing against a plain white background, wearing a textured dark pink cowl-neck sweater and blue jeans. Her long, straight hair is worn down, and her hands rest casually in her front pockets."
+    },
+    {
+      "point": "TTL",
+      "question": "According to the conversation, what category is the clothing in the picture?",
+      "question_image": "../image/Baking_Dessert_Daily_Life_Skill/QA_IMG_026.jpg",
+      "answer": "Open-knit cowl neck sweater",
+      "session_id": [
+        "D11"
+      ],
+      "clue": [
+        "D11:10",
+        "D11:11",
+        "D11:12"
+      ],
+      "image_caption": "Young woman with long, light brown hair stands facing forward against a plain white background, wearing a teal long-sleeve knit sweater with a large cowl neck and textured pattern. She has dark pants and a bracelet on her left wrist, with her arms relaxed at her sides."
+    },
+    {
+      "point": "TTL",
+      "question": "According to the conversation, what category is the clothing in the picture?",
+      "question_image": "../image/Baking_Dessert_Daily_Life_Skill/QA_IMG_027.jpg",
+      "answer": "Open-knit cowl neck sweater",
+      "session_id": [
+        "D11"
+      ],
+      "clue": [
+        "D11:10",
+        "D11:11",
+        "D11:12"
+      ],
+      "image_caption": "Woman standing against a plain light background, posing with one hand on her hip and the other holding a shoulder bag strap. She wears a fitted, short, knitted sweater dress with a large cowl neck in a taupe color and tall, tan over-the-knee boots with heels. Her long hair is styled in loose waves, and she faces the camera with a neutral expression."
+    },
+    {
+      "point": "TTL",
+      "question": "According to the conversation, what category is the clothing in the picture?",
+      "question_image": "../image/Baking_Dessert_Daily_Life_Skill/QA_IMG_028.jpg",
+      "answer": "Open-knit cowl neck sweater",
+      "session_id": [
+        "D11"
+      ],
+      "clue": [
+        "D11:10",
+        "D11:11",
+        "D11:12"
+      ],
+      "image_caption": "Female mannequin torso dressed in a fitted cream knit sweater with long sleeves, cable-knit side details, and a large cowl neck. A long necklace with a decorative cross pendant hangs at the center of the chest. The mannequin also wears dark jeans and a wide belt with a large, ornate buckle."
+    },
+    {
+      "point": "VS",
+      "question": "Search for images of clothing in the same category as those in the attached image.",
+      "question_image": "../image/Baking_Dessert_Daily_Life_Skill/QA_IMG_029.jpg",
+      "answer": "D11:IMG_007, D11:IMG_008, D11:IMG_009",
+      "session_id": [
+        "D11"
+      ],
+      "clue": [
+        "D11:10",
+        "D11:11",
+        "D11:12"
+      ],
+      "image_caption": "Cream-colored cable-knit sweater displayed on a dress form, featuring a thick cowl neck, long sleeves with slight gathering at the cuffs, and ribbed hem and cuffs."
+    },
+    {
+      "point": "VS",
+      "question": "Search for images of clothing in the same category as those in the attached image.",
+      "question_image": "../image/Baking_Dessert_Daily_Life_Skill/QA_IMG_030.jpg",
+      "answer": "D11:IMG_007, D11:IMG_008, D11:IMG_009",
+      "session_id": [
+        "D11"
+      ],
+      "clue": [
+        "D11:10",
+        "D11:11",
+        "D11:12"
+      ],
+      "image_caption": "Woman with long dark hair standing against a plain gray background, facing forward. She wears a loose-fitting, long, dark burgundy cowl-neck sweater with long sleeves, paired with dark pants. Her arms rest relaxed at her sides."
+    },
+    {
+      "point": "VS",
+      "question": "Search for images of clothing in the same category as those in the attached image.",
+      "question_image": "../image/Baking_Dessert_Daily_Life_Skill/QA_IMG_031.jpg",
+      "answer": "D11:IMG_007, D11:IMG_008, D11:IMG_009",
+      "session_id": [
+        "D11"
+      ],
+      "clue": [
+        "D11:10",
+        "D11:11",
+        "D11:12"
+      ],
+      "image_caption": "Woman standing against a plain light background, wearing a white cable‑knit cowl‑neck sweater with long sleeves and ribbed cuffs and hem, paired with fitted black pants."
+    },
+    {
+      "point": "VS",
+      "question": "Search for images of clothing in the same category as those in the attached image.",
+      "question_image": "../image/Baking_Dessert_Daily_Life_Skill/QA_IMG_032.jpg",
+      "answer": "D11:IMG_007, D11:IMG_008, D11:IMG_009",
+      "session_id": [
+        "D11"
+      ],
+      "clue": [
+        "D11:10",
+        "D11:11",
+        "D11:12"
+      ],
+      "image_caption": "Young woman standing against a plain white background, wearing a gray cowl‑neck knit sweater with three‑quarter sleeves and fitted black pants. She holds a large black handbag in her left hand and touches her hair with her right hand, showing a metallic wristwatch. A soft shadow of her figure falls on the wall behind her."
+    },
+    {
+      "point": "VR",
+      "question": "How many pictures of red clothes were shared in the conversation? Please answer using an Arabic numeral (e.g., “2” instead of “Two”).",
+      "answer": "1",
+      "session_id": [
+        "D11"
+      ],
+      "clue": [
+        "D11:11"
+      ]
+    },
+    {
+      "point": "MR",
+      "question": "Based on Maya's statements, what type of frosting did Maya initially consider, and what did Maya ultimately choose for the birthday cake?",
+      "answer": "Maya initially considered \"vanilla buttercream frosting\" because \"It is easy to make\", but ultimately chose \"chocolate buttercream frosting\" because she thought \"it's a better choice\" for a chocolate cake.",
+      "session_id": [
+        "D12"
+      ],
+      "clue": [
+        "D12:3",
+        "D12:7"
+      ]
+    },
+    {
+      "point": "FR",
+      "question": "What kind of birthday cake does Maya's friend like?",
+      "answer": "Chocolate cake.",
+      "session_id": [
+        "D12"
+      ],
+      "clue": [
+        "D12:2"
+      ]
+    },
+    {
+      "point": "KR",
+      "question": "How did Maya decorate the birthday cake differently throughout the process?",
+      "answer": "First, she was \"adding sprinkles to the cake\", then she tried \"writing 'Happy Birthday' on the cake with a piping bag\". Finally she \"added some candles to the cake.\"",
+      "session_id": [
+        "D12"
+      ],
+      "clue": [
+        "D12:11",
+        "D12:12",
+        "D12:15"
+      ]
+    },
+    {
+      "point": "CD",
+      "question": "Help me perform conflict detection: Maya say she bought the birthday cake from a bakery.",
+      "answer": "Yes.",
+      "session_id": [
+        "D12"
+      ],
+      "clue": [
+        "D12:1"
+      ]
+    },
+    {
+      "point": "FR",
+      "question": "Please list the scenes or items related to making candied fruit mentioned in the conversation.",
+      "answer": "Fruit market, hawthorns, strawberries, oranges, bamboo sticks, pot, white sugar, water, chopping board, chopsticks.",
+      "session_id": [
+        "D13"
+      ],
+      "clue": [
+        "D13:2",
+        "D13:3",
+        "D13:5",
+        "D13:7",
+        "D13:10",
+        "D13:13",
+        "D13:15"
+      ]
+    },
+    {
+      "point": "MR",
+      "question": "What experiences and steps would a person have when making candied fruit?",
+      "answer": "Go to the fruit market to buy fruits, go home to wash them, pit the hawthorns, remove the stems of strawberries, peel the orange segments, string the fruits, put sugar and water in a pot and boil over low heat, test the state of the sugar liquid, coat the fruits with sugar liquid, place them on a chopping board to cool, and finally enjoy.",
+      "session_id": [
+        "D13"
+      ],
+      "clue": [
+        "D13:2",
+        "D13:3",
+        "D13:4",
+        "D13:5",
+        "D13:6",
+        "D13:7",
+        "D13:10",
+        "D13:13",
+        "D13:14",
+        "D13:15",
+        "D13:17"
+      ]
+    },
+    {
+      "point": "VS",
+      "question": "Which of the pictures showed is about boiling the sugar?",
+      "answer": "D13:IMG_002",
+      "session_id": [
+        "D13"
+      ],
+      "clue": [
+        "D13:11"
+      ]
+    },
+    {
+      "point": "MR",
+      "question": "Do you still remember which fruits were mentioned before for making candied fruit?",
+      "answer": "Hawthorns, strawberries, oranges.",
+      "session_id": [
+        "D13"
+      ],
+      "clue": [
+        "D13:2",
+        "D13:3"
+      ]
+    },
+    {
+      "point": "AR",
+      "question": "Was sesame used when making candied fruit?",
+      "answer": "Not mentioned.",
+      "session_id": [
+        "D13"
+      ],
+      "clue": []
+    },
+    {
+      "point": "FR",
+      "question": "What ratio of sugar to water did use when making the syrup?",
+      "answer": "About one to one.",
+      "session_id": [
+        "D14"
+      ],
+      "clue": [
+        "D14:4"
+      ]
+    },
+    {
+      "point": "FR",
+      "question": "How can you tell when the candied citrus slices are ready?",
+      "answer": "When the slices become translucent and light can pass through them.",
+      "session_id": [
+        "D14"
+      ],
+      "clue": [
+        "D14:6"
+      ]
+    },
+    {
+      "point": "MR",
+      "question": "What ideas did Maya have for reusing the leftover syrup?",
+      "answer": "Drizzle it over pancakes, mix it into tea, or use it as a glaze for pastries.",
+      "session_id": [
+        "D14"
+      ],
+      "clue": [
+        "D14:11"
+      ]
+    },
+    {
+      "point": "TR",
+      "question": "When did the family tea gathering take place? Please return the specific time.",
+      "answer": "On Sunday, January 26, at three in the afternoon.",
+      "session_id": [
+        "D15"
+      ],
+      "clue": [
+        "D15:1"
+      ]
+    },
+    {
+      "point": "FR",
+      "question": "Who attended the family tea gathering?",
+      "answer": "Maya’s parents, sister, and kids.",
+      "session_id": [
+        "D15"
+      ],
+      "clue": [
+        "D15:6"
+      ]
+    },
+    {
+      "point": "VS",
+      "question": "Which picture shows the dessert table?",
+      "answer": "D15:IMG_001",
+      "session_id": [
+        "D15"
+      ],
+      "clue": [
+        "D15:5"
+      ]
+    },
+    {
+      "point": "VR",
+      "question": "What decoration did Maya place in the center of the dessert table?",
+      "answer": "A vase of fresh flowers.",
+      "session_id": [
+        "D15"
+      ],
+      "clue": [
+        "D15:5"
+      ]
+    }
+  ]
+}

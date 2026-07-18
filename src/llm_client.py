@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import subprocess
 import base64
+import locale
 from pathlib import Path
 from typing import TypeVar
 
@@ -13,6 +14,21 @@ from .config import AppConfig
 from .models import CallRecord
 
 T = TypeVar("T", bound=BaseModel)
+
+
+def decode_process_output(value: bytes | str | None) -> str:
+    """Decode PowerShell pipes without assuming the Windows error code page."""
+    if value is None:
+        return ""
+    if isinstance(value, str):
+        return value
+    encodings = ("utf-8-sig", locale.getpreferredencoding(False), "gb18030")
+    for encoding in dict.fromkeys(encodings):
+        try:
+            return value.decode(encoding)
+        except (UnicodeDecodeError, LookupError):
+            continue
+    return value.decode("utf-8", errors="replace")
 
 
 class LLMClient:
@@ -66,16 +82,19 @@ class LLMClient:
 
     def _generate_via_powershell(self, request: dict) -> str:
         script = self.config.root / "scripts" / "invoke_openai.ps1"
+        encoded_request = base64.b64encode(
+            json.dumps(request, ensure_ascii=False).encode("utf-8")
+        )
         completed = subprocess.run(
             ["powershell.exe", "-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", str(script)],
-            input=base64.b64encode(json.dumps(request, ensure_ascii=False).encode("utf-8")).decode("ascii"),
-            text=True,
-            encoding="utf-8",
+            input=encoded_request,
             capture_output=True,
             timeout=300,
             check=False,
         )
+        stdout = decode_process_output(completed.stdout).strip()
+        stderr = decode_process_output(completed.stderr).strip()
         if completed.returncode != 0:
-            error = completed.stderr.strip() or completed.stdout.strip()
+            error = stderr or stdout or f"process exited with code {completed.returncode}"
             raise RuntimeError(f"PowerShell transport failed: {error[:500]}")
-        return completed.stdout.strip()
+        return stdout

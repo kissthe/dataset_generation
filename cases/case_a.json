@@ -1,13 +1,4 @@
 {
-  "case_id": "case-a",
-  "character_profile": {
-    "user_id": "user-lincheng",
-    "name": "林澄",
-    "identity": "博物馆学硕士生",
-    "daily_scenes": ["学校", "博物馆", "宿舍"],
-    "conversation_style": "表达简短，谈家人时减少解释",
-    "interests": ["旧物", "展览设计"]
-  },
-  "core_emotional_event": "林澄错过奶奶去世前最后一次通话，留有遗憾。",
-  "assistant_persona": "林澄的大学室友，性格直爽，说话随意，偶尔大大咧咧，不会刻意追问情绪"
+  "name": "林澄",
+  "core_emotional_event": "林澄错过奶奶去世前最后一次通话，留有遗憾。"
 }

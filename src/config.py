@@ -25,6 +25,21 @@ class GenerationConfig:
     max_retries: int
     max_revision_cycles: int
     run_eval: bool
+    stop_after_planning: bool = False
+
+
+@dataclass(frozen=True)
+class ValidationConfig:
+    """Optional post-generation validation stages.
+
+    Structured model parsing is always enforced by the LLM client. These flags
+    only control the extra validation/revision stages after SessionWriter.
+    """
+
+    structure: bool = False
+    semantic: bool = False
+    naturalness: bool = False
+    qa: bool = False
 
 
 @dataclass(frozen=True)
@@ -33,6 +48,7 @@ class AppConfig:
     dataset_id_prefix: str
     transport: str
     generation: GenerationConfig
+    validation: ValidationConfig
     components: dict[str, ComponentConfig]
     api_key: str
     base_url: str | None
@@ -55,6 +71,7 @@ class AppConfig:
             dataset_id_prefix=raw["dataset_id_prefix"],
             transport=raw.get("transport", "openai_sdk"),
             generation=GenerationConfig(**raw["generation"]),
+            validation=ValidationConfig(**raw.get("validation", {})),
             components={k: ComponentConfig(**v) for k, v in raw["components"].items()},
             api_key=api_key,
             base_url=base_url,

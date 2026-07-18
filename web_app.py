@@ -148,8 +148,8 @@ def update_progress(line: str, total: int, completed: int) -> tuple[float, str]:
     if line.startswith("completed "):
         value = 0.10 + 0.84 * (completed / max(total, 1))
         return value, f"已完成 {completed}/{total} 个 Session"
-    if line.startswith("benchmark:"):
-        return 0.98, "正在汇总 Benchmark 与 QA"
+    if line.startswith("benchmark:") or line.startswith("plans:"):
+        return 0.98, "正在汇总生成产物"
     return 0.03, "正在初始化生成任务"
 
 
@@ -252,8 +252,18 @@ def render_artifact(path: Path) -> None:
     # Planner：展示计划列表
     if component == "session_planner" and isinstance(output, dict) and "plans" in output:
         for plan in output["plans"]:
-            st.write(f"**{plan.get('session_id', '')}** · {plan.get('date', '')} · {plan.get('topic', '')}")
-            st.caption(f"rounds={plan.get('round_count', '')} · {plan.get('story_beat', '')} · {plan.get('outline_function', '')}")
+            st.write(
+                f"**{plan.get('session_id', '')}** · {plan.get('date', '')} · "
+                f"`{plan.get('session_type', 'daily_life')}` · {plan.get('topic', '')}"
+            )
+            if plan.get("scene"):
+                st.caption(f"场景：{plan['scene']}")
+            if plan.get("user_intent"):
+                st.caption(f"聊天动机：{plan['user_intent']}")
+            st.write(plan.get("story_beat", ""))
+            if plan.get("continuity_hook"):
+                st.caption(f"后续钩子：{plan['continuity_hook']}")
+            st.caption(f"rounds={plan.get('round_count', '')} · {plan.get('outline_function', '')}")
         return
 
     # Verifier：展示结论
@@ -272,6 +282,42 @@ def render_results(output_dir: Path) -> None:
     benchmark_path = output_dir / "benchmark.json"
     qa_path = output_dir / "qa_report.json"
     checkpoint_path = output_dir / "checkpoint_sessions.json"
+    plan_path = output_dir / "session_plans.json"
+    runtime_config_path = output_dir / ".runtime" / "config.json"
+    runtime_config = read_json(runtime_config_path) if runtime_config_path.exists() else {}
+    planner_only = runtime_config.get("generation", {}).get("stop_after_planning", False)
+
+    if planner_only and plan_path.exists():
+        plans = read_json(plan_path).get("plans", [])
+        st.subheader("故事线计划")
+        type_counts: dict[str, int] = {}
+        for plan in plans:
+            session_type = plan.get("session_type", "daily_life")
+            type_counts[session_type] = type_counts.get(session_type, 0) + 1
+        metric_cols = st.columns(4)
+        metric_cols[0].metric("Plans", len(plans))
+        metric_cols[1].metric("日常", type_counts.get("daily_life", 0))
+        metric_cols[2].metric("事件回声", type_counts.get("core_echo", 0))
+        metric_cols[3].metric("直接相关", type_counts.get("core_event", 0))
+        st.download_button(
+            "下载 Session Plans",
+            data=plan_path.read_bytes(),
+            file_name=plan_path.name,
+            mime="application/json",
+        )
+        for plan in plans:
+            label = (
+                f"{plan.get('session_id', '')} · {plan.get('date', '')} · "
+                f"{plan.get('topic', '')} · {plan.get('session_type', 'daily_life')}"
+            )
+            with st.expander(label):
+                st.write(f"**场景**：{plan.get('scene', '')}")
+                st.write(f"**聊天动机**：{plan.get('user_intent', '')}")
+                st.write(f"**故事节拍**：{plan.get('story_beat', '')}")
+                st.write(f"**叙事作用**：{plan.get('outline_function', '')}")
+                st.write(f"**后续钩子**：{plan.get('continuity_hook') or '无'}")
+                st.caption(f"rounds={plan.get('round_count', '')}")
+        return
 
     if not benchmark_path.exists():
         if checkpoint_path.exists():
@@ -281,6 +327,8 @@ def render_results(output_dir: Path) -> None:
 
     benchmark = read_json(benchmark_path)
     qa = read_json(qa_path) if qa_path.exists() else None
+    validation_config = runtime_config.get("validation")
+    qa_enabled = validation_config.get("qa", False) if validation_config is not None else None
     dialogues = benchmark.get("dialogues", [])
     turn_count = sum(len(item.get("turns", [])) for item in dialogues)
 
@@ -289,7 +337,13 @@ def render_results(output_dir: Path) -> None:
     metric_cols[0].metric("Sessions", len(dialogues))
     metric_cols[1].metric("Turns", turn_count)
     metric_cols[2].metric("Eval samples", len(benchmark.get("eval_samples", [])))
-    metric_cols[3].metric("QA", "通过" if qa and qa.get("passed") else "待检查")
+    if qa:
+        qa_status = "通过" if qa.get("passed") else "未通过"
+    elif qa_enabled is False:
+        qa_status = "已关闭"
+    else:
+        qa_status = "待检查"
+    metric_cols[3].metric("QA", qa_status)
 
     download_cols = st.columns([1, 1, 3])
     download_cols[0].download_button(
@@ -319,7 +373,10 @@ def render_results(output_dir: Path) -> None:
                         st.write(turn["text"])
     with qa_tab:
         if not qa:
-            st.warning("尚未生成 QA 报告。")
+            if qa_enabled is False:
+                st.info("本次运行已关闭最终 QA；可在左侧“验证阶段”中重新开启。")
+            else:
+                st.warning("尚未生成 QA 报告。")
         else:
             for name, passed in qa.get("checks", {}).items():
                 st.write(("✅" if passed else "❌") + f"  {name}")
@@ -357,6 +414,332 @@ def render_artifact_browser(output_dir: Path) -> None:
     render_artifact(artifacts[idx]["path"])
 
 
+def read_json_optional(path: Path, default):
+    """Read an optional JSON artifact without breaking the whole data browser."""
+    if not path.exists():
+        return default
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return default
+
+
+def discover_generation_runs(output_root: Path) -> list[dict]:
+    """Return all recognizable generation directories, newest first."""
+    if not output_root.exists() or not output_root.is_dir():
+        return []
+    candidates = [output_root] if (output_root / "case_spec.json").exists() else []
+    candidates.extend(path for path in output_root.iterdir() if path.is_dir())
+    runs: list[dict] = []
+    for path in candidates:
+        recognizable = any((path / name).exists() for name in (
+            "case_spec.json", "session_plans.json", "checkpoint_sessions.json", "benchmark.json",
+        ))
+        if not recognizable:
+            continue
+        plans_payload = read_json_optional(path / "session_plans.json", {})
+        plans = plans_payload.get("plans", []) if isinstance(plans_payload, dict) else []
+        checkpoint = read_json_optional(path / "checkpoint_sessions.json", [])
+        benchmark = read_json_optional(path / "benchmark.json", {})
+        dialogues = benchmark.get("dialogues", []) if isinstance(benchmark, dict) else []
+        completed = len(checkpoint) if isinstance(checkpoint, list) else len(dialogues)
+        if (path / "benchmark.json").exists():
+            status = "complete"
+        elif completed:
+            status = "partial"
+        elif plans:
+            status = "plans"
+        else:
+            status = "empty"
+        mtimes = [item.stat().st_mtime for item in path.iterdir() if item.is_file()]
+        runs.append({
+            "path": path,
+            "name": path.name,
+            "modified": max(mtimes, default=path.stat().st_mtime),
+            "status": status,
+            "planned": len(plans),
+            "completed": completed,
+        })
+    return sorted(runs, key=lambda item: item["modified"], reverse=True)
+
+
+def load_generation_run(output_dir: Path) -> dict:
+    """Load the canonical artifacts used by the evaluation page."""
+    plans_payload = read_json_optional(output_dir / "session_plans.json", {})
+    checkpoint = read_json_optional(output_dir / "checkpoint_sessions.json", [])
+    benchmark = read_json_optional(output_dir / "benchmark.json", {})
+    dialogues = checkpoint if isinstance(checkpoint, list) and checkpoint else benchmark.get("dialogues", [])
+    return {
+        "output_dir": output_dir,
+        "case_spec": read_json_optional(output_dir / "case_spec.json", {}),
+        "plans_payload": plans_payload if isinstance(plans_payload, dict) else {},
+        "plans": plans_payload.get("plans", []) if isinstance(plans_payload, dict) else [],
+        "life_anchor": plans_payload.get("life_anchor") if isinstance(plans_payload, dict) else None,
+        "dialogues": dialogues if isinstance(dialogues, list) else [],
+        "benchmark": benchmark if isinstance(benchmark, dict) else {},
+        "qa": read_json_optional(output_dir / "qa_report.json", None),
+        "runtime_config": read_json_optional(output_dir / ".runtime" / "config.json", {}),
+        "pipeline_result": read_json_optional(output_dir / "logs" / "99_pipeline_result.json", {}),
+    }
+
+
+def calculate_dialogue_metrics(dialogues: list[dict]) -> dict:
+    turns = [turn for session in dialogues for turn in session.get("turns", [])]
+    user_turns = [turn for turn in turns if turn.get("speaker") == "user"]
+    assistant_turns = [turn for turn in turns if turn.get("speaker") == "assistant"]
+
+    def average_length(items: list[dict]) -> float:
+        return round(sum(len(str(item.get("text", ""))) for item in items) / len(items), 1) if items else 0.0
+
+    question_count = sum(bool(re.search(r"[？?]", str(turn.get("text", "")))) for turn in assistant_turns)
+    list_like_count = sum(bool(re.search(
+        r"(?:^|\n)\s*(?:[-•]|\d+[）.)、])|首先|其次|最后|三段式|按.+规则",
+        str(turn.get("text", "")),
+    )) for turn in assistant_turns)
+    compliance_count = sum(bool(re.search(
+        r"按你说的|照你说的|我懂了.{0,12}我就|那我就按",
+        str(turn.get("text", "")),
+    )) for turn in user_turns)
+    summaries = [str(session.get("summary", "")).strip() for session in dialogues]
+    return {
+        "sessions": len(dialogues),
+        "turns": len(turns),
+        "rounds": len(user_turns),
+        "avg_rounds": round(len(user_turns) / len(dialogues), 1) if dialogues else 0.0,
+        "user_avg_chars": average_length(user_turns),
+        "assistant_avg_chars": average_length(assistant_turns),
+        "assistant_question_rate": round(question_count / len(assistant_turns) * 100, 1) if assistant_turns else 0.0,
+        "list_like_assistant_turns": list_like_count,
+        "compliance_user_turns": compliance_count,
+        "missing_summaries": sum(not summary for summary in summaries),
+    }
+
+
+def render_life_anchor(anchor: dict | None) -> None:
+    if not anchor:
+        st.info("该运行没有 life_anchor；旧版本 Plan 或仅有部分产物时可能出现这种情况。")
+        return
+    cols = st.columns([1, 1, 1])
+    cols[0].write(f"**生活状态**\n\n{anchor.get('identity', '—')}")
+    cols[1].write("**持续支线**")
+    cols[1].write("\n".join(f"- {item}" for item in anchor.get("ongoing_threads", [])) or "—")
+    cols[2].write("**兴趣与常见场景**")
+    details = list(anchor.get("interests", [])) + list(anchor.get("recurring_scenes", []))
+    cols[2].write("\n".join(f"- {item}" for item in details) or "—")
+
+
+def render_data_library(output_root: Path) -> None:
+    """Independent page for reviewing every historical generation run."""
+    st.markdown(
+        """
+        <div class="studio-hero">
+          <h1>Generated Data Library</h1>
+          <p>集中查看历史运行、故事线、完整对话、质量指标与原始产物</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+    with st.sidebar:
+        st.divider()
+        st.subheader("数据目录")
+        st.text_input("输出根目录", key="output_root")
+        st.button("刷新运行列表", use_container_width=True)
+        st.caption(f"当前扫描：{output_root}")
+
+    runs = discover_generation_runs(output_root)
+    if not runs:
+        st.warning("当前目录下没有找到生成记录。")
+        return
+
+    status_labels = {"complete": "完整", "partial": "部分完成", "plans": "仅 Plan", "empty": "初始化"}
+    filter_cols = st.columns([1.4, 1, 1])
+    query = filter_cols[0].text_input("搜索运行", placeholder="输入测试名称")
+    selected_statuses = filter_cols[1].multiselect(
+        "运行状态", options=list(status_labels), default=list(status_labels),
+        format_func=lambda value: status_labels[value],
+    )
+    filter_cols[2].metric("历史运行", len(runs))
+    visible_runs = [
+        run for run in runs
+        if run["status"] in selected_statuses and query.lower() in run["name"].lower()
+    ]
+    if not visible_runs:
+        st.info("没有符合筛选条件的运行。")
+        return
+
+    by_path = {str(run["path"]): run for run in visible_runs}
+    selected_path = st.selectbox(
+        "选择生成记录",
+        options=list(by_path),
+        format_func=lambda value: (
+            f"{by_path[value]['name']}  ·  {status_labels[by_path[value]['status']]}  ·  "
+            f"{by_path[value]['completed']}/{by_path[value]['planned']} sessions  ·  "
+            f"{datetime.fromtimestamp(by_path[value]['modified']):%Y-%m-%d %H:%M}"
+        ),
+    )
+    selected_run = by_path[selected_path]
+    bundle = load_generation_run(Path(selected_path))
+    plans = bundle["plans"]
+    dialogues = bundle["dialogues"]
+    metrics = calculate_dialogue_metrics(dialogues)
+
+    st.caption(f"`{selected_path}`")
+    metric_cols = st.columns(5)
+    metric_cols[0].metric("状态", status_labels[selected_run["status"]])
+    metric_cols[1].metric("Plans", len(plans))
+    metric_cols[2].metric("Sessions", metrics["sessions"])
+    metric_cols[3].metric("Rounds", metrics["rounds"])
+    metric_cols[4].metric("QA", "通过" if bundle["qa"] and bundle["qa"].get("passed") else "无/未通过")
+
+    overview_tab, plan_tab, dialogue_tab, quality_tab, raw_tab = st.tabs([
+        "运行概览", "故事线 Plans", "Session 对话", "快速评估", "原始产物",
+    ])
+    with overview_tab:
+        st.subheader("隐式生活锚点")
+        render_life_anchor(bundle["life_anchor"])
+        st.divider()
+        spec_col, config_col = st.columns(2)
+        with spec_col:
+            st.subheader("CaseSpec")
+            st.json(bundle["case_spec"], expanded=False)
+        with config_col:
+            st.subheader("本次运行配置")
+            if bundle["runtime_config"]:
+                generation = bundle["runtime_config"].get("generation", {})
+                validation = bundle["runtime_config"].get("validation", {})
+                st.write(f"**模型**：{bundle['runtime_config'].get('components', {}).get('session_writer', {}).get('model', '—')}")
+                st.write(f"**Session 数量**：{generation.get('session_count', '—')}")
+                st.write(f"**仅 Plan**：{generation.get('stop_after_planning', False)}")
+                st.write(f"**验证开关**：{validation}")
+            else:
+                st.info("该运行没有保存 runtime config。")
+
+    with plan_tab:
+        if not plans:
+            st.info("该运行没有 Session Plans。")
+        else:
+            types = sorted({plan.get("session_type", "daily_life") for plan in plans})
+            threads = sorted({plan.get("life_thread", "one_off") for plan in plans})
+            plan_filters = st.columns(2)
+            chosen_types = plan_filters[0].multiselect("Session 类型", types, default=types)
+            chosen_threads = plan_filters[1].multiselect("生活支线", threads, default=threads)
+            filtered_plans = [
+                plan for plan in plans
+                if plan.get("session_type", "daily_life") in chosen_types
+                and plan.get("life_thread", "one_off") in chosen_threads
+            ]
+            table_lines = [
+                "| ID | 日期 | 类型 | 互动 | 生活支线 | 主题 |",
+                "|---|---|---|---|---|---|",
+            ]
+            for plan in filtered_plans:
+                cells = [
+                    plan.get("session_id"), plan.get("date"), plan.get("session_type"),
+                    plan.get("interaction_mode", "—"), plan.get("life_thread", "one_off"),
+                    plan.get("topic"),
+                ]
+                escaped = [str(value or "—").replace("|", "\\|").replace("\n", " ") for value in cells]
+                table_lines.append("| " + " | ".join(escaped) + " |")
+            st.markdown("\n".join(table_lines))
+            if filtered_plans:
+                selected_plan_id = st.selectbox(
+                    "查看 Plan 详情", [plan.get("session_id", "") for plan in filtered_plans],
+                    key="library_plan_detail",
+                )
+                plan = next(item for item in filtered_plans if item.get("session_id") == selected_plan_id)
+                st.write(f"**场景**：{plan.get('scene', '—')}")
+                st.write(f"**聊天动机**：{plan.get('user_intent', '—')}")
+                st.write(f"**故事节拍**：{plan.get('story_beat', '—')}")
+                st.write(f"**支线进展**：{plan.get('thread_progress') or '—'}")
+                st.write(f"**后续钩子**：{plan.get('continuity_hook') or '—'}")
+
+    with dialogue_tab:
+        if not dialogues:
+            st.info("该运行尚未生成 Session 对话。")
+        else:
+            plan_by_id = {plan.get("session_id"): plan for plan in plans}
+            session_ids = [session.get("session_id", f"Session {index + 1}") for index, session in enumerate(dialogues)]
+            selected_session_id = st.selectbox("选择 Session", session_ids, key="library_session_detail")
+            session = next(item for item in dialogues if item.get("session_id") == selected_session_id)
+            session_plan = plan_by_id.get(selected_session_id)
+            header_cols = st.columns([3, 1])
+            header_cols[0].subheader(f"{selected_session_id} · {session.get('topic', '')}")
+            header_cols[1].download_button(
+                "下载当前 Session",
+                data=json.dumps(session, ensure_ascii=False, indent=2),
+                file_name=f"{selected_session_id}.json", mime="application/json",
+                use_container_width=True,
+            )
+            if session.get("summary"):
+                st.info(f"摘要：{session['summary']}")
+            if session_plan:
+                st.caption(
+                    f"{session_plan.get('session_type', 'daily_life')} · "
+                    f"{session_plan.get('interaction_mode', '—')} · "
+                    f"支线：{session_plan.get('life_thread', 'one_off')}"
+                )
+            for turn in session.get("turns", []):
+                with st.chat_message(turn.get("speaker", "user")):
+                    st.caption(f"{turn.get('turn_id', '')} · {turn.get('round_id', '')}")
+                    st.write(turn.get("text", ""))
+
+    with quality_tab:
+        quality_cols = st.columns(4)
+        quality_cols[0].metric("平均轮数", metrics["avg_rounds"])
+        quality_cols[1].metric("User 平均字数", metrics["user_avg_chars"])
+        quality_cols[2].metric("朋友平均字数", metrics["assistant_avg_chars"])
+        quality_cols[3].metric("朋友提问率", f"{metrics['assistant_question_rate']}%")
+        signal_cols = st.columns(3)
+        signal_cols[0].metric("列表/流程式回复", metrics["list_like_assistant_turns"])
+        signal_cols[1].metric("复述式配合回复", metrics["compliance_user_turns"])
+        signal_cols[2].metric("缺少摘要", metrics["missing_summaries"])
+        st.caption("这些是便于人工定位的启发式信号，不代表最终质量判定。")
+        if plans:
+            type_counts: dict[str, int] = {}
+            mode_counts: dict[str, int] = {}
+            thread_counts: dict[str, int] = {}
+            for plan in plans:
+                for target, key, default in (
+                    (type_counts, "session_type", "daily_life"),
+                    (mode_counts, "interaction_mode", "—"),
+                    (thread_counts, "life_thread", "one_off"),
+                ):
+                    value = plan.get(key, default)
+                    target[value] = target.get(value, 0) + 1
+            distribution_cols = st.columns(3)
+            distribution_cols[0].write("**Session 类型**")
+            distribution_cols[0].json(type_counts)
+            distribution_cols[1].write("**互动模式**")
+            distribution_cols[1].json(mode_counts)
+            distribution_cols[2].write("**生活支线**")
+            distribution_cols[2].json(thread_counts)
+
+    with raw_tab:
+        files = sorted(
+            path for path in Path(selected_path).rglob("*")
+            if path.is_file() and path.suffix.lower() in {".json", ".txt", ".md"}
+        )
+        if not files:
+            st.info("没有可预览的文本产物。")
+        else:
+            relative_files = [path.relative_to(selected_path).as_posix() for path in files]
+            chosen_file = st.selectbox("选择文件", relative_files, key="library_raw_file")
+            file_path = Path(selected_path) / chosen_file
+            file_bytes = file_path.read_bytes()
+            st.download_button(
+                "下载所选文件", data=file_bytes, file_name=file_path.name,
+                mime="application/json" if file_path.suffix.lower() == ".json" else "text/plain",
+            )
+            if file_path.suffix.lower() == ".json":
+                payload = read_json_optional(file_path, None)
+                if payload is not None:
+                    st.json(payload, expanded=False)
+                else:
+                    st.error("JSON 文件无法解析。")
+            else:
+                st.code(file_path.read_text(encoding="utf-8", errors="replace"), language="text")
+
+
 def resolve_output_root(value: str) -> Path:
     path = Path(value).expanduser()
     return path.resolve() if path.is_absolute() else (ROOT / path).resolve()
@@ -369,6 +752,8 @@ def build_runtime_snapshot(
     transport: str,
     prompt_drafts: dict[str, str],
     session_count: int,
+    validation_config: dict[str, bool],
+    stop_after_planning: bool,
 ) -> Path:
     """Create an isolated config/prompt snapshot without touching project defaults."""
     runtime_dir = output_dir / ".runtime"
@@ -380,6 +765,8 @@ def build_runtime_snapshot(
     runtime_config = read_json(CONFIG_PATH)
     runtime_config["transport"] = transport
     runtime_config["generation"]["session_count"] = session_count
+    runtime_config["generation"]["stop_after_planning"] = stop_after_planning
+    runtime_config["validation"] = validation_config
     for component, component_config in runtime_config["components"].items():
         component_config["model"] = model_name.strip()
         if component in {"session_writer", "eval_generator"}:
@@ -406,6 +793,8 @@ def run_generation(
     base_url_override: str,
     prompt_drafts: dict[str, str],
     session_count_override: int,
+    validation_config: dict[str, bool],
+    stop_after_planning: bool,
 ) -> None:
     spec, error = validate_spec(spec_text)
     if error or spec is None:
@@ -428,8 +817,8 @@ def run_generation(
         st.error(f"无法使用该保存路径：{exc}")
         return
     case_path = output_dir / "case_spec.json"
-    if not resume and (output_dir / "checkpoint_sessions.json").exists():
-        st.error("该测试名称已有检查点。请开启断点续跑，或换一个新的测试名称。")
+    if not resume and (output_dir / "session_plans.json").exists():
+        st.error("该测试名称已有 Plan。为避免误用旧结果，请换一个新的测试名称，或开启断点续跑。")
         return
     if resume and case_path.exists():
         previous, previous_error = validate_spec(case_path.read_text(encoding="utf-8"))
@@ -441,7 +830,7 @@ def run_generation(
     try:
         runtime_config_path = build_runtime_snapshot(
             output_dir, model_name, writer_temperature, transport, prompt_drafts,
-            session_count_override,
+            session_count_override, validation_config, stop_after_planning,
         )
     except OSError as exc:
         st.error(f"无法创建本次运行的配置快照：{exc}")
@@ -466,6 +855,7 @@ def run_generation(
         str(output_dir),
     ]
     child_env = os.environ.copy()
+    child_env["PYTHONUTF8"] = "1"
     if api_key_override.strip():
         child_env["openai_api_key"] = api_key_override.strip()
         child_env["OPENAI_API_KEY"] = api_key_override.strip()
@@ -556,7 +946,7 @@ def run_generation(
         if failed_ids:
             status.warning(f"生成完成，但有 {len(failed_ids)} 个 session 失败被跳过：{', '.join(failed_ids)}")
         else:
-            status.success("Benchmark 与 QA 已生成。")
+            status.success("生成产物已保存。")
         render_results(output_dir)
         render_artifact_browser(output_dir)
     else:
@@ -679,8 +1069,19 @@ if "writer_temperature" not in st.session_state:
     st.session_state["writer_temperature"] = float(config["components"]["session_writer"]["temperature"])
 if "session_count_override" not in st.session_state:
     st.session_state["session_count_override"] = config["generation"]["session_count"]
+if "stop_after_planning" not in st.session_state:
+    st.session_state["stop_after_planning"] = True
 if "transport" not in st.session_state:
     st.session_state["transport"] = config.get("transport", "openai_sdk")
+validation_defaults = config.get("validation", {})
+if "validate_structure" not in st.session_state:
+    st.session_state["validate_structure"] = validation_defaults.get("structure", False)
+if "validate_semantic" not in st.session_state:
+    st.session_state["validate_semantic"] = validation_defaults.get("semantic", False)
+if "validate_naturalness" not in st.session_state:
+    st.session_state["validate_naturalness"] = validation_defaults.get("naturalness", False)
+if "validate_qa" not in st.session_state:
+    st.session_state["validate_qa"] = validation_defaults.get("qa", False)
 if "api_key_secret" not in st.session_state:
     st.session_state["api_key_secret"] = st.session_state.pop("api_key_override", "")
 if "api_key_draft" not in st.session_state:
@@ -689,6 +1090,15 @@ if "base_url_override" not in st.session_state:
     st.session_state["base_url_override"] = os.getenv("base_url") or os.getenv("BASE_URL") or ""
 if "output_root" not in st.session_state:
     st.session_state["output_root"] = str(WEB_OUTPUT_ROOT)
+
+app_page = st.sidebar.radio(
+    "页面导航",
+    options=["生成工作台", "数据浏览与评估"],
+    key="app_page",
+)
+if app_page == "数据浏览与评估":
+    render_data_library(resolve_output_root(st.session_state["output_root"]))
+    st.stop()
 
 model = st.session_state["selected_model"]
 
@@ -700,7 +1110,7 @@ st.markdown(
       <div style="margin-top:.75rem">
         <span class="status-pill">模型 · {model}</span>
         <span class="status-pill">纯文本 Session</span>
-        <span class="status-pill">结构化 QA</span>
+        <span class="status-pill">验证阶段可选</span>
       </div>
     </div>
     """,
@@ -787,11 +1197,39 @@ with st.sidebar:
         key="session_count_override",
         help="本次运行生成的 session 数量。仅当 CaseSpec 未提供 session_outlines 时生效。",
     )
+    st.toggle(
+        "仅生成故事线 Plan",
+        key="stop_after_planning",
+        help="开启后在 SessionPlanner 完成时停止，不调用 Writer 或任何验证阶段。",
+    )
     st.selectbox(
         "API 传输方式",
         options=["powershell", "openai_sdk"],
         key="transport",
         help="当前 Windows 环境推荐 powershell；标准环境可使用 openai_sdk。",
+    )
+    st.divider()
+    st.subheader("验证阶段（可选）")
+    st.caption("默认全部关闭，便于直接调试 Planner / Writer；按需单独开启。")
+    st.toggle(
+        "结构校验与修订",
+        key="validate_structure",
+        help="检查 turn 数量、ID、round ID 和 speaker 顺序；失败时调用 Reviser。",
+    )
+    st.toggle(
+        "语义校验与修订",
+        key="validate_semantic",
+        help="调用 SessionVerifier 检查事实泄露、人物冲突、重复等问题。",
+    )
+    st.toggle(
+        "自然度校验与修订",
+        key="validate_naturalness",
+        help="调用 NaturalnessChecker，并在需要时做一次最小修订。",
+    )
+    st.toggle(
+        "最终 QA 报告",
+        key="validate_qa",
+        help="对最终 sessions 做非 LLM 的顺序、时间和 turn 结构检查。",
     )
     st.divider()
     st.subheader("保存位置")
@@ -829,7 +1267,7 @@ with st.sidebar:
 spec_col, prompt_col = st.columns([1.22, 0.78], gap="large")
 with spec_col:
     st.subheader("CaseSpec")
-    st.caption("在这里粘贴或修改单个案例。运行前会使用项目 Pydantic 模型进行完整校验。")
+    st.caption("最简只需 name 和 core_emotional_event；其他人物信息仍可作为可选约束。")
     spec_text = st.text_area(
         "Spec JSON",
         key="spec_text",
@@ -843,7 +1281,7 @@ with spec_col:
         # session 数量：有 outlines 时取 outlines 数，否则取侧边栏滑块值
         session_count = len(parsed_spec.session_outlines) or st.session_state["session_count_override"]
         info_cols[1].metric("Sessions", session_count)
-        info_cols[2].metric("身份", parsed_spec.character_profile.identity)
+        info_cols[2].metric("身份", parsed_spec.character_profile.identity or "Planner 补全")
         info_cols[3].metric("Outlines", len(parsed_spec.session_outlines))
         st.success("Spec 结构有效，可以生成。")
     else:
@@ -881,7 +1319,7 @@ with prompt_col:
 
 st.divider()
 st.subheader("Generation Monitor")
-st.caption("运行时会显示规划、逐 Session 生成、修订与 QA 的实时状态。")
+st.caption("运行时会显示规划、逐 Session 生成，以及本次实际开启的验证阶段。")
 
 if run_clicked:
     prompt_drafts = {
@@ -900,6 +1338,13 @@ if run_clicked:
         base_url_override=st.session_state["base_url_override"],
         prompt_drafts=prompt_drafts,
         session_count_override=st.session_state["session_count_override"],
+        validation_config={
+            "structure": st.session_state["validate_structure"],
+            "semantic": st.session_state["validate_semantic"],
+            "naturalness": st.session_state["validate_naturalness"],
+            "qa": st.session_state["validate_qa"],
+        },
+        stop_after_planning=st.session_state["stop_after_planning"],
     )
 elif st.session_state.get("last_output"):
     render_results(Path(st.session_state["last_output"]))

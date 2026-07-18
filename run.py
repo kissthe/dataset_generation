@@ -14,11 +14,12 @@ def main() -> None:
     parser.add_argument("--output", type=Path, default=Path("outputs/case_a"))
     args = parser.parse_args()
     config = AppConfig.load(args.config.resolve())
-    benchmark, qa = GenerationPipeline(config).run(args.case.resolve(), args.output.resolve())
-    print(f"benchmark: {benchmark}")
-    print(f"qa: {qa}")
+    artifact, qa = GenerationPipeline(config).run(args.case.resolve(), args.output.resolve())
+    if artifact.name == "benchmark.json":
+        print(f"benchmark: {artifact}")
+    if qa:
+        print(f"qa: {qa}")
 
 
 if __name__ == "__main__":
     main()
-

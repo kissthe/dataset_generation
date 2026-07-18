@@ -10,7 +10,14 @@
     "seed": 42,
     "max_retries": 3,
     "max_revision_cycles": 3,
-    "run_eval": false
+    "run_eval": false,
+    "stop_after_planning": false
+  },
+  "validation": {
+    "structure": false,
+    "semantic": false,
+    "naturalness": false,
+    "qa": false
   },
   "components": {
     "session_planner": {"model": "gpt-5.4-nano", "temperature": 0.4, "max_completion_tokens": 4096},
