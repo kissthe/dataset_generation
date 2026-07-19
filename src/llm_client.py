@@ -4,6 +4,7 @@ import json
 import subprocess
 import base64
 import locale
+import time
 from pathlib import Path
 from typing import TypeVar
 
@@ -14,6 +15,26 @@ from .config import AppConfig
 from .models import CallRecord
 
 T = TypeVar("T", bound=BaseModel)
+
+POWERSHELL_CONNECTION_ERROR_MARKERS = (
+    "underlying connection was closed",
+    "connection was closed unexpectedly",
+    "connection reset",
+    "connection aborted",
+    "connection error",
+    "could not create ssl/tls secure channel",
+    "ssl connection could not be established",
+    "tls",
+    "unable to connect to the remote server",
+    "无法连接到远程服务器",
+    "timed out",
+    "timeout",
+    "name resolution",
+    "remote name could not be resolved",
+    "winerror 10013",
+    "winerror 10054",
+    "winerror 10060",
+)
 
 
 def decode_process_output(value: bytes | str | None) -> str:
@@ -31,6 +52,27 @@ def decode_process_output(value: bytes | str | None) -> str:
     return value.decode("utf-8", errors="replace")
 
 
+def describe_exception(error: BaseException | str, *, max_depth: int = 6) -> str:
+    """Preserve useful SDK/httpx/Windows causes instead of only `Connection error`."""
+    if isinstance(error, str):
+        return error
+    parts: list[str] = []
+    current: BaseException | None = error
+    seen: set[int] = set()
+    while current is not None and len(parts) < max_depth and id(current) not in seen:
+        seen.add(id(current))
+        message = str(current).strip() or repr(current)
+        parts.append(f"{type(current).__name__}: {message}")
+        current = current.__cause__ or current.__context__
+    return " <- ".join(parts)
+
+
+def is_powershell_connection_error(error: BaseException | str) -> bool:
+    """Return whether a transport failed before receiving a usable HTTP response."""
+    message = describe_exception(error).lower()
+    return any(marker in message for marker in POWERSHELL_CONNECTION_ERROR_MARKERS)
+
+
 class LLMClient:
     def __init__(self, config: AppConfig) -> None:
         kwargs = {"api_key": config.api_key}
@@ -39,6 +81,7 @@ class LLMClient:
         self.client = OpenAI(**kwargs)
         self.config = config
         self.records: list[CallRecord] = []
+        self._powershell_unavailable = False
 
     def generate(self, component: str, payload: dict, output_model: type[T]) -> T:
         cc = self.config.components[component]
@@ -65,11 +108,28 @@ class LLMClient:
                         },
                     },
                 }
-                if self.config.transport == "powershell":
-                    content = self._generate_via_powershell(request)
+                if self.config.transport == "powershell" and not self._powershell_unavailable:
+                    try:
+                        content = self._generate_via_powershell(request)
+                    except RuntimeError as exc:
+                        if not is_powershell_connection_error(exc):
+                            raise
+                        # Windows PowerShell 5.1 can fail during TLS negotiation with
+                        # otherwise healthy OpenAI-compatible gateways. Once that is
+                        # observed, use the SDK for this and all later calls in the run.
+                        self._powershell_unavailable = True
+                        self.records.append(
+                            CallRecord(
+                                component=component,
+                                model=cc.model,
+                                attempt=attempt,
+                                status="error",
+                                error=f"PowerShell connection failed; switched to openai_sdk: {exc}"[:500],
+                            )
+                        )
+                        content = self._generate_via_sdk(request)
                 else:
-                    response = self.client.chat.completions.create(**request)
-                    content = response.choices[0].message.content
+                    content = self._generate_via_sdk(request)
                 if not content:
                     raise ValueError("model returned empty content")
                 parsed = output_model.model_validate_json(content)
@@ -77,8 +137,45 @@ class LLMClient:
                 return parsed
             except Exception as exc:  # retry API, decoding, and schema failures uniformly
                 last_error = exc
-                self.records.append(CallRecord(component=component, model=cc.model, attempt=attempt, status="error", error=str(exc)[:500]))
-        raise RuntimeError(f"{component} failed after retries: {last_error}")
+                error_detail = describe_exception(exc)
+                self.records.append(
+                    CallRecord(
+                        component=component,
+                        model=cc.model,
+                        attempt=attempt,
+                        status="error",
+                        error=error_detail[:500],
+                    )
+                )
+                if (
+                    attempt < self.config.generation.max_retries
+                    and is_powershell_connection_error(exc)
+                ):
+                    delay = min(2 ** (attempt - 1), 8)
+                    print(
+                        f"retrying {component} after connection error; "
+                        f"next attempt {attempt + 1}/{self.config.generation.max_retries} "
+                        f"in {delay}s",
+                        flush=True,
+                    )
+                    time.sleep(delay)
+        detail = describe_exception(last_error) if last_error else "unknown error"
+        raise RuntimeError(f"{component} failed after retries: {detail}") from last_error
+
+    def _generate_via_sdk(self, request: dict) -> str | None:
+        # Long structured Blueprint/Plan generations can remain silent for over a
+        # minute. Some OpenAI-compatible gateways close such non-streaming requests
+        # before sending response headers. Streaming keeps the connection active and
+        # the assembled text is validated by the exact same Pydantic schema below.
+        stream = self.client.chat.completions.create(**request, stream=True)
+        content_parts: list[str] = []
+        for event in stream:
+            if not event.choices:
+                continue
+            piece = event.choices[0].delta.content
+            if piece:
+                content_parts.append(piece)
+        return "".join(content_parts)
 
     def _generate_via_powershell(self, request: dict) -> str:
         script = self.config.root / "scripts" / "invoke_openai.ps1"

@@ -1,9 +1,9 @@
 {
   "dataset_id_prefix": "memory-trigger-dialogue",
-  "transport": "powershell",
+  "transport": "openai_sdk",
   "generation": {
     "session_count": 10,
-    "planner_batch_size": 5,
+    "planner_batch_size": 4,
     "min_rounds": 4,
     "max_rounds": 6,
     "context_sessions": 3,
@@ -11,7 +11,18 @@
     "max_retries": 3,
     "max_revision_cycles": 3,
     "run_eval": false,
+    "run_eval_examples": false,
     "stop_after_planning": false
+  },
+  "blueprint_constraints": {
+    "encode_association_count": 1,
+    "triggered_recall_count": 1,
+    "memory_update_count": 1,
+    "control_count": 1,
+    "required_cue_types": ["object", "scene", "utterance"],
+    "eval_triggered_count": 2,
+    "eval_insufficient_evidence_count": 2,
+    "eval_not_triggered_count": 2
   },
   "validation": {
     "structure": false,
@@ -20,12 +31,14 @@
     "qa": false
   },
   "components": {
+    "dataset_blueprint_planner": {"model": "gpt-5.4-nano", "temperature": 0.4, "max_completion_tokens": 6144},
     "session_planner": {"model": "gpt-5.4-nano", "temperature": 0.4, "max_completion_tokens": 4096},
     "session_writer": {"model": "gpt-5.4-nano", "temperature": 0.8, "max_completion_tokens": 4096},
     "session_verifier": {"model": "gpt-5.4-nano", "temperature": 0.1, "max_completion_tokens": 2048},
     "session_reviser": {"model": "gpt-5.4-nano", "temperature": 0.3, "max_completion_tokens": 4096},
     "naturalness_checker": {"model": "gpt-5.4-nano", "temperature": 0.1, "max_completion_tokens": 2048},
     "eval_generator": {"model": "gpt-5.4-nano", "temperature": 0.7, "max_completion_tokens": 4096},
+    "eval_resolver": {"model": "gpt-5.4-nano", "temperature": 0.1, "max_completion_tokens": 2048},
     "eval_verifier": {"model": "gpt-5.4-nano", "temperature": 0.1, "max_completion_tokens": 2048}
   }
 }

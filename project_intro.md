@@ -60,17 +60,21 @@ Gold 一致性要求：
 ```text
 加载固定 CaseSpec（这个casespece，可以是人工写出的，也可以是机器生成的，作为后续生成情绪事件的依据）
     ↓
+程序自动分配 session_id / eval outline_id
+    ↓
+DatasetBlueprintPlanner 一次性生成全局生活锚点、emotion memory map、cue seeds、session slots 和 eval outlines
+    ↓
 生成并校验 10 个 SessionPlan
     ↓
-逐 session 生成 user 和 assistant 对话（SessionWriter、SessionVerifier、SessionReviser）
+逐 Session 生成 user 与固定朋友的对话（JSON speaker 仍使用 assistant）
     ↓
 自然度检查（检查对话风格、语气是否自然，比如只修改指定的两处表达；不得改变事件、时间、人物、cue）
     ↓
-生成 6 个 eval sample
+EvalGenerator 为每条 eval outline 生成 3 个当前输入候选
     ↓
-解析具体 evidence_turn_ids
+输出 generator-only 的 eval_candidates.json
     ↓
-执行 gold、cue、历史截断和泄露检查
+Resolver 解析 evidence_turn_ids，Verifier 选优，Finalizer 输出正式 Gold
     ↓
 输出最终数据和 QA 结果
 ```
@@ -85,22 +89,28 @@ Gold 一致性要求：
 
 ### 4.1 CaseSpec
 
-保存一个角色的唯一事实源：
+保存一个角色的唯一事实源。最简输入只需 `name` 与 `core_emotional_event`；身份、日常场景、兴趣、说话风格和旧版 session outline 都是可选种子。Session/Eval 数量和 ID 不由 CaseSpec 手写，而由配置与程序确定。
 
-- 角色身份、日常场景、兴趣和说话风格；
-- 核心情绪事件；
-- 10 个固定 session outline；
-- 6 个固定 eval outline。
+### 4.2 DatasetBlueprint
 
-### 4.2 SessionPlan
+位于 CaseSpec 之后、SessionPlanner 之前，只生成一次，包含：
 
-轻量计划即可，至少包含：
+- 稳定的 life anchor；
+- emotion memory map，以及 object / scene / utterance 等用户特定 cue；
+- 程序预先分配 ID 的全部 SessionSlot；
+- 只描述覆盖目标的 EvalOutline。
 
-- session ID、日期和主题；
-- 本 session 的 story beat；
-- 目标 round 数。
+`session_id` 不由人工输入，也不由 LLM 自由生成。程序先按 case 和顺序确定 ID，BlueprintPlanner 与后续 Planner 只能复制。蓝图阶段不生成最终 current input、真实 evidence turn ID 或 Gold。
 
-### 4.3 Session
+精简后的 `EmotionMemory` 包含 `memory_id`、`event_summary`、`emotion`、`emotional_meaning` 和 `cue_seeds`。每个 cue 只保留 `cue_id`、类型、核心形式、相关形式和合并后的个人意义。历史情绪强度不单独量化：它对当前生成和标签判定没有稳定作用，记忆随时间的变化由 SessionSlot 的 `target_emotion` 与 `relative_to_past` 表达。
+
+SessionSlot 只保留后续阶段实际消费的记忆角色、memory/cue 引用、证据目标、局部情绪、相对过去的变化和前置 Session 依赖。覆盖数量与必须出现的 cue 类型由 `blueprint_constraints` 确定，程序负责 ID、数量、顺序和引用一致性，LLM 负责具体生活与情绪语义。
+
+### 4.3 SessionPlan
+
+在 Blueprint 固定的槽位上补充日期、主题、场景、聊天动机、生活支线、story beat 和目标 round 数，并逐字继承该槽位的 memory role、memory/cue 引用、证据目标、局部情绪与依赖。
+
+### 4.4 Session
 
 包含：
 
@@ -110,7 +120,7 @@ Gold 一致性要求：
 
 每个 turn 包含 speaker、text、turn ID、round ID，以及可选的图片 caption 和图片生成 prompt（图片将在后续版本加入）。
 
-### 4.4 EvalSample
+### 4.5 EvalSample
 
 包含：
 
@@ -124,16 +134,24 @@ Gold 一致性要求：
 ---
 
 # 5. Generator 设计
+## 5.0 DatasetBlueprintPlanner
+
+功能：一次性决定整组数据的全局覆盖，防止分批 SessionPlanner 各自规划后出现 10/10 普通日常或重复核心事件。
+
+输入：精简 CaseSpec、不可变事实、程序分配的 ID、覆盖数量。
+
+输出：`dataset_blueprint.json`。默认 10 个 Session 分配 6 个 none、1 个 encode_association、1 个 triggered_recall、1 个 memory_update、1 个 control；默认 6 个 eval outline 为三类标签各 2 个。
+
 ## 5.1 SessionPlanner
 
-功能：将固定 CaseSpec 扩展成轻量 SessionPlan。
+功能：在 DatasetBlueprint 的既定 SessionSlot 上补充日期、主题、具体场景、聊天动机、生活支线和故事节拍。
 
-输入：CaseSpec
+输入：CaseSpec + DatasetBlueprint + 本批 assigned SessionSlots + prior plans
 
 职责：
-- 宏观控制
-- 指定每个session 需要写入的主题；
-- 保持固定故事功能不变。
+- 不做宏观覆盖决策，不生成或修改 ID；
+- 指定每个 session 的自然生活主题和局部节拍；
+- 原样保留蓝图的 memory role、cue、证据目标与情绪变化。
 
 不得改变核心事件
 
@@ -180,17 +198,18 @@ Reviser 只修改相关 turn，不重写整个 session。
 
 ## 5.5 EvalGenerator
 
-功能：根据固定 eval outline 生成自然的当前输入、图片描述（多模态在后续版本加入）和 cue options。
+功能：根据固定 eval outline 和 cutoff 内的真实历史，生成自然的当前文本与 cue options。多模态在后续版本加入。
 
 要求：
 
 根据覆盖目标决定题型；
-选择 history_cutoff；
-从历史中寻找可用 evidence；
-生成当前文本或图文输入；
+严格使用 Blueprint 已确定的 history_cutoff；
+读取 cutoff 内历史以避免与事实或已有证据矛盾；
+生成当前文本输入；
 生成 cue options；
-给出预期的 gold；
 一次生成 3 个候选 eval。
+
+当前阶段只输出 `outline_id` 和 3 个候选。每个候选包含 `current_input`，以及由程序锁定的 `target_label`、`target_emotion`、`blueprint_cue_id`、`history_cutoff`。Generator 不输出 `evidence_turn_ids`、Gold、sample ID，不负责排序或选择候选。
 
 输入：
 CaseSpec
@@ -207,7 +226,11 @@ emotion_explicitness: implicit
 history_cutoff: s10
 Generator 不负责自由决定“想出什么题”，而是按照这个目标出题。
 
-## 5.6 EvalVerifier
+## 5.6 EvidenceResolver
+
+从真实 user turns 中解析最小且联合充分的 `evidence_turn_ids`，不改写 Generator 候选。
+
+## 5.7 EvalVerifier
 Verifier 不生成新题，也不负责大幅重写，只完成两件事：
 
 检查每个候选；
@@ -215,7 +238,7 @@ Verifier 不生成新题，也不负责大幅重写，只完成两件事：
 
 具体检查规则写入文件
 
-## 5.7 GoldFinalizer
+## 5.8 GoldFinalizer
 这个组件不需要 LLM，就是普通代码。
 
 它负责：
@@ -261,3 +284,4 @@ Verifier 不生成新题，也不负责大幅重写，只完成两件事：
 }
 ```
 
+Generator 候选单独保存在 `eval_candidates.json`。只有经过 Resolver、Verifier、Finalizer 的完整样本才写入 `eval_examples.json` 和 benchmark 的 `eval_samples`；正式样本还必须保存 `history_cutoff`，用于评测时截断可见历史。

@@ -7,11 +7,12 @@
 - case_spec：人物事实、表达风格、固定朋友关系和禁止编造的事实；
 - immutable_facts：不可逆的硬事实，优先级高于 SessionPlan；
 - life_anchor：人物稳定的生活状态、场景、兴趣和持续支线；
+- dataset_blueprint：全局 emotion memory、用户特定 cue、session 槽位和后续 eval 覆盖意图；
 - session_plan：本次聊天的场景、聊天动机、故事节拍、类型和目标轮数；
 - story_so_far：此前所有 Session 的简短摘要，用于保持长期事实与支线连续；
 - recent_history：最近若干段完整对话，用于延续说话习惯和近期细节。
 
-事实发生冲突时，按 immutable_facts → case_spec → 已确认历史 → life_anchor → session_plan 的顺序处理。不要为了落实计划而推翻已有设定。如果 SessionPlan 与硬事实冲突，静默改写冲突部分并保持本次主题大致接近，不要在对话里解释“计划有错”。
+事实发生冲突时，按 immutable_facts → case_spec → 已确认历史 → dataset_blueprint → life_anchor → session_plan 的顺序处理。不要为了落实计划而推翻已有设定。如果 SessionPlan 与硬事实冲突，静默改写冲突部分并保持本次主题大致接近，不要在对话里解释“计划有错”。
 
 不可逆事实需要落实其直接含义。例如某人已经去世，就不能写用户准备去探望、约见、致电或询问对方近况；可以写回忆、祭扫、整理遗物，或与活着的人聊起对方。
 
@@ -63,9 +64,12 @@
 
 ## 情绪事件边界
 
-- daily_life：完全按普通日常写，不暗示 core_emotional_event，不偷偷加入相似物或情绪伏笔。
-- core_echo：先由 SessionPlan 指定的外部场景/物品出现，再让 user 自然产生简短联想；不能无缘无故主动回忆。
-- core_event：需要作为证据的事实必须由 user turn 清楚说出，不能只放在朋友的推断里。
+- memory_role=none：完全按普通日常写，不暗示 core_emotional_event，不偷偷加入相似物或情绪伏笔。
+- memory_role=encode_association：从眼前生活话题或 cue 自然进入；必须让 user turn 以日常口吻清楚表达 evidence_goal 中最小的“cue—个人记忆—情绪意义”关联。不要让 user 像在做数据标注，也不能只由朋友推断。
+- memory_role=triggered_recall：必须先让 SessionPlan 指定的外部 object、scene 或 utterance cue 出现，再让 user 产生局部反应和简短联想；不能无缘无故主动回忆。当前反应应与 target_emotion 相称，但不要人为给情绪打分。
+- memory_role=memory_update：用同一 cue 或蓝图允许的 related_form 触发自然比较；user 应说出足以体现 relative_to_past 的变化，但不必使用“比过去更弱”这类标注式原话。变化可以是 mixed 或 changed_quality，不得自动写成治愈、释怀。
+- memory_role=control：可以出现 cue 或相似元素，但不得出现对应记忆反应；若有情绪，必须在 user turn 中清楚落到另一个现实原因，防止朋友错误归因。
+- session_type=core_echo：先有外部 cue，后有联想；session_type=core_event：需要作为证据的事实必须由 user turn 清楚说出。
 - 朋友不做心理分析，不使用“防御机制、情绪策略、保护边界、自我保护”等抽象标签，也不连续追问感受。
 - core_echo 和 core_event 都允许没有解决方案。朋友可以承认这件事没法补救，陪着停一会儿或自然换到不带“改善任务”的普通话题；禁止把悲伤强行转化成行动计划。
 

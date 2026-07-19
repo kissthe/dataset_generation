@@ -5,9 +5,12 @@ import unittest
 from pathlib import Path
 from types import SimpleNamespace
 
-from src.components import SessionPlanner
+from src.components import DatasetBlueprintPlanner, SessionPlanner, canonical_session_ids
 from src.config import ValidationConfig
-from src.models import CaseSpec, LifeAnchor, SessionPlan, SessionPlanList
+from src.models import (
+    BlueprintEvalOutline, CaseSpec, CueSeed, DatasetBlueprint, EmotionMemory,
+    LifeAnchor, SessionPlan, SessionPlanList, SessionSlot,
+)
 from src.pipeline import GenerationPipeline
 
 
@@ -75,6 +78,8 @@ class PlannerChainTests(unittest.TestCase):
         self.assertTrue({
             "session_type", "scene", "user_intent", "continuity_hook",
             "life_thread", "thread_progress", "interaction_mode",
+            "memory_role", "memory_id", "cue_id", "evidence_goal",
+            "target_emotion", "relative_to_past", "depends_on_sessions",
         } <= required)
         self.assertIn("life_anchor", schema["required"])
 
@@ -183,13 +188,89 @@ class PlannerChainTests(unittest.TestCase):
         self.assertEqual(plans.plans[0].scene, "")
 
     def test_planner_only_pipeline_stops_before_writer(self) -> None:
+        class FakeBlueprintPlanner:
+            build_payload = staticmethod(DatasetBlueprintPlanner.build_payload)
+
+            def run(self, case, session_ids, eval_count, constraints=None):
+                anchor = LifeAnchor(
+                    identity="普通上班族", recurring_scenes=["通勤", "家中"],
+                    interests=["做饭"], ongoing_threads=["学会几道家常饭"],
+                )
+                cues = [
+                    CueSeed(cue_id="C01", cue_type="object", canonical_form="旧杯子",
+                            related_forms=["有缺口的杯子"],
+                            personal_meaning="杯沿的小缺口与未完成告别相连"),
+                    CueSeed(cue_id="C02", cue_type="scene", canonical_form="雨夜厨房",
+                            related_forms=["雨天窗边"],
+                            personal_meaning="雨声和厨房灯同时出现时会想到未完成告别"),
+                    CueSeed(cue_id="C03", cue_type="utterance", canonical_form="到家说一声",
+                            related_forms=["到了告诉我"],
+                            personal_meaning="正是过去常听到、与告别相连的叮嘱"),
+                ]
+                slots = [
+                    SessionSlot(
+                        session_id=session_ids[0], memory_role="encode_association",
+                        memory_id="M01", cue_id="C01", evidence_goal="用户建立杯子与往事的关联",
+                        target_emotion="sadness", relative_to_past="not_applicable",
+                        depends_on_sessions=[],
+                    ),
+                    SessionSlot(
+                        session_id=session_ids[1], memory_role="triggered_recall",
+                        memory_id="M01", cue_id="C02", evidence_goal="用户说明雨夜场景为何勾起往事",
+                        target_emotion="sadness", relative_to_past="weaker",
+                        depends_on_sessions=[session_ids[0]],
+                    ),
+                ] + [
+                    SessionSlot(
+                        session_id=session_id, memory_role="none",
+                        memory_id="none", cue_id="none", evidence_goal="",
+                        target_emotion="neutral", relative_to_past="not_applicable",
+                        depends_on_sessions=[],
+                    )
+                    for session_id in session_ids[2:]
+                ]
+                evals = []
+                labels = ["triggered", "triggered", "insufficient_evidence",
+                          "insufficient_evidence", "not_triggered", "not_triggered"]
+                for index, label in enumerate(labels, 1):
+                    triggered = label == "triggered"
+                    evals.append(BlueprintEvalOutline(
+                        outline_id=f"{case.case_id}-E{index:02d}", target_label=label,
+                        target_emotion="sadness" if label != "not_triggered" else "neutral",
+                        history_cutoff=session_ids[-1],
+                        memory_id="M01" if triggered else "none",
+                        cue_id="C01" if index == 1 else "C02" if triggered else "none",
+                        cue_specificity="exact" if triggered else "unseen_control" if label == "insufficient_evidence" else "none",
+                        emotion_explicitness="implicit" if label != "not_triggered" else "none",
+                        required_evidence_session_ids=[session_ids[index - 1]] if triggered else [],
+                        current_input_goal="生成自然的当前输入", negative_reason="" if triggered else "负例无充分历史关联",
+                    ))
+                return DatasetBlueprint(
+                    blueprint_id=DatasetBlueprintPlanner.build_payload(
+                        case, session_ids, eval_count, constraints
+                    )["assigned_ids"]["blueprint_id"],
+                    life_anchor=anchor,
+                    emotion_memory_map=[EmotionMemory(
+                        memory_id="M01", event_summary=case.core_emotional_event,
+                        emotion="sadness", emotional_meaning="一段未完成的告别",
+                        cue_seeds=cues,
+                    )],
+                    session_slots=slots, eval_outlines=evals,
+                )
+
         class FakePlanner:
             build_payload = staticmethod(SessionPlanner.build_payload)
 
             def run(self, _case, _min_rounds, _max_rounds, session_count,
                     total_session_count, id_prefix, start_index=0, prior_plans=None,
-                    life_anchor=None):
+                    life_anchor=None, blueprint=None, session_slots=None):
                 self.total_session_count = total_session_count
+                self.requested_batch_sizes.append(session_count)
+                if session_count > 2:
+                    raise RuntimeError(
+                        "session_planner failed after retries: "
+                        "APIConnectionError: Connection error"
+                    )
                 anchor = life_anchor or LifeAnchor(
                     identity="普通上班族", recurring_scenes=["通勤", "家中"],
                     interests=["做饭"], ongoing_threads=["学会几道家常饭"],
@@ -206,12 +287,13 @@ class PlannerChainTests(unittest.TestCase):
                         scene="下班后的便利店门口",
                         user_intent="分享刚遇到的小事",
                         continuity_hook="",
+                        **(session_slots[index - start_index].model_dump(exclude={"session_id"}) if session_slots else {}),
                     )
                     for index in range(start_index, start_index + session_count)
                 ], life_anchor=anchor)
 
         generation = SimpleNamespace(
-            session_count=2, planner_batch_size=2, min_rounds=4, max_rounds=6,
+            session_count=5, planner_batch_size=5, min_rounds=4, max_rounds=6,
             context_sessions=3, seed=42, max_retries=3, max_revision_cycles=3,
             run_eval=False, stop_after_planning=True,
         )
@@ -221,6 +303,8 @@ class PlannerChainTests(unittest.TestCase):
             dataset_id_prefix="test",
         )
         pipeline.planner = FakePlanner()
+        pipeline.planner.requested_batch_sizes = []
+        pipeline.blueprint_planner = FakeBlueprintPlanner()
         pipeline._llm_metadata = lambda _component: {}
 
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -230,6 +314,7 @@ class PlannerChainTests(unittest.TestCase):
         self.assertEqual(artifact.name, "session_plans.json")
         self.assertIsNone(qa)
         self.assertIn('"mode": "planner_only"', result)
+        self.assertEqual(pipeline.planner.requested_batch_sizes, [5, 2, 2, 1])
 
 
 if __name__ == "__main__":

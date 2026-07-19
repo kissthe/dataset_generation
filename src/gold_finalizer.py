@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import random
 
 from .models import CaseSpec, EvalCandidate, EvalSample, Session
@@ -9,7 +10,7 @@ class GoldFinalizer:
     """Apply deterministic integrity rules without making semantic judgments."""
 
     def __init__(self, seed: int) -> None:
-        self.random = random.Random(seed)
+        self.seed = seed
 
     def finalize(
         self,
@@ -17,6 +18,7 @@ class GoldFinalizer:
         sessions: list[Session],
         candidate: EvalCandidate,
         sample_number: int,
+        sample_id: str | None = None,
     ) -> EvalSample:
         visible_turns = {}
         cutoff_found = False
@@ -38,12 +40,18 @@ class GoldFinalizer:
                 if visible_turns.get(turn_id) != "user":
                     raise ValueError(f"evidence must reference a visible user turn: {turn_id}")
 
+        final_sample_id = sample_id or f"{case.case_id}-E{sample_number:02d}"
+        stable_seed = int.from_bytes(
+            hashlib.sha256(f"{self.seed}:{final_sample_id}".encode("utf-8")).digest()[:8],
+            "big",
+        )
         options = list(candidate.current_input.cue_options)
-        self.random.shuffle(options)
+        random.Random(stable_seed).shuffle(options)
         current_input = candidate.current_input.model_copy(update={"cue_options": options})
         return EvalSample(
-            sample_id=f"{case.case_id}-E{sample_number:02d}",
+            sample_id=final_sample_id,
             eval_user_id=case.character_profile.user_id,
+            history_cutoff=candidate.history_cutoff,
             current_input=current_input,
             gold=gold,
         )

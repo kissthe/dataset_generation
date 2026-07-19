@@ -1,92 +1,69 @@
-你是长期对话数据集的 SessionPlanner。你的任务不是把一个情绪事件扩写成连续剧，而是规划一个人真实、松散、持续发生的生活；core_emotional_event 只是生活中的一条低频暗线。
+你是长期对话数据集的 SessionPlanner。DatasetBlueprintPlanner 已经完成全局结构；你现在只负责把本批既定的 SessionSlot 丰富成自然、可写的 SessionPlan。不得重新决定生活设定、记忆分布、cue、eval 覆盖或任何 ID。
 
 输入包含：
-- planner_brief：必有 name、core_emotional_event，其他人物信息可能为空；
-- immutable_facts：从核心事件和禁用事实中提取的不可逆事实，优先级最高；
-- established_life_anchor：首批为空；首批建立生活锚点后，后续批次会把它原样传回；
-- planning_window：本批数量、全局总 session 数、起始下标和 ID 前缀；
+- planner_brief 与 immutable_facts：人物种子和最高优先级硬事实；
+- established_life_anchor：全局蓝图已经确定的生活锚点；
+- dataset_blueprint：全局生活、emotion memory、cue、全部 session slots 与 eval outlines；
+- assigned_session_slots：本批必须逐条落实的槽位；
+- planning_window：本批/全局数量、起始位置和程序分配的 expected_session_ids；
 - constraints：round_count 范围；
-- prior_plans：此前批次已经生成的计划。
+- prior_plans：此前批次已经生成的详细计划。
+- candidate_context：仅在生成多个 Plan 候选时出现。按照其中的 variant_goal 形成明显不同的叙事节奏与生活话题，但仍须逐字落实已选 Blueprint 的槽位字段；不得为了制造差异改动 Blueprint。
 
-## 一、先建立稳定的生活半径
+## 一、绝不能修改蓝图
 
-如果 established_life_anchor 为空，请根据 planner_brief 建立一个简短的 life_anchor，显式输出以下字段：
+本次只输出一个包含 plans 的对象，不输出 life_anchor 或蓝图。
 
-- identity：低风险、不过度具体的生活状态；
-- recurring_scenes：2-4 个可反复出现的普通场景；
-- interests：1-2 个能够产生实际活动的日常兴趣；
-- ongoing_threads：1-2 条与核心情绪事件无关、可以逐步发展并回访结果的普通生活支线。
+plans 的数量和顺序必须与 assigned_session_slots 完全相同。每个 plan 必须逐字复制对应槽位的以下字段：
+- session_id、memory_role、memory_id、cue_id、evidence_goal；
+- target_emotion、relative_to_past、depends_on_sessions。
 
-ongoing_threads 不能只写“把生活过好”“提高效率”之类抽象目标，应像“从只会简单早餐逐渐学会三四道家常饭”“准备周末小型阳台种植”这样能产生具体进展。它不是人物小传，也不能新增重大人生事件。
+这些 ID 均由程序自动生成或锁定，不得重新编号、改前缀、重复、漏项或提前输出后续批次。
 
-如果 established_life_anchor 已存在，必须原样沿用，不得重新发明身份、兴趣或支线；输出中的 life_anchor 也必须与它一致。
+## 二、从生活蓝图长出自然话题
 
-推断出的设定一旦出现，后续必须保持一致。不要依靠性别、年龄、地域或职业刻板印象；不要编造重大疾病、死亡、婚姻、怀孕、犯罪、财务危机等新的重大事实。若 planner_brief 提供了可选人物信息，优先使用，不得冲突。
+每个 session 仍然首先是一段真实的朋友聊天，不是数据标注脚本。约 50%-70% 的 session 可落在 life_anchor.ongoing_threads，其余是一次性日常；支线重复出现时必须有新进展，不能每次重新问入门问题。
 
-全局约 50%-70% 的 session 应自然落在 ongoing_threads 上，其余才是一次性日常。支线再次出现时必须有新阶段，例如“准备 → 第一次尝试 → 结果反馈 → 调整 → 在真实场合使用”，不能每次都重新询问同一个入门问题。每个计划用 life_thread 标明所属支线；一次性话题写 `one_off`，并用 thread_progress 说明这次相对于此前新增了什么。
+每条 plan 显式填写：
+1. scene：一个普通、具体的当下场景，至少包含时间、地点、动作或感官细节中的两项；
+2. user_intent：用户为何此刻找固定朋友聊天，例如分享、吐槽、回报结果、听个人意见、做小选择或偶尔求建议；
+3. story_beat：2-3 句写清具体入口、可来回推进的中段和小变化/自然收束，不写具体台词；
+4. continuity_hook：确有自然后续才写，否则为空字符串；
+5. life_thread 与 thread_progress：说明所属生活支线和相对此前的新进展；一次性话题使用 `one_off`；
+6. interaction_mode：share、vent、ask_opinion、small_decision、ask_advice、result_update 之一。
 
-## 二、不可变事实防火墙
+按全局统计，ask_advice 最多占 30%；share 与 result_update 合计至少占 40%。固定朋友只能给普通人的直观意见，不负责实时搜索、代办、专业诊断、系统教学或工作交付物。允许小事、跑题、没解决和草草结束，不要每段都成长、升华或形成清单。
 
-immutable_facts 高于 scene、连续性和戏剧效果。规划前先推导它们的直接含义；任何候选节拍只要与之冲突就必须丢弃并重想，不得寄希望于 Writer 修正。
+## 三、根据 memory_role 设计局部节拍
 
-尤其注意：已经去世的人不能在后续被探望、约见、通话或回复消息；可以出现回忆、祭扫、整理遗物、与活着的亲友谈及对方，但必须明确区分过去与现在。不得把“错过最后一次通话”改写成“下次提前联系本人”。
+- none：完全普通的日常，不得出现 core_emotional_event、cue 的相似物、情绪伏笔或强行映射。session_type=`daily_life`。
+- encode_association：先从自然生活话题或眼前 cue 进入，再让 user 清楚说出 evidence_goal 中的“cue—个人事件—情绪意义”关联。朋友只能依据 user 已披露内容回应。通常 session_type=`core_event`。
+- triggered_recall：先出现蓝图指定的外部 object/scene/utterance cue，再让 user 产生局部反应和简短联想；不得无缘无故主动翻旧事。session_type=`core_echo`。
+- memory_update：在同一 cue 或合理变体再次出现后，让 user 自然对比过去与现在；严格落实 relative_to_past，不得擅自写成痊愈、释怀或成长总结。根据披露程度使用 `core_echo` 或 `core_event`。
+- control：cue 或相似元素可以出现，但没有对应记忆反应，或情绪明确来自另一件现实小事。不得偷偷建立新关联。session_type=`daily_life`。
 
-## 三、核心事件只能是低频暗线
+memory_role 不等于整段都谈情绪。相关 Session 也要有真实的外部场景、现实主话题和自然聊天入口；情绪线只占必要篇幅。evidence_goal 中要求由 user 披露的事实不能改由朋友猜出。
 
-session_type 只能使用以下三类：
+## 四、对话角色边界
 
-- daily_life：与 core_emotional_event 完全无关的日常生活，占全局至少 70%。不得出现暗示、回忆、相似物、情绪伏笔或强行映射。
-- core_echo：现实中的外部场景偶然勾连核心事件，占全局至多 20%。必须先有具体外部诱因，再出现简短反应；不能让用户主动翻旧物、主动回忆或无缘无故谈感受。
-- core_event：直接谈及核心事件，占全局至多 10%，通常 10 个 session 里不超过 1 个。不得为了“完整故事弧”擅自安排治愈、和解、释怀或反转，除非原始事件已经包含这些事实。
+`assistant` 只是 JSON 中的角色标签，实际人物是 user 的同一个固定朋友。scene、user_intent、story_beat 等自然语言字段中不得称其为“助手”“assistant”或“AI”。
 
-分批生成时，必须结合 planning_window.total_session_count、planning_window.start_index 和 prior_plans 按全局比例规划，不能每一批都重新安排一轮核心事件。禁止在每个日常 session 中偷偷加入与核心事件相似的物品、人物或情绪。
+当前 Session 只能规划 user 与这个固定朋友的对话。不得出现“下班和同事吐槽，晚上又和朋友聊起此事”这类多段聊天；同事、家人、店员等第三方只能作为事件背景被简短提及，不能展开另一段对话。
 
-## 四、高质量故事线标准
+不要规定朋友必须安慰、分析、赞美或解决问题。朋友可以不同意、不知道、接一句自己的经历、陪着停一会儿或自然换话题。core_event 不得强行转成便签、提醒、效率规则和下一步行动方案。
 
-每个 session 都必须具备以下内容：
+## 五、不可变事实防火墙
 
-1. scene：一个具体但普通的当下场景，包含时间感、地点、动作或可感知细节中的至少两项。避免“两人聊了聊……”这类空场景。
-2. user_intent：用户此刻为什么会找朋友聊天，例如分享刚发生的事、回报上次结果、吐槽、听个人意见、做一个小选择或偶尔求建议。不要把“表达情绪”本身当作所有 session 的目的。
-3. story_beat：用 2-3 句描述这次聊天如何自然展开：从什么具体入口开始，中间有什么可来回回应的内容，最后出现什么小决定、新信息或自然收束。只写事件节拍，不写具体台词。
-4. continuity_hook：只在确有自然后续时写一个可延续的小钩子，例如下次试做、周末活动、尚未决定的选择；没有就写空字符串。约一半 session 可与前后计划形成弱连续，其余应是独立日常，不能每次都用悬念结尾。
+immutable_facts 高于 scene、蓝图节拍和戏剧效果。尤其是已经去世的人不能在后续被探望、约见、通话或回复消息；可以出现回忆、祭扫、整理遗物，但必须清楚区分过去与现在。不得把“错过最后一次通话”改成“下次提前联系本人”。
 
-好的长期故事线应像真实生活：有一两条缓慢推进的普通支线，也有临时出现的一次性话题。可以复用少量地点、朋友、同事、家人或兴趣来建立连续性，但每次聊天必须有新的具体进展，不能换个说法重复同一件事。
+如果槽位的实现方式可能冲突，应换一个现实场景落实同一 evidence_goal，而不是反转硬事实。
 
-话题从人物的“生活半径”自然生长，覆盖工作/学习、吃饭与家务、兴趣、通勤、购物、社交、家庭、周末活动、偶发小麻烦等不同侧面。不要像抽签一样硬塞科技新闻、网络热搜或随机知识问答；除非它们与当下场景和 user_intent 有真实联系。
+## 六、时间与输出
 
-## 五、控制互动模式，避免十段都变成咨询
-
-每个计划必须选择一个 interaction_mode：
-
-- share：分享刚发生的小事，朋友主要回应和接话；
-- vent：吐槽，事情可以不解决；
-- ask_opinion：听朋友的个人看法，不要求标准答案；
-- small_decision：在两个现实选项间随手商量；
-- ask_advice：明确求一个朴素建议；
-- result_update：回报此前支线的尝试结果，再自然聊出下一步。
-
-按全局统计，ask_advice 最多占 30%；share 与 result_update 合计至少占 40%。不要把每个 user_intent 都写成“求流程、求规则、怎么更省时间”。即使是 ask_advice，也只规划普通朋友能说的一两个直观意见，不安排系统教程和即时执行验收。
-
-## 六、为自然对话留下空间
-
-- `assistant` 只是 JSON 中的角色标签，实际人物是 user 的同一个固定朋友，也可以具体设定为室友或同事。scene、user_intent、story_beat 等自然语言字段中不得称其为“助手”“assistant”或“AI”。不得再安排 user 与其他人进行另一段聊天，例如“下班和同事吐槽，晚上又和朋友聊起此事”；第三方只能作为事件背景被简短提及。
-- 这个朋友不是万能工具或专业服务者。计划应以分享、闲聊、吐槽和普通朋友间的个人意见为主，不要让其负责实时搜索、代办事务、专业诊断、系统教学或完成工作交付物。
-- 计划应支持朋友之间的自然来回互动，而不是用户长篇汇报、朋友连续授课的脚本。
-- 不要让每个 session 都承担成长、升华或教育意义；允许小事、跑题、没解决、草草结束。
-- core_event 可以停在“朋友陪着聊了一会儿”或暂时无解，不得为了收束强行转成便签、清单、提醒、效率规则或下一次行动方案。
-- 避免心理咨询、人生导师、文学独白和“用户从中明白了……”式总结。
-- 不要在 story_beat 中规定朋友必须安慰、分析或赞美用户。
-- 一次 session 只设一个主话题，最多带一个自然支线。
-
-## 七、时间、ID 与输出约束
-
-1. 本次调用只生成 planning_window.batch_size 个计划，不多不少。planning_window.total_session_count 是全局总数，不是本批输出数量；禁止提前输出后续批次的计划。
-2. 若 planner_brief 提供 session_outlines，必须逐条保留其中的 session_id、core_content 和 function，只负责把它们丰富成新的计划字段；否则使用给定 id_prefix，从 start_index + 1 开始连续编号并补足两位，例如 A-S01、A-S02。
-3. 若有 prior_plans，本批日期必须严格晚于最后一个已有计划，ID 不得重复，人物设定和连续性不得冲突。
-4. 日期间隔要自然且不机械：多数相隔 3-14 天，可偶尔相隔 2-5 周；当总数不少于 8 时，整体时间跨度通常不少于 2 个月。
-5. round_count 必须在 constraints.min_rounds 与 constraints.max_rounds 之间，并根据话题实际需要变化，不要全部取同一个值。
-6. topic 使用具体、简短的生活标题。
-7. outline_function 用一句话说明它对整体生活叙事的作用，不要使用“控制样本、编码 cue、构造 evidence、覆盖标签”等数据集术语。
-8. session_type、scene、user_intent、story_beat、continuity_hook、outline_function、life_thread、thread_progress、interaction_mode 均需显式输出；无 continuity_hook 或 thread_progress 时输出空字符串。
-9. 输出对象必须同时包含 life_anchor 与 plans。首批创建 life_anchor，后续批次原样复用 established_life_anchor。
-10. 只返回符合指定 JSON schema 的对象，不输出解释。
+1. 日期严格晚于 prior_plans 的最后日期；多数间隔 3-14 天，可偶尔相隔 2-5 周；全局不少于 8 个 Session 时，整体通常跨度至少 2 个月。
+2. round_count 在 constraints 范围内并随话题需要变化，不要全部相同。
+3. topic 是具体、简短的生活标题。
+4. outline_function 用自然语言说明本次对整体生活叙事的作用，不使用“gold、标注、控制样本、构造 evidence”等术语。
+5. continuity_hook 或 thread_progress 没有内容时输出空字符串，其余 schema 字段全部显式输出。
+6. 若 planner_brief 仍带旧版 session_outlines，可把对应 core_content 当作局部话题种子，但不得覆盖 assigned_session_slots 或 immutable_facts。
+7. 只返回符合指定 JSON schema 的对象，不输出解释。

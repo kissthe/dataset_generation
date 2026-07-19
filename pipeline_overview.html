@@ -327,14 +327,14 @@
           <div class="step-num">7</div>
           <div class="step-content">
             <div class="title">输出 Benchmark JSON</div>
-            <div class="desc">汇总 <code>dataset_id</code>、<code>character_profile</code>、<code>dialogues</code>、<code>eval_samples</code>，写入 <code>benchmark.json</code>。本轮 <code>run_eval=false</code>，eval_samples 为空数组。</div>
+            <div class="desc">汇总 <code>dataset_id</code>、<code>character_profile</code>、<code>dialogues</code>、<code>eval_samples</code>，写入 <code>benchmark.json</code>。只有完成正式 Eval Examples 链路的样本才进入 eval_samples。</div>
           </div>
         </div>
         <div class="flow-step">
           <div class="step-num">8</div>
           <div class="step-content">
-            <div class="title">Eval 生成（可选，当前关闭）</div>
-            <div class="desc">EvalGenerator 生成 3 个候选 → EvalVerifier 选择最佳或全部拒绝 → GoldFinalizer 做确定性整理（校验 turn/cue 存在性、随机排序 cue options、分配 sample ID）。后续可在 pipeline 中启用。</div>
+            <div class="title">Eval Examples（可选）</div>
+            <div class="desc">EvalGenerator 生成 3 个候选 → EvidenceResolver 从真实 user turns 解析最小证据 → EvalVerifier 选择最佳或全部拒绝 → GoldFinalizer 做确定性整理，输出 <code>eval_examples.json</code> 并写入 benchmark。</div>
           </div>
         </div>
       </div>
@@ -429,13 +429,28 @@
         <div class="role">职责：根据覆盖目标生成 eval 候选</div>
         <ul>
           <li>按 eval outline 的 target_label/emotion/history_cutoff 出题；</li>
-          <li>从历史中寻找可用 evidence；</li>
-          <li>生成当前文本/图文输入、cue options、预期 gold；</li>
+          <li>读取 cutoff 内历史，生成自然的当前文本和 cue options；</li>
+          <li>不生成 evidence_turn_ids 或最终 Gold；</li>
           <li>一次生成 3 个候选。</li>
         </ul>
         <div class="io">
           <div class="io-row"><span class="io-label">输入：</span><span>CaseSpec + visible_sessions + EvalOutline</span></div>
-          <div class="io-row"><span class="io-label">输出：</span><span>EvalCandidateList（3 个候选）</span></div>
+          <div class="io-row"><span class="io-label">输出：</span><span>EvalGenerationResult（3 个草稿候选）</span></div>
+        </div>
+      </div>
+
+      <div class="component-card eval">
+        <h3>EvidenceResolver <span class="badge eval">LLM · Eval</span></h3>
+        <div class="prompt-file">prompts/eval_resolver.txt</div>
+        <div class="role">职责：把 session 级证据解析为最小 user-turn 证据</div>
+        <ul>
+          <li>只读取 Blueprint 指定且 cutoff 内可见的 evidence sessions；</li>
+          <li>只允许引用真实 user turn；</li>
+          <li>选择最小、联合充分的 cue—个人记忆关联证据。</li>
+        </ul>
+        <div class="io">
+          <div class="io-row"><span class="io-label">输入：</span><span>EvalOutline + emotion memory + required sessions</span></div>
+          <div class="io-row"><span class="io-label">输出：</span><span>EvidenceResolution</span></div>
         </div>
       </div>
 
@@ -551,6 +566,7 @@
         <div class="fields">
           <div class="field"><span class="field-name">sample_id</span><span class="field-type">{case}-E{nn}</span></div>
           <div class="field"><span class="field-name">eval_user_id</span><span class="field-type">str</span></div>
+          <div class="field"><span class="field-name">history_cutoff</span><span class="field-type">session_id</span></div>
           <div class="field"><span class="field-name">current_input</span><span class="field-type">CurrentInput</span></div>
           <div class="field"><span class="field-name">gold.trigger_label</span><span class="field-type">triggered/not_triggered/insufficient</span></div>
           <div class="field"><span class="field-name">gold.trigger_cue_id</span><span class="field-type">cue_id | none</span></div>
@@ -600,9 +616,9 @@
       </thead>
       <tbody>
         <tr><td><code>dataset_id_prefix</code></td><td>memory-trigger-dialogue</td><td>数据集 ID 前缀</td></tr>
-        <tr><td><code>transport</code></td><td>powershell</td><td>LLM 调用通道：openai_sdk 或 powershell（Windows 原生网络栈）</td></tr>
+        <tr><td><code>transport</code></td><td>openai_sdk</td><td>LLM 调用通道：openai_sdk 或 powershell；PowerShell 连接层失败时自动回退到 SDK</td></tr>
         <tr><td><code>generation.session_count</code></td><td>10</td><td>每个 case 生成 session 数</td></tr>
-        <tr><td><code>generation.planner_batch_size</code></td><td>5</td><td>Planner 分批大小</td></tr>
+        <tr><td><code>generation.planner_batch_size</code></td><td>4</td><td>Planner 分批大小；连接层失败时自动缩小批次重试</td></tr>
         <tr><td><code>generation.min_rounds / max_rounds</code></td><td>4 / 6</td><td>每个 session round 数范围</td></tr>
         <tr><td><code>generation.context_sessions</code></td><td>3</td><td>Writer 可见的最近 session 数</td></tr>
         <tr><td><code>generation.seed</code></td><td>42</td><td>LLM 调用 seed</td></tr>
@@ -625,6 +641,7 @@
         <tr><td>session_reviser</td><td>gpt-5.4-nano</td><td>0.3</td><td>4096</td></tr>
         <tr><td>naturalness_checker</td><td>gpt-5.4-nano</td><td>0.1</td><td>2048</td></tr>
         <tr><td>eval_generator</td><td>gpt-5.4-nano</td><td>0.7</td><td>4096</td></tr>
+        <tr><td>eval_resolver</td><td>gpt-5.4-nano</td><td>0.1</td><td>2048</td></tr>
         <tr><td>eval_verifier</td><td>gpt-5.4-nano</td><td>0.1</td><td>2048</td></tr>
       </tbody>
     </table>
@@ -641,6 +658,8 @@
 ├── <span class="file">session_plans.json</span>       <span class="comment"># 10 个 SessionPlan（结构化）</span>
 ├── <span class="file">session_plans.txt</span>         <span class="comment"># 人工检查用的纯文本计划</span>
 ├── <span class="file">checkpoint_sessions.json</span>  <span class="comment"># 已完成 session 的增量 checkpoint</span>
+├── <span class="file">eval_candidates.json</span>      <span class="comment"># Generator 的三候选草稿</span>
+├── <span class="file">eval_examples.json</span>        <span class="comment"># 已解析、选优并最终校验的 EvalSample</span>
 ├── <span class="file">benchmark.json</span>            <span class="comment"># 最终数据集（dialogues + eval_samples）</span>
 └── <span class="file">qa_report.json</span>            <span class="comment"># 结构校验报告 + 调用记录</span>
     </div>
@@ -680,6 +699,7 @@ python run.py --case cases/case_a.json --output outputs/case_a
 │   ├── <span class="file">session_reviser.txt</span>
 │   ├── <span class="file">naturalness_checker.txt</span>
 │   ├── <span class="file">eval_generator.txt</span>
+│   ├── <span class="file">eval_resolver.txt</span>
 │   └── <span class="file">eval_verifier.txt</span>
 ├── <span class="dir">scripts/</span>
 │   └── <span class="file">invoke_openai.ps1</span>    <span class="comment"># PowerShell transport 调用脚本</span>

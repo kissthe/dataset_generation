@@ -29,6 +29,7 @@
     {
       "sample_id": "string",
       "eval_user_id": "string",
+      "history_cutoff": "session_id",
       "current_input": {
         "input_type": "text | image | text_image",
         "text": "string",
