@@ -38,6 +38,20 @@ class _EvalLLM:
         )
 
 
+class _SuffixedCueEvalLLM(_EvalLLM):
+    def generate(self, _component, payload, _model):
+        result = super().generate(_component, payload, _model)
+        suffixed_input = result.candidates[0].current_input.model_copy(update={
+            "cue_options": [CueOption(cue_id="C01_candidate_01", name="缺口蓝杯子")],
+        })
+        return result.model_copy(update={
+            "candidates": [
+                candidate.model_copy(update={"current_input": suffixed_input})
+                for candidate in result.candidates
+            ],
+        })
+
+
 class EvalGeneratorTests(unittest.TestCase):
     def setUp(self) -> None:
         self.case = CaseSpec.model_validate({
@@ -111,6 +125,16 @@ class EvalGeneratorTests(unittest.TestCase):
         self.assertNotIn("evidence_turn_ids", schema_text)
         self.assertNotIn("'gold'", schema_text.lower())
         self.assertIn("不运行 EvidenceResolver、EvalVerifier 或 GoldFinalizer", prompt)
+
+    def test_generator_normalizes_suffixed_blueprint_cue_ids(self) -> None:
+        result = EvalGenerator(_SuffixedCueEvalLLM()).run(
+            self.case, [self.session], self.outline, self.blueprint
+        )
+
+        self.assertTrue(all(
+            candidate.current_input.cue_options[0].cue_id == "C01"
+            for candidate in result.candidates
+        ))
 
 
 if __name__ == "__main__":

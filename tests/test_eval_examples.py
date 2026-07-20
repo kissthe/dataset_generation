@@ -33,7 +33,11 @@ class _ResolverLLM:
 
 
 class _Generator:
+    def __init__(self) -> None:
+        self.calls = 0
+
     def run(self, _case, _sessions, outline, _blueprint):
+        self.calls += 1
         current = CurrentInput(
             input_type="text",
             text="刚在柜子里看到那只缺口蓝杯子，手一下停住了。",
@@ -67,7 +71,14 @@ class _Resolver:
 
 
 class _Verifier:
+    def __init__(self, failures: int = 0) -> None:
+        self.failures = failures
+        self.calls = 0
+
     def run(self, *_args, **_kwargs):
+        self.calls += 1
+        if self.calls <= self.failures:
+            raise RuntimeError("eval_verifier failed after retries: APITimeoutError")
         return EvalSelection(reject_all=False, selected_index=0, issues=[])
 
 
@@ -162,7 +173,7 @@ class EvalExampleTests(unittest.TestCase):
                 [session], outline, blueprint
             )
 
-    def test_pipeline_writes_final_eval_examples_and_benchmark_samples(self) -> None:
+    def _run_eval_pipeline(self, verifier):
         case, constraints, blueprint, outline, slot, session = _fixture()
         plan = SessionPlan(
             session_id=slot.session_id, date=session.date, topic=session.topic,
@@ -183,9 +194,10 @@ class EvalExampleTests(unittest.TestCase):
             generation=generation, blueprint_constraints=constraints,
             validation=ValidationConfig(), dataset_id_prefix="test",
         )
-        pipeline.eval_generator = _Generator()
+        generator = _Generator()
+        pipeline.eval_generator = generator
         pipeline.eval_resolver = _Resolver()
-        pipeline.eval_verifier = _Verifier()
+        pipeline.eval_verifier = verifier
         pipeline.gold_finalizer = GoldFinalizer(42)
         pipeline._llm_metadata = lambda _component: {}
         pipeline.llm = SimpleNamespace(records=[])
@@ -214,9 +226,22 @@ class EvalExampleTests(unittest.TestCase):
 
             artifact, qa = pipeline.run(case_path, output)
             benchmark = json.loads(artifact.read_text(encoding="utf-8"))
-            examples = json.loads(
-                (output / "eval_examples.json").read_text(encoding="utf-8")
-            )["eval_examples"]
+            examples = (
+                json.loads((output / "eval_examples.json").read_text(encoding="utf-8"))[
+                    "eval_examples"
+                ]
+                if (output / "eval_examples.json").exists() else []
+            )
+            pipeline_result = json.loads(
+                (output / "logs" / "99_pipeline_result.json").read_text(encoding="utf-8")
+            )
+
+        return qa, benchmark, examples, pipeline_result, generator, outline
+
+    def test_pipeline_writes_final_eval_examples_and_benchmark_samples(self) -> None:
+        qa, benchmark, examples, _result, generator, outline = self._run_eval_pipeline(
+            _Verifier()
+        )
 
         self.assertIsNone(qa)
         self.assertEqual(len(examples), 1)
@@ -224,6 +249,18 @@ class EvalExampleTests(unittest.TestCase):
         self.assertEqual(examples[0]["history_cutoff"], "A-S01")
         self.assertEqual(examples[0]["gold"]["evidence_turn_ids"], ["A-S01_T01"])
         self.assertEqual(benchmark["eval_samples"], examples)
+        self.assertEqual(generator.calls, 1)
+
+    def test_verifier_timeout_is_checkpointed_instead_of_crashing_pipeline(self) -> None:
+        qa, benchmark, examples, result, generator, _outline = self._run_eval_pipeline(
+            _Verifier(failures=1)
+        )
+
+        self.assertIsNone(qa)
+        self.assertEqual(examples, [])
+        self.assertEqual(benchmark["eval_samples"], [])
+        self.assertIn("APITimeoutError", result["eval_example_error"])
+        self.assertEqual(generator.calls, 1)
 
 
 if __name__ == "__main__":

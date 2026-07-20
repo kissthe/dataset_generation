@@ -9,7 +9,7 @@ import shutil
 import subprocess
 import sys
 import threading
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 try:
@@ -22,9 +22,13 @@ except ModuleNotFoundError as exc:
 
 from pydantic import ValidationError
 
-from src.components import validate_blueprint_constraints
+from src.components import (
+    blueprint_fingerprint, plan_fingerprint, validate_blueprint_constraints,
+)
 from src.config import BlueprintConstraints
-from src.models import CaseSpec
+from src.models import (
+    ArtifactReuseProvenance, CaseSpec, DatasetBlueprint, SessionPlanList,
+)
 
 
 ROOT = Path(__file__).resolve().parent
@@ -51,6 +55,35 @@ FALLBACK_MODELS = {
         "qwen3.5-plus", "qwen3.5-flash", "qwen3-max", "qwen3-coder-plus",
     ],
 }
+
+STAGE_MODEL_GROUPS = (
+    ("Blueprint", "model_blueprint", ("dataset_blueprint_planner",)),
+    ("Plan", "model_plan", ("session_planner",)),
+    ("Session Writer", "model_session_writer", ("session_writer",)),
+    (
+        "Session 检查/修订", "model_session_review",
+        ("session_verifier", "session_reviser", "naturalness_checker"),
+    ),
+    ("Eval 候选", "model_eval_candidates", ("eval_generator",)),
+    ("正式 Eval Examples", "model_eval_examples", ("eval_resolver", "eval_verifier")),
+)
+
+
+def selected_component_models() -> dict[str, str]:
+    models: dict[str, str] = {}
+    for _label, state_key, components in STAGE_MODEL_GROUPS:
+        selected = str(st.session_state[state_key]).strip()
+        for component in components:
+            models[component] = selected
+    return models
+
+
+def apply_default_model_to_all_stages() -> None:
+    selected = str(st.session_state.get("selected_model", "")).strip()
+    if not selected:
+        return
+    for _label, state_key, _components in STAGE_MODEL_GROUPS:
+        st.session_state[state_key] = selected
 
 
 def read_json(path: Path) -> dict:
@@ -192,6 +225,8 @@ def classify_log(rel_path: str) -> tuple[str, str, str]:
 
     if name == "00_original_case_spec.json":
         return "init", "CaseSpec 加载", "📦"
+    if name == "00_reuse_provenance.json":
+        return "init", "历史 Blueprint / Plan / Session 复用校验", "♻️"
     if re.match(r"01_blueprint_candidate_\d+\.json", name):
         number = int(re.findall(r"\d+", name)[-1])
         return "blueprint-candidates", f"Blueprint 候选 {number} · 完成", "🧭"
@@ -593,6 +628,112 @@ def render_candidate_selection(
     return None
 
 
+def render_post_session_actions(output_dir: Path) -> str | None:
+    """Offer Eval stages only after every selected Plan Session is complete."""
+    plan_payload = read_json_optional(output_dir / "session_plans.json", {})
+    plans = plan_payload.get("plans", []) if isinstance(plan_payload, dict) else []
+    if not plans:
+        return None
+    checkpoint = read_json_optional(output_dir / "checkpoint_sessions.json", [])
+    benchmark = read_json_optional(output_dir / "benchmark.json", {})
+    sessions = (
+        checkpoint if isinstance(checkpoint, list) and checkpoint
+        else benchmark.get("dialogues", []) if isinstance(benchmark, dict) else []
+    )
+    plan_ids = [item.get("session_id") for item in plans]
+    session_ids = [item.get("session_id") for item in sessions]
+    if session_ids != plan_ids:
+        return None
+
+    blueprint = read_json_optional(output_dir / "dataset_blueprint.json", {})
+    outline_count = len(blueprint.get("eval_outlines", [])) if isinstance(blueprint, dict) else 0
+    if not outline_count:
+        return None
+
+    candidate_payload = read_json_optional(output_dir / "eval_candidates.json", {})
+    if not candidate_payload:
+        candidate_payload = read_json_optional(
+            output_dir / "checkpoint_eval_candidates.json", {}
+        )
+    candidate_results = (
+        candidate_payload.get("results", [])
+        if isinstance(candidate_payload, dict) else candidate_payload
+        if isinstance(candidate_payload, list) else []
+    )
+    example_payload = read_json_optional(output_dir / "eval_examples.json", {})
+    if not example_payload:
+        example_payload = read_json_optional(
+            output_dir / "checkpoint_eval_examples.json", {}
+        )
+    examples = (
+        example_payload.get("eval_examples", [])
+        if isinstance(example_payload, dict) else example_payload
+        if isinstance(example_payload, list) else []
+    )
+
+    st.markdown("#### Session 后续阶段")
+    stage_cols = st.columns(3)
+    stage_cols[0].success(f"Session · {len(sessions)}/{len(plans)} 完成")
+    if len(candidate_results) == outline_count:
+        stage_cols[1].success(f"Eval 候选 · {len(candidate_results)}/{outline_count} 完成")
+    else:
+        stage_cols[1].info(f"Eval 候选 · {len(candidate_results)}/{outline_count}")
+    if len(examples) == outline_count:
+        stage_cols[2].success(f"正式 Examples · {len(examples)}/{outline_count} 完成")
+    else:
+        stage_cols[2].info(f"正式 Examples · {len(examples)}/{outline_count}")
+
+    if candidate_results:
+        st.markdown("##### 已生成的 Eval 候选")
+        result_by_outline = {
+            result.get("outline_id", f"Eval-{index + 1}"): result
+            for index, result in enumerate(candidate_results)
+            if isinstance(result, dict)
+        }
+        selected_outline = st.selectbox(
+            "选择 Eval Outline 查看候选内容",
+            options=list(result_by_outline),
+            key=f"post_eval_outline_{output_dir.name}",
+        )
+        selected_result = result_by_outline[selected_outline]
+        candidates = selected_result.get("candidates", [])
+        if candidates:
+            candidate_tabs = st.tabs([
+                f"候选 {index}" for index in range(1, len(candidates) + 1)
+            ])
+            for candidate_tab, candidate in zip(candidate_tabs, candidates):
+                with candidate_tab:
+                    current_input = candidate.get("current_input", {})
+                    st.write(current_input.get("text", ""))
+                    cue_options = current_input.get("cue_options", [])
+                    cue_text = "、".join(
+                        f"{item.get('cue_id', '')}：{item.get('name', '')}"
+                        for item in cue_options
+                    ) or "无"
+                    st.caption(
+                        f"label={candidate.get('target_label', '')} · "
+                        f"emotion={candidate.get('target_emotion', '')} · "
+                        f"blueprint cue={candidate.get('blueprint_cue_id', 'none')} · "
+                        f"cue options={cue_text}"
+                    )
+
+    if len(candidate_results) < outline_count:
+        if st.button(
+            "生成 Eval 候选", type="primary", use_container_width=True,
+            key=f"generate_eval_candidates_{output_dir.name}",
+        ):
+            return "generate_eval_candidates"
+    elif len(examples) < outline_count:
+        if st.button(
+            "生成正式 Eval Examples", type="primary", use_container_width=True,
+            key=f"generate_eval_examples_{output_dir.name}",
+        ):
+            return "generate_eval_examples"
+    else:
+        st.success("Session、Eval 候选和正式 Eval Examples 均已完成，可在下方查看或下载。")
+    return None
+
+
 def render_results(output_dir: Path) -> None:
     benchmark_path = output_dir / "benchmark.json"
     qa_path = output_dir / "qa_report.json"
@@ -812,19 +953,29 @@ def discover_generation_runs(output_root: Path) -> list[dict]:
     if not output_root.exists() or not output_root.is_dir():
         return []
     candidates = [output_root] if any((output_root / name).exists() for name in (
-        "case_spec.json", "dataset_blueprint.json", "session_plans.json", "benchmark.json"
+        "case_spec.json", "planning_candidates.json", "dataset_blueprint.json",
+        "session_plans.json", "benchmark.json"
     )) else []
     candidates.extend(path for path in output_root.iterdir() if path.is_dir())
     runs: list[dict] = []
     for path in candidates:
         recognizable = any((path / name).exists() for name in (
             "case_spec.json", "dataset_blueprint.json", "session_plans.json",
-            "checkpoint_sessions.json", "benchmark.json",
+            "planning_candidates.json", "checkpoint_sessions.json", "benchmark.json",
         ))
         if not recognizable:
             continue
         plans_payload = read_json_optional(path / "session_plans.json", {})
         plans = plans_payload.get("plans", []) if isinstance(plans_payload, dict) else []
+        candidate_manifest = read_json_optional(path / "planning_candidates.json", {})
+        candidate_plans = (
+            candidate_manifest.get("plan_candidates", [])
+            if isinstance(candidate_manifest, dict) else []
+        )
+        candidate_blueprints = (
+            candidate_manifest.get("blueprint_candidates", [])
+            if isinstance(candidate_manifest, dict) else []
+        )
         checkpoint = read_json_optional(path / "checkpoint_sessions.json", [])
         benchmark = read_json_optional(path / "benchmark.json", {})
         dialogues = benchmark.get("dialogues", []) if isinstance(benchmark, dict) else []
@@ -833,9 +984,9 @@ def discover_generation_runs(output_root: Path) -> list[dict]:
             status = "complete"
         elif completed:
             status = "partial"
-        elif plans:
+        elif plans or candidate_plans:
             status = "plans"
-        elif (path / "dataset_blueprint.json").exists():
+        elif (path / "dataset_blueprint.json").exists() or candidate_blueprints:
             status = "blueprint"
         else:
             status = "empty"
@@ -845,10 +996,464 @@ def discover_generation_runs(output_root: Path) -> list[dict]:
             "name": path.name,
             "modified": max(mtimes, default=path.stat().st_mtime),
             "status": status,
-            "planned": len(plans),
+            "planned": len(plans) or max(
+                (len(item.get("plan", {}).get("plans", [])) for item in candidate_plans),
+                default=0,
+            ),
             "completed": completed,
         })
     return sorted(runs, key=lambda item: item["modified"], reverse=True)
+
+
+def _case_spec_for_run(output_dir: Path) -> dict:
+    case_spec = read_json_optional(output_dir / "case_spec.json", {})
+    if isinstance(case_spec, dict) and case_spec:
+        return case_spec
+    original_log = read_json_optional(
+        output_dir / "logs" / "00_original_case_spec.json", {}
+    )
+    if isinstance(original_log, dict):
+        logged_case = original_log.get("case_spec", {})
+        if isinstance(logged_case, dict):
+            return logged_case
+    return {}
+
+
+def discover_reusable_artifacts(output_root: Path) -> dict:
+    """Index reusable artifacts by content fingerprint, not by folder name."""
+    blueprint_map: dict[str, dict] = {}
+    plan_map: dict[str, dict] = {}
+
+    def add_blueprint(
+        payload: dict, *, run: dict, case_spec: dict, title: str, source_kind: str,
+    ) -> str | None:
+        try:
+            blueprint = DatasetBlueprint.model_validate(payload)
+        except (ValidationError, ValueError):
+            return None
+        fingerprint = blueprint_fingerprint(blueprint)
+        profile = case_spec.get("character_profile", {}) if case_spec else {}
+        record = blueprint_map.setdefault(fingerprint, {
+            "fingerprint": fingerprint,
+            "blueprint": blueprint.model_dump(),
+            "title": title,
+            "case_spec": case_spec,
+            "case_id": case_spec.get("case_id", ""),
+            "character_name": profile.get("name", "未知人物"),
+            "source_run": run["path"],
+            "source_kind": source_kind,
+            "modified": run["modified"],
+            "sources": [],
+        })
+        record["sources"].append({
+            "run": run["path"], "title": title, "kind": source_kind,
+        })
+        return fingerprint
+
+    def add_plan(
+        payload: dict, *, run: dict, case_spec: dict, title: str,
+        source_kind: str, fallback_blueprint_fingerprint: str = "",
+    ) -> str | None:
+        try:
+            plan_list = SessionPlanList.model_validate(payload)
+        except (ValidationError, ValueError):
+            return None
+        blueprint_fp = plan_list.blueprint_fingerprint or fallback_blueprint_fingerprint
+        if not blueprint_fp:
+            return None
+        fingerprint = plan_fingerprint(plan_list)
+        record = plan_map.setdefault(fingerprint, {
+            "fingerprint": fingerprint,
+            "blueprint_fingerprint": blueprint_fp,
+            "plan": plan_list.model_dump(),
+            "title": title,
+            "case_spec": case_spec,
+            "source_run": run["path"],
+            "source_kind": source_kind,
+            "modified": run["modified"],
+            "sources": [],
+            "session_sources": [],
+        })
+        record["sources"].append({
+            "run": run["path"], "title": title, "kind": source_kind,
+        })
+        return fingerprint
+
+    for run in discover_generation_runs(output_root):
+        output_dir = run["path"]
+        case_spec = _case_spec_for_run(output_dir)
+        if not case_spec:
+            continue
+        manifest = read_json_optional(output_dir / "planning_candidates.json", {})
+        if isinstance(manifest, dict):
+            for candidate in manifest.get("blueprint_candidates", []):
+                if isinstance(candidate, dict) and isinstance(candidate.get("blueprint"), dict):
+                    add_blueprint(
+                        candidate["blueprint"], run=run, case_spec=case_spec,
+                        title=candidate.get("title") or candidate.get("candidate_id", "Blueprint"),
+                        source_kind="candidate",
+                    )
+            for candidate in manifest.get("plan_candidates", []):
+                if isinstance(candidate, dict) and isinstance(candidate.get("plan"), dict):
+                    add_plan(
+                        candidate["plan"], run=run, case_spec=case_spec,
+                        title=candidate.get("title") or candidate.get("candidate_id", "Plan"),
+                        source_kind="candidate",
+                    )
+
+        canonical_blueprint = read_json_optional(output_dir / "dataset_blueprint.json", {})
+        canonical_bp_fp = ""
+        if isinstance(canonical_blueprint, dict) and canonical_blueprint:
+            canonical_bp_fp = add_blueprint(
+                canonical_blueprint, run=run, case_spec=case_spec,
+                title=f"{run['name']} · 已采用 Blueprint", source_kind="canonical",
+            ) or ""
+        canonical_plan = read_json_optional(output_dir / "session_plans.json", {})
+        canonical_plan_fp = ""
+        if isinstance(canonical_plan, dict) and canonical_plan:
+            canonical_plan_fp = add_plan(
+                canonical_plan, run=run, case_spec=case_spec,
+                title=f"{run['name']} · 已采用 Plan", source_kind="canonical",
+                fallback_blueprint_fingerprint=canonical_bp_fp,
+            ) or ""
+
+        if canonical_plan_fp:
+            checkpoint = read_json_optional(output_dir / "checkpoint_sessions.json", [])
+            benchmark = read_json_optional(output_dir / "benchmark.json", {})
+            benchmark_sessions = (
+                benchmark.get("dialogues", []) if isinstance(benchmark, dict) else []
+            )
+            sessions = checkpoint if isinstance(checkpoint, list) and checkpoint else benchmark_sessions
+            plan_ids = [
+                item.get("session_id") for item in canonical_plan.get("plans", [])
+            ]
+            session_ids = [
+                item.get("session_id") for item in sessions if isinstance(item, dict)
+            ]
+            if sessions and session_ids == plan_ids[:len(session_ids)]:
+                eval_candidates = read_json_optional(
+                    output_dir / "eval_candidates.json", {}
+                ) or read_json_optional(
+                    output_dir / "checkpoint_eval_candidates.json", {}
+                )
+                eval_examples = read_json_optional(
+                    output_dir / "eval_examples.json", {}
+                ) or read_json_optional(
+                    output_dir / "checkpoint_eval_examples.json", {}
+                )
+                candidate_items = (
+                    eval_candidates.get("results", [])
+                    if isinstance(eval_candidates, dict) else eval_candidates
+                    if isinstance(eval_candidates, list) else []
+                )
+                example_items = (
+                    eval_examples.get("eval_examples", [])
+                    if isinstance(eval_examples, dict) else eval_examples
+                    if isinstance(eval_examples, list) else []
+                )
+                plan_map[canonical_plan_fp]["session_sources"].append({
+                    "run": output_dir,
+                    "sessions": sessions,
+                    "eval_candidate_count": len(candidate_items),
+                    "eval_example_count": len(example_items),
+                    "modified": run["modified"],
+                })
+
+    blueprints = sorted(
+        blueprint_map.values(), key=lambda item: item["modified"], reverse=True
+    )
+    plans = sorted(plan_map.values(), key=lambda item: item["modified"], reverse=True)
+    for plan in plans:
+        plan["session_sources"].sort(
+            key=lambda item: (len(item["sessions"]), item["modified"]), reverse=True
+        )
+    return {"blueprints": blueprints, "plans": plans}
+
+
+def render_reuse_selector(output_root: Path) -> dict | None:
+    """Render historical Blueprint → Plan → Session reuse controls."""
+    catalog = discover_reusable_artifacts(output_root)
+    blueprints = catalog["blueprints"]
+    if not blueprints:
+        st.info("还没有可复用的历史 Blueprint；完成一次 Blueprint 生成后会出现在这里。")
+        return None
+
+    st.markdown("#### 复用历史生成结果")
+    st.caption(
+        "按内容指纹关联历史产物。选择 Session 时会自动复用从第一条到该条的连续前缀，"
+        "确保 Writer 上下文完整。"
+    )
+    stage_cols = st.columns(5)
+    stage_cols[0].info("1 · 历史 Blueprint")
+    stage_cols[1].info("2 · 对应 Plan")
+    stage_cols[2].info("3 · 已生成 Session")
+    stage_cols[3].info("4 · Eval 候选")
+    stage_cols[4].info("5 · 正式 Examples")
+
+    bp_by_fp = {item["fingerprint"]: item for item in blueprints}
+    selected_bp_fp = st.selectbox(
+        "选择历史 Blueprint",
+        options=list(bp_by_fp),
+        format_func=lambda value: (
+            f"{bp_by_fp[value]['character_name']} · {bp_by_fp[value]['title']} · "
+            f"{Path(bp_by_fp[value]['source_run']).name} · "
+            f"{len(bp_by_fp[value]['sources'])} 处历史记录"
+        ),
+        key="reuse_blueprint_fingerprint",
+    )
+    selected_bp = bp_by_fp[selected_bp_fp]
+    blueprint = selected_bp["blueprint"]
+    anchor = blueprint.get("life_anchor", {})
+    st.caption(
+        f"来源：`{selected_bp['source_run']}` · Blueprint 指纹："
+        f"`{selected_bp_fp[:12]}` · {len(blueprint.get('session_slots', []))} 个 Session 槽位"
+    )
+    with st.expander("查看所选 Blueprint 摘要", expanded=False):
+        st.write(f"**生活锚点**：{anchor.get('identity', '—')}")
+        st.write("**持续生活线**：" + "、".join(anchor.get("ongoing_threads", [])))
+        st.write("**历史来源**")
+        for source in selected_bp["sources"]:
+            st.write(f"- `{source['run']}` · {source['title']}")
+        render_dataset_blueprint(blueprint)
+
+    matching_plans = [
+        item for item in catalog["plans"]
+        if item["blueprint_fingerprint"] == selected_bp_fp
+    ]
+    plan_by_fp = {item["fingerprint"]: item for item in matching_plans}
+    plan_options = [*plan_by_fp, "__generate_new__"]
+    selected_plan_fp = st.selectbox(
+        "选择该 Blueprint 对应的 Plan",
+        options=plan_options,
+        format_func=lambda value: (
+            "不复用 Plan，基于此 Blueprint 生成新候选"
+            if value == "__generate_new__" else (
+                f"{plan_by_fp[value]['title']} · "
+                f"{len(plan_by_fp[value]['plan'].get('plans', []))} Sessions · "
+                f"{Path(plan_by_fp[value]['source_run']).name} · "
+                f"{len(plan_by_fp[value]['sources'])} 处历史记录"
+            )
+        ),
+        key=f"reuse_plan_{selected_bp_fp}",
+    )
+    selected_plan = (
+        None if selected_plan_fp == "__generate_new__" else plan_by_fp[selected_plan_fp]
+    )
+    selected_session_source = None
+    session_count = 0
+
+    if selected_plan:
+        plan_rows = selected_plan["plan"].get("plans", [])
+        with st.expander("查看所选 Plan", expanded=True):
+            st.dataframe([{
+                "Session": item.get("session_id", ""),
+                "日期": item.get("date", ""),
+                "主题": item.get("topic", ""),
+                "记忆角色": item.get("memory_role", "none"),
+                "故事推进": item.get("story_beat", ""),
+            } for item in plan_rows], use_container_width=True, hide_index=True, height=330)
+        session_sources = selected_plan["session_sources"]
+        if session_sources:
+            source_by_path = {str(item["run"]): item for item in session_sources}
+            source_path = st.selectbox(
+                "选择 Session 来源运行",
+                options=list(source_by_path),
+                format_func=lambda value: (
+                    f"{Path(value).name} · {len(source_by_path[value]['sessions'])} Sessions"
+                ),
+                key=f"reuse_session_source_{selected_plan_fp}",
+            )
+            selected_session_source = source_by_path[source_path]
+            sessions = selected_session_source["sessions"]
+            st.caption(
+                f"该来源还包含 {selected_session_source.get('eval_candidate_count', 0)} "
+                f"组 Eval 候选和 {selected_session_source.get('eval_example_count', 0)} "
+                "条正式 Eval Examples；复用完整 Session 时会一并带入。"
+            )
+            cutoff_options = list(range(len(sessions) + 1))
+            session_count = st.selectbox(
+                "复用 Session 到",
+                options=cutoff_options,
+                index=len(cutoff_options) - 1,
+                format_func=lambda count: (
+                    "不复用 Session，从第一条重新生成" if count == 0 else
+                    f"{sessions[count - 1].get('session_id', count)} · "
+                    f"{sessions[count - 1].get('topic', '')}（共复用 {count} 条）"
+                ),
+                key=f"reuse_session_cutoff_{selected_plan_fp}_{source_path}",
+            )
+            if session_count:
+                selected_session = sessions[session_count - 1]
+                with st.expander("查看当前选中的 Session 截止点", expanded=False):
+                    st.write(
+                        f"**{selected_session.get('session_id', '')} · "
+                        f"{selected_session.get('topic', '')}**"
+                    )
+                    for turn in selected_session.get("turns", []):
+                        st.write(f"**{turn.get('speaker', '')}**：{turn.get('text', '')}")
+        else:
+            st.info("这个 Plan 尚未生成 Session；复用后会从第一条开始生成。")
+    elif not matching_plans:
+        st.info("这个 Blueprint 还没有历史 Plan，可直接基于它生成新的 Plan 候选。")
+
+    target_dir = resolve_output_root(st.session_state["output_root"]) / safe_run_name(
+        st.session_state["run_name"]
+    )
+    st.caption(f"复用后创建新运行：`{target_dir}`；历史来源目录不会被修改。")
+    action_label = (
+        f"复用 Blueprint，生成 {st.session_state['plan_candidate_count']} 个 Plan 候选"
+        if selected_plan is None else
+        ("复用完整 Session 并继续后续阶段" if session_count == len(selected_plan["plan"].get("plans", []))
+         else "复用所选结果并继续生成剩余 Session")
+    )
+    if st.button(
+        action_label, type="primary", use_container_width=True,
+        key="reuse_selected_artifacts",
+    ):
+        return {
+            "blueprint": selected_bp,
+            "plan": selected_plan,
+            "session_source": selected_session_source,
+            "session_count": session_count,
+            "target_dir": target_dir,
+        }
+    return None
+
+
+def materialize_reused_artifacts(selection: dict) -> tuple[Path, str, bool]:
+    """Create a new, auditable run from selected historical artifacts."""
+    target_dir: Path = selection["target_dir"]
+    protected_names = (
+        "planning_candidates.json", "dataset_blueprint.json", "session_plans.json",
+        "checkpoint_sessions.json", "benchmark.json", "reuse_provenance.json",
+    )
+    if target_dir.exists() and any((target_dir / name).exists() for name in protected_names):
+        raise ValueError(
+            "目标测试名称已经包含生成产物。请换一个新的测试名称，历史运行不会被覆盖。"
+        )
+    target_dir.mkdir(parents=True, exist_ok=True)
+
+    blueprint_record = selection["blueprint"]
+    plan_record = selection["plan"]
+    session_source = selection["session_source"]
+    session_count = int(selection["session_count"])
+    blueprint = DatasetBlueprint.model_validate(blueprint_record["blueprint"])
+    case = CaseSpec.model_validate(blueprint_record["case_spec"])
+    blueprint_fp = blueprint_fingerprint(blueprint)
+    if blueprint_fp != blueprint_record["fingerprint"]:
+        raise ValueError("历史 Blueprint 内容已经变化，无法安全复用")
+
+    plan_list = None
+    plan_fp = ""
+    if plan_record:
+        plan_list = SessionPlanList.model_validate(plan_record["plan"])
+        plan_fp = plan_fingerprint(plan_list)
+        if (
+            plan_fp != plan_record["fingerprint"]
+            or plan_list.blueprint_fingerprint != blueprint_fp
+        ):
+            raise ValueError("历史 Plan 与所选 Blueprint 不匹配")
+        expected_ids = [slot.session_id for slot in blueprint.session_slots]
+        if [item.session_id for item in plan_list.plans] != expected_ids:
+            raise ValueError("历史 Plan 的 Session 顺序与 Blueprint 不一致")
+
+    (target_dir / "case_spec.json").write_text(
+        case.model_dump_json(indent=2), encoding="utf-8"
+    )
+    if plan_list is None:
+        candidate_manifest = {
+            "version": 2,
+            "case_id": case.case_id,
+            "session_ids": [slot.session_id for slot in blueprint.session_slots],
+            "blueprint_candidate_count": 1,
+            "plan_candidate_count": 0,
+            "blueprint_candidates": [{
+                "candidate_id": "BP-REUSE-01",
+                "title": f"历史复用 · {blueprint_record['title']}",
+                "summary": f"来源 {Path(blueprint_record['source_run']).name}",
+                "blueprint": blueprint.model_dump(),
+            }],
+            "plan_candidates": [],
+            "blueprint_selection": None,
+            "selection": None,
+        }
+        (target_dir / "planning_candidates.json").write_text(
+            json.dumps(candidate_manifest, ensure_ascii=False, indent=2), encoding="utf-8"
+        )
+    else:
+        (target_dir / "dataset_blueprint.json").write_text(
+            blueprint.model_dump_json(indent=2), encoding="utf-8"
+        )
+        (target_dir / "session_plans.json").write_text(
+            plan_list.model_dump_json(indent=2), encoding="utf-8"
+        )
+
+    reused_session_ids: list[str] = []
+    reused_eval_artifacts: list[str] = []
+    session_source_run = ""
+    if plan_list and session_source and session_count:
+        sessions = session_source["sessions"][:session_count]
+        reused_session_ids = [item.get("session_id", "") for item in sessions]
+        expected_prefix = [item.session_id for item in plan_list.plans[:session_count]]
+        if reused_session_ids != expected_prefix:
+            raise ValueError("历史 Session 不是所选 Plan 的合法连续前缀")
+        (target_dir / "checkpoint_sessions.json").write_text(
+            json.dumps(sessions, ensure_ascii=False, indent=2), encoding="utf-8"
+        )
+        session_source_run = str(session_source["run"])
+        if session_count == len(plan_list.plans):
+            for name in (
+                "eval_candidates.json", "checkpoint_eval_candidates.json",
+                "eval_examples.json", "checkpoint_eval_examples.json",
+            ):
+                source_path = Path(session_source["run"]) / name
+                if source_path.exists():
+                    shutil.copy2(source_path, target_dir / name)
+                    reused_eval_artifacts.append(name)
+
+    source_run = (
+        Path(session_source["run"])
+        if session_source and session_count else
+        Path(plan_record["source_run"]) if plan_record else
+        Path(blueprint_record["source_run"])
+    )
+    source_runtime = source_run / ".runtime"
+    target_runtime = target_dir / ".runtime"
+    copied_runtime = False
+    if source_runtime.exists() and not target_runtime.exists():
+        shutil.copytree(source_runtime, target_runtime)
+        copied_runtime = (target_runtime / "config.json").exists()
+        if copied_runtime:
+            reused_config = read_json(target_runtime / "config.json")
+            reused_generation = reused_config.setdefault("generation", {})
+            reused_generation["stop_after_planning"] = False
+            reused_generation["run_eval"] = any(
+                name in reused_eval_artifacts
+                for name in ("eval_candidates.json", "checkpoint_eval_candidates.json")
+            )
+            reused_generation["run_eval_examples"] = any(
+                name in reused_eval_artifacts
+                for name in ("eval_examples.json", "checkpoint_eval_examples.json")
+            )
+            (target_runtime / "config.json").write_text(
+                json.dumps(reused_config, ensure_ascii=False, indent=2), encoding="utf-8"
+            )
+
+    provenance = ArtifactReuseProvenance(
+        blueprint_source_run=str(blueprint_record["source_run"]),
+        plan_source_run=str(plan_record["source_run"]) if plan_record else "",
+        session_source_run=session_source_run,
+        case_id=case.case_id,
+        blueprint_fingerprint=blueprint_fp,
+        plan_fingerprint=plan_fp,
+        reused_session_ids=reused_session_ids,
+        reused_eval_artifacts=reused_eval_artifacts,
+        created_at=datetime.now(timezone.utc).isoformat(),
+    )
+    (target_dir / "reuse_provenance.json").write_text(
+        provenance.model_dump_json(indent=2), encoding="utf-8"
+    )
+    return target_dir, "BP-REUSE-01", copied_runtime
 
 
 def load_generation_run(output_dir: Path) -> dict:
@@ -880,6 +1485,9 @@ def load_generation_run(output_dir: Path) -> dict:
         ),
         "qa": read_json_optional(output_dir / "qa_report.json", None),
         "runtime_config": read_json_optional(output_dir / ".runtime" / "config.json", {}),
+        "reuse_provenance": read_json_optional(
+            output_dir / "reuse_provenance.json", {}
+        ),
         "pipeline_result": read_json_optional(output_dir / "logs" / "99_pipeline_result.json", {}),
     }
 
@@ -1087,6 +1695,16 @@ def render_data_library(output_root: Path) -> None:
         "Eval 候选", "Eval Examples", "快速评估", "原始产物",
     ])
     with overview_tab:
+        if bundle["reuse_provenance"]:
+            provenance = bundle["reuse_provenance"]
+            with st.expander("历史产物复用来源", expanded=True):
+                st.write(f"**Blueprint 来源**：`{provenance.get('blueprint_source_run', '')}`")
+                st.write(f"**Plan 来源**：`{provenance.get('plan_source_run') or '本次新生成'}`")
+                st.write(f"**Session 来源**：`{provenance.get('session_source_run') or '未复用'}`")
+                st.write(
+                    "**复用 Session**："
+                    + (", ".join(provenance.get("reused_session_ids", [])) or "无")
+                )
         st.subheader("隐式生活锚点")
         render_life_anchor(bundle["life_anchor"])
         st.divider()
@@ -1099,7 +1717,15 @@ def render_data_library(output_root: Path) -> None:
             if bundle["runtime_config"]:
                 generation = bundle["runtime_config"].get("generation", {})
                 validation = bundle["runtime_config"].get("validation", {})
-                st.write(f"**模型**：{bundle['runtime_config'].get('components', {}).get('session_writer', {}).get('model', '—')}")
+                runtime_components = bundle["runtime_config"].get("components", {})
+                st.write("**各阶段模型**")
+                st.json({
+                    stage_label: {
+                        component: runtime_components.get(component, {}).get("model", "—")
+                        for component in components
+                    }
+                    for stage_label, _state_key, components in STAGE_MODEL_GROUPS
+                }, expanded=False)
                 st.write(f"**Session 数量**：{generation.get('session_count', '—')}")
                 st.write(f"**仅 Plan**：{generation.get('stop_after_planning', False)}")
                 st.write(f"**EvalGenerator**：{generation.get('run_eval', False)}")
@@ -1304,6 +1930,7 @@ def build_runtime_snapshot(
     stop_after_planning: bool,
     run_eval: bool,
     run_eval_examples: bool,
+    component_models: dict[str, str] | None = None,
 ) -> Path:
     """Create an isolated config/prompt snapshot without touching project defaults."""
     runtime_dir = output_dir / ".runtime"
@@ -1322,7 +1949,9 @@ def build_runtime_snapshot(
     runtime_config["blueprint_constraints"] = blueprint_constraints
     runtime_config["validation"] = validation_config
     for component, component_config in runtime_config["components"].items():
-        component_config["model"] = model_name.strip()
+        component_config["model"] = (
+            (component_models or {}).get(component) or model_name.strip()
+        )
         if component in {"session_writer", "eval_generator"}:
             component_config["temperature"] = writer_temperature
     runtime_config_path = runtime_dir / "config.json"
@@ -1333,6 +1962,33 @@ def build_runtime_snapshot(
         (runtime_prompt_dir / f"{prompt_name}.txt").write_text(content, encoding="utf-8")
     shutil.copy2(ROOT / "scripts" / "invoke_openai.ps1", runtime_script_dir / "invoke_openai.ps1")
     return runtime_config_path
+
+
+def update_runtime_component_models(
+    output_dir: Path, component_models: dict[str, str]
+) -> None:
+    """Apply current per-stage model choices before the next resumable stage."""
+    config_path = output_dir / ".runtime" / "config.json"
+    runtime_config = read_json(config_path)
+    for component, model_name in component_models.items():
+        if component in runtime_config.get("components", {}) and model_name.strip():
+            runtime_config["components"][component]["model"] = model_name.strip()
+    config_path.write_text(
+        json.dumps(runtime_config, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+
+
+def set_runtime_eval_stage(output_dir: Path, *, final_examples: bool) -> None:
+    """Enable exactly the requested post-Session Eval stage for a resumed run."""
+    config_path = output_dir / ".runtime" / "config.json"
+    runtime_config = read_json(config_path)
+    generation = runtime_config.setdefault("generation", {})
+    generation["run_eval"] = True
+    generation["run_eval_examples"] = final_examples
+    generation["stop_after_planning"] = False
+    config_path.write_text(
+        json.dumps(runtime_config, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
 
 
 def run_generation(
@@ -1352,6 +2008,7 @@ def run_generation(
     stop_after_planning: bool,
     run_eval: bool,
     run_eval_examples: bool,
+    component_models: dict[str, str] | None = None,
     workflow_action: str = "prepare_blueprints",
     blueprint_candidate_count: int = 3,
     plan_candidate_count: int = 3,
@@ -1410,12 +2067,15 @@ def run_generation(
             st.error("同名运行的 Spec 与当前内容不同，不能安全续跑。请换一个新的测试名称。")
             return
 
-    if workflow_action in {"prepare_plans", "continue_selected"}:
+    if workflow_action in {
+        "prepare_plans", "continue_selected", "continue_reused",
+        "generate_eval_candidates", "generate_eval_examples",
+    }:
         runtime_config_path = output_dir / ".runtime" / "config.json"
         if not case_path.exists() or not runtime_config_path.exists():
             st.error("找不到候选生成时保存的 CaseSpec 或配置快照，无法安全继续。")
             return
-        if not selected_blueprint_id:
+        if workflow_action in {"prepare_plans", "continue_selected"} and not selected_blueprint_id:
             st.error("请先选择一个 Blueprint。")
             return
         if workflow_action == "continue_selected" and not selected_plan_id:
@@ -1427,7 +2087,7 @@ def run_generation(
             runtime_config_path = build_runtime_snapshot(
                 output_dir, model_name, writer_temperature, transport, prompt_drafts,
                 session_count_override, blueprint_constraints, validation_config,
-                stop_after_planning, run_eval, run_eval_examples,
+                stop_after_planning, run_eval, run_eval_examples, component_models,
             )
         except OSError as exc:
             st.error(f"无法创建本次运行的配置快照：{exc}")
@@ -1555,16 +2215,20 @@ def run_generation(
         # 检查是否有 session 失败被跳过
         pipeline_result_path = output_dir / "logs" / "99_pipeline_result.json"
         failed_ids: list[str] = []
+        eval_generation_error = None
         eval_example_error = None
         if pipeline_result_path.exists():
             try:
                 pr = json.loads(pipeline_result_path.read_text(encoding="utf-8"))
                 failed_ids = pr.get("failed_session_ids", [])
+                eval_generation_error = pr.get("eval_generation_error")
                 eval_example_error = pr.get("eval_example_error")
             except Exception:
                 pass
         if failed_ids:
             status.warning(f"生成完成，但有 {len(failed_ids)} 个 session 失败被跳过：{', '.join(failed_ids)}")
+        elif eval_generation_error:
+            status.warning(f"Eval 候选尚未完成：{eval_generation_error}")
         elif eval_example_error:
             status.warning(f"Session 与 Eval 候选已保存，但正式 Eval Examples 未完成：{eval_example_error}")
         elif workflow_action == "prepare_blueprints":
@@ -1575,10 +2239,47 @@ def run_generation(
             status.success(
                 f"已基于 {selected_blueprint_id} 生成 {plan_candidate_count} 个 Plan 候选。"
             )
+        elif workflow_action == "generate_eval_candidates":
+            status.success("Eval 候选阶段已完成。")
+        elif workflow_action == "generate_eval_examples":
+            status.success("正式 Eval Examples 阶段已完成。")
         else:
             status.success("生成产物已保存。")
-        if workflow_action in {"prepare_blueprints", "prepare_plans"}:
+        if workflow_action == "prepare_blueprints":
             render_candidate_selection(output_dir, plan_candidate_count)
+        elif workflow_action == "prepare_plans":
+            st.session_state["workflow_notice"] = (
+                f"已基于 {selected_blueprint_id} 生成 "
+                f"{plan_candidate_count} 个 Plan 候选。"
+            )
+            # Blueprint selector was already rendered earlier in this Streamlit run.
+            # Start a fresh run before drawing the updated selector/Plan controls,
+            # otherwise Streamlit sees the same explicit widget key twice.
+            st.rerun()
+        elif (
+            workflow_action in {"generate_eval_candidates", "generate_eval_examples"}
+            and not eval_generation_error
+            and not eval_example_error
+        ):
+            st.session_state["workflow_notice"] = (
+                "Eval 候选已生成，可以继续生成正式 Eval Examples。"
+                if workflow_action == "generate_eval_candidates"
+                else "正式 Eval Examples 已生成完成。"
+            )
+            st.rerun()
+        elif workflow_action in {"generate_eval_candidates", "generate_eval_examples"}:
+            st.session_state["workflow_error"] = (
+                eval_example_error or eval_generation_error or "Eval 阶段未完成，请重试。"
+            )
+            st.rerun()
+        elif workflow_action in {"continue_selected", "continue_reused"} and not failed_ids:
+            st.session_state["workflow_notice"] = (
+                "Session 已全部生成完成，可以继续生成 Eval 候选。"
+            )
+            # Session files are written by the child process after this page run
+            # started. Re-run the main page so the post-Session controls are
+            # evaluated against those newly completed artifacts immediately.
+            st.rerun()
         else:
             render_results(output_dir)
         render_artifact_browser(output_dir)
@@ -1926,6 +2627,9 @@ if "model_catalog" not in st.session_state:
     st.session_state["model_catalog"] = [model for models in FALLBACK_MODELS.values() for model in models]
 if "catalog_source" not in st.session_state:
     st.session_state["catalog_source"] = "内置候选"
+for _stage_label, stage_state_key, stage_components in STAGE_MODEL_GROUPS:
+    if stage_state_key not in st.session_state:
+        st.session_state[stage_state_key] = config["components"][stage_components[0]]["model"]
 if "writer_temperature" not in st.session_state:
     st.session_state["writer_temperature"] = float(config["components"]["session_writer"]["temperature"])
 if "session_count_override" not in st.session_state:
@@ -1949,16 +2653,6 @@ for state_key, config_key, fallback in (
 if "bp_required_cue_types" not in st.session_state:
     st.session_state["bp_required_cue_types"] = blueprint_defaults.get(
         "required_cue_types", ["object", "scene", "utterance"]
-    )
-if "stop_after_planning" not in st.session_state:
-    st.session_state["stop_after_planning"] = config["generation"].get(
-        "stop_after_planning", False
-    )
-if "run_eval_generator" not in st.session_state:
-    st.session_state["run_eval_generator"] = config["generation"].get("run_eval", False)
-if "run_eval_examples" not in st.session_state:
-    st.session_state["run_eval_examples"] = config["generation"].get(
-        "run_eval_examples", False
     )
 if "transport" not in st.session_state:
     st.session_state["transport"] = config.get("transport", "openai_sdk")
@@ -2080,6 +2774,28 @@ with st.sidebar:
                 st.session_state["selected_model"] = model_options[0]
             st.selectbox("模型", options=model_options, key="selected_model")
         st.caption(f"模型目录：{st.session_state['catalog_source']}")
+        st.markdown("##### 各阶段模型")
+        st.button(
+            "将上方模型应用到全部阶段",
+            on_click=apply_default_model_to_all_stages,
+            use_container_width=True,
+        )
+        stage_model_options = sorted({
+            *st.session_state["model_catalog"],
+            st.session_state["selected_model"],
+            *(
+                str(st.session_state[state_key])
+                for _label, state_key, _components in STAGE_MODEL_GROUPS
+            ),
+        })
+        stage_model_cols = st.columns(2)
+        for stage_index, (stage_label, state_key, _components) in enumerate(
+            STAGE_MODEL_GROUPS
+        ):
+            stage_model_cols[stage_index % 2].selectbox(
+                f"{stage_label} 模型", options=stage_model_options, key=state_key,
+            )
+        st.caption("模型选择会在每个阶段启动前写入本次运行快照，可在下一阶段前修改。")
         st.slider(
             "Writer / Eval temperature", min_value=0.0, max_value=2.0,
             step=0.1, key="writer_temperature",
@@ -2159,20 +2875,10 @@ with st.sidebar:
             f"流程：生成 {st.session_state['blueprint_candidate_count']} 个 Blueprint → "
             f"选 1 个 → 生成 {st.session_state['plan_candidate_count']} 个 Plan → 选 1 个。"
         )
-        st.toggle(
-            "生成 Eval 候选", key="run_eval_generator",
-            help="只运行 EvalGenerator，保留每条 outline 的 3 个草稿候选。",
+        st.caption(
+            "Session 全部完成后，主页面会依次出现“生成 Eval 候选”和"
+            "“生成正式 Eval Examples”按钮；两个阶段不会再与 Session 强制绑在一次运行中。"
         )
-        st.toggle(
-            "生成正式 Eval Examples", key="run_eval_examples",
-            help=(
-                "继续运行 EvidenceResolver、EvalVerifier 和确定性 GoldFinalizer，"
-                "写入 eval_examples.json 与 benchmark.eval_samples。"
-            ),
-        )
-        if st.session_state["run_eval_examples"] and not st.session_state["run_eval_generator"]:
-            st.caption("正式 Eval Examples 会自动先运行 EvalGenerator。")
-        st.caption("Eval 设置会在锁定 Blueprint + Plan 组合后生效。")
 
     with st.expander("⑤ 可选质量检查", expanded=False):
         st.caption("默认关闭；这些开关不影响 Blueprint 的确定性约束。")
@@ -2267,10 +2973,21 @@ st.markdown(
     """
     <div class="section-heading">
       <span class="section-number">02</span>
-      <div><strong>分步审阅与生成</strong><p>先确定 Blueprint，再审阅由它生成的多个 Plan，最后继续生成对话。</p></div>
+      <div><strong>分步审阅与生成</strong><p>依次完成 Blueprint、Plan、Session、Eval 候选与正式 Eval Examples；已完成阶段可直接复用。</p></div>
     </div>
     """,
     unsafe_allow_html=True,
+)
+
+workflow_notice = st.session_state.pop("workflow_notice", None)
+if workflow_notice:
+    st.success(workflow_notice)
+workflow_error = st.session_state.pop("workflow_error", None)
+if workflow_error:
+    st.error(f"Eval 阶段未完成：{workflow_error}")
+
+reuse_action = render_reuse_selector(
+    resolve_output_root(st.session_state["output_root"])
 )
 
 if run_clicked:
@@ -2307,18 +3024,124 @@ if run_clicked:
             "qa": st.session_state["validate_qa"],
         },
         stop_after_planning=False,
-        run_eval=st.session_state["run_eval_generator"],
-        run_eval_examples=st.session_state["run_eval_examples"],
+        run_eval=False,
+        run_eval_examples=False,
+        component_models=selected_component_models(),
         workflow_action="prepare_blueprints",
         blueprint_candidate_count=st.session_state["blueprint_candidate_count"],
         plan_candidate_count=st.session_state["plan_candidate_count"],
     )
+elif reuse_action:
+    try:
+        reused_output, reused_blueprint_id, copied_runtime = materialize_reused_artifacts(
+            reuse_action
+        )
+        if copied_runtime:
+            copied_config = read_json_optional(
+                reused_output / ".runtime" / "config.json", {}
+            )
+            copied_runtime = bool(
+                copied_config.get("blueprint_constraints")
+                and copied_config.get("components", {}).get("session_writer")
+            )
+        if not copied_runtime:
+            source_log = read_json_optional(
+                Path(reuse_action["blueprint"]["source_run"])
+                / "logs" / "00_original_case_spec.json",
+                {},
+            )
+            source_constraints = source_log.get("blueprint_constraints", {})
+            if not source_constraints:
+                source_constraints = {
+                    "encode_association_count": st.session_state["bp_encode_count"],
+                    "triggered_recall_count": st.session_state["bp_trigger_count"],
+                    "memory_update_count": st.session_state["bp_update_count"],
+                    "control_count": st.session_state["bp_control_count"],
+                    "required_cue_types": st.session_state["bp_required_cue_types"],
+                    "eval_triggered_count": st.session_state["bp_eval_triggered"],
+                    "eval_insufficient_evidence_count": st.session_state["bp_eval_insufficient"],
+                    "eval_not_triggered_count": st.session_state["bp_eval_not_triggered"],
+                }
+            build_runtime_snapshot(
+                reused_output,
+                st.session_state["selected_model"],
+                st.session_state["writer_temperature"],
+                st.session_state["transport"],
+                {
+                    name: st.session_state.get(f"prompt_editor_{name}", default)
+                    for name, default in defaults_by_prompt.items()
+                },
+                len(reuse_action["blueprint"]["blueprint"].get("session_slots", [])),
+                source_constraints,
+                {
+                    "structure": st.session_state["validate_structure"],
+                    "semantic": st.session_state["validate_semantic"],
+                    "naturalness": st.session_state["validate_naturalness"],
+                    "qa": st.session_state["validate_qa"],
+                },
+                False,
+                False,
+                False,
+                selected_component_models(),
+            )
+    except (OSError, ValueError, ValidationError) as exc:
+        st.error(f"无法复用所选历史产物：{exc}")
+    else:
+        st.session_state["last_output"] = str(reused_output)
+        update_runtime_component_models(
+            reused_output, selected_component_models()
+        )
+        reuse_provenance = read_json_optional(
+            reused_output / "reuse_provenance.json", {}
+        )
+        reused_eval_files = reuse_provenance.get("reused_eval_artifacts", [])
+        if reused_eval_files:
+            set_runtime_eval_stage(
+                reused_output,
+                final_examples=any(
+                    name in reused_eval_files
+                    for name in ("eval_examples.json", "checkpoint_eval_examples.json")
+                ),
+            )
+        runtime_config = read_json(reused_output / ".runtime" / "config.json")
+        runtime_generation = runtime_config["generation"]
+        runtime_validation = runtime_config.get("validation", {})
+        has_reused_plan = reuse_action["plan"] is not None
+        run_generation(
+            spec_text=(reused_output / "case_spec.json").read_text(encoding="utf-8"),
+            run_name=reused_output.name,
+            resume=True,
+            output_root_text=str(reused_output.parent),
+            model_name=runtime_config["components"]["session_writer"]["model"],
+            writer_temperature=float(
+                runtime_config["components"]["session_writer"]["temperature"]
+            ),
+            transport=runtime_config.get("transport", "openai_sdk"),
+            api_key_override=st.session_state["api_key_secret"],
+            base_url_override=st.session_state["base_url_override"],
+            prompt_drafts={},
+            session_count_override=int(runtime_generation["session_count"]),
+            blueprint_constraints=runtime_config["blueprint_constraints"],
+            validation_config=runtime_validation,
+            stop_after_planning=False,
+            run_eval=bool(runtime_generation.get("run_eval", False)),
+            run_eval_examples=bool(runtime_generation.get("run_eval_examples", False)),
+            component_models=selected_component_models(),
+            workflow_action="continue_reused" if has_reused_plan else "prepare_plans",
+            blueprint_candidate_count=1,
+            plan_candidate_count=st.session_state["plan_candidate_count"],
+            selected_blueprint_id=(None if has_reused_plan else reused_blueprint_id),
+            existing_output_dir=reused_output,
+        )
 elif st.session_state.get("last_output"):
     last_output = Path(st.session_state["last_output"])
     next_action = render_candidate_selection(
         last_output, st.session_state["plan_candidate_count"]
     )
     if next_action:
+        update_runtime_component_models(
+            last_output, selected_component_models()
+        )
         runtime_config = read_json(last_output / ".runtime" / "config.json")
         runtime_generation = runtime_config["generation"]
         runtime_validation = runtime_config.get("validation", {})
@@ -2343,6 +3166,7 @@ elif st.session_state.get("last_output"):
             stop_after_planning=False,
             run_eval=bool(runtime_generation.get("run_eval", False)),
             run_eval_examples=bool(runtime_generation.get("run_eval_examples", False)),
+            component_models=selected_component_models(),
             workflow_action=workflow_action,
             blueprint_candidate_count=st.session_state["blueprint_candidate_count"],
             plan_candidate_count=st.session_state["plan_candidate_count"],
@@ -2351,7 +3175,42 @@ elif st.session_state.get("last_output"):
             existing_output_dir=last_output,
         )
     else:
-        render_results(last_output)
-        render_artifact_browser(last_output)
+        eval_action = render_post_session_actions(last_output)
+        if eval_action:
+            update_runtime_component_models(
+                last_output, selected_component_models()
+            )
+            set_runtime_eval_stage(
+                last_output,
+                final_examples=eval_action == "generate_eval_examples",
+            )
+            runtime_config = read_json(last_output / ".runtime" / "config.json")
+            runtime_generation = runtime_config["generation"]
+            run_generation(
+                spec_text=(last_output / "case_spec.json").read_text(encoding="utf-8"),
+                run_name=last_output.name,
+                resume=True,
+                output_root_text=str(last_output.parent),
+                model_name=runtime_config["components"]["session_writer"]["model"],
+                writer_temperature=float(
+                    runtime_config["components"]["session_writer"]["temperature"]
+                ),
+                transport=runtime_config.get("transport", "openai_sdk"),
+                api_key_override=st.session_state["api_key_secret"],
+                base_url_override=st.session_state["base_url_override"],
+                prompt_drafts={},
+                session_count_override=int(runtime_generation["session_count"]),
+                blueprint_constraints=runtime_config["blueprint_constraints"],
+                validation_config=runtime_config.get("validation", {}),
+                stop_after_planning=False,
+                run_eval=True,
+                run_eval_examples=eval_action == "generate_eval_examples",
+                component_models=selected_component_models(),
+                workflow_action=eval_action,
+                existing_output_dir=last_output,
+            )
+        else:
+            render_results(last_output)
+            render_artifact_browser(last_output)
 else:
     st.info("完成 Spec 校验后，点击左侧“生成 Blueprint 候选”。候选将在这里展开。")

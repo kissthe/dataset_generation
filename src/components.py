@@ -80,6 +80,12 @@ def blueprint_fingerprint(blueprint: DatasetBlueprint) -> str:
     return hashlib.sha256(source.encode("utf-8")).hexdigest()
 
 
+def plan_fingerprint(plans: SessionPlanList) -> str:
+    """Identify an exact Plan independently of its source output directory."""
+    source = json.dumps(plans.model_dump(), ensure_ascii=False, sort_keys=True)
+    return hashlib.sha256(source.encode("utf-8")).hexdigest()
+
+
 def memory_role_targets(
     session_count: int, constraints: BlueprintConstraints | None = None
 ) -> dict[str, int]:
@@ -867,15 +873,47 @@ class EvalGenerator:
                 "instruction": "只生成候选当前输入，不解析 evidence_turn_ids，不输出最终 Gold。",
             },
         }, EvalGenerationResult)
-        normalized = [
-            candidate.model_copy(update={
+        blueprint_cues = {
+            cue.cue_id: cue
+            for memory in blueprint.emotion_memory_map
+            for cue in memory.cue_seeds
+        }
+        blueprint_cue = blueprint_cues.get(outline.cue_id)
+        normalized = []
+        for candidate in generated.candidates:
+            current_input = candidate.current_input
+            option_ids = [option.cue_id for option in current_input.cue_options]
+            if (
+                blueprint_cue is not None
+                and outline.cue_id not in option_ids
+                and current_input.cue_type == blueprint_cue.cue_type
+                and current_input.cue_options
+            ):
+                # Models sometimes preserve the intended Blueprint cue but append
+                # a candidate suffix (for example C02_candidate_01). The cue is
+                # still the same semantic target, so lock its identifier back to
+                # the canonical Blueprint ID before deterministic verification.
+                matching_index = next(
+                    (
+                        index for index, option in enumerate(current_input.cue_options)
+                        if option.cue_id.casefold().startswith(outline.cue_id.casefold())
+                    ),
+                    0,
+                )
+                cue_options = list(current_input.cue_options)
+                cue_options[matching_index] = cue_options[matching_index].model_copy(
+                    update={"cue_id": outline.cue_id}
+                )
+                current_input = current_input.model_copy(
+                    update={"cue_options": cue_options}
+                )
+            normalized.append(candidate.model_copy(update={
+                "current_input": current_input,
                 "target_label": outline.target_label,
                 "target_emotion": outline.target_emotion,
                 "blueprint_cue_id": outline.cue_id,
                 "history_cutoff": outline.history_cutoff,
-            })
-            for candidate in generated.candidates
-        ]
+            }))
         return EvalGenerationResult(outline_id=outline.outline_id, candidates=normalized)
 
 

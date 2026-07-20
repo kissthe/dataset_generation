@@ -52,7 +52,7 @@
 
 每个 candidate 的 current_input.cue_type 使用 object、scene、utterance、sound、smell、taste 或 none。cue_options 给出 2-4 个当前输入中可识别的候选线索，每项只含 cue_id 与简短具体的 name；cue_id 在本 candidate 内唯一。它们只是后续 Resolver/Finalizer 的候选项，不是 Gold。
 
-- 如果当前使用蓝图中的已知 cue，可沿用 blueprint cue_id；
+- 如果当前使用蓝图中的已知 cue，cue_options 必须包含完全一致的 blueprint cue_id；不得添加 `_candidate_01`、`_cu1` 等后缀，也不得换成 `new_cue_*`；
 - insufficient_evidence 的新 cue 使用 `new_cue_01` 这类局部 ID；
 - 当前没有 cue 时可以输出空列表，并令 current_input.cue_type=`none`。
 

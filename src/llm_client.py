@@ -8,6 +8,7 @@ import time
 from pathlib import Path
 from typing import TypeVar
 
+import httpx
 from openai import OpenAI
 from pydantic import BaseModel
 
@@ -75,7 +76,17 @@ def is_powershell_connection_error(error: BaseException | str) -> bool:
 
 class LLMClient:
     def __init__(self, config: AppConfig) -> None:
-        kwargs = {"api_key": config.api_key}
+        kwargs = {
+            "api_key": config.api_key,
+            # The SDK's short default connect timeout is fragile with some
+            # OpenAI-compatible gateways on Windows. Keep response reads long
+            # enough for structured output, while bounding TLS handshakes.
+            "timeout": httpx.Timeout(
+                connect=30.0, read=300.0, write=60.0, pool=30.0
+            ),
+            # Retry only in this class so every attempt is logged consistently.
+            "max_retries": 0,
+        }
         if config.base_url:
             kwargs["base_url"] = config.base_url
         self.client = OpenAI(**kwargs)

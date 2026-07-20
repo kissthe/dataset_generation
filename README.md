@@ -10,7 +10,7 @@
 - `outputs/`：计划、生成检查点、benchmark 与 QA 结果。
 - `config.json`：模型、temperature、seed、重试次数、上下文 Session 数和 Blueprint 确定性覆盖约束等配置。
 
-Web 默认采用三阶段工作流：程序先生成若干 Dataset Blueprint 候选；用户选定一个 Blueprint 后，程序再依据该 Blueprint 的生活锚点、记忆槽位、cue 和证据目标生成若干完整 Plan 候选；用户选定 Plan 后才启动 Writer。Blueprint 与 Plan 的候选数量都可在 Web 侧边栏按次调整（1–8 个）。每个 Plan 都保存来源 Blueprint 的候选 ID 与指纹，因此不能与其他 Blueprint 交叉选择。命令行直接运行仍兼容原来的一次性完整流水线。
+Web 默认采用五阶段工作流：程序先生成若干 Dataset Blueprint 候选；用户选定一个 Blueprint 后，程序再依据该 Blueprint 的生活锚点、记忆槽位、cue 和证据目标生成若干完整 Plan 候选；用户选定 Plan 后才启动 Session Writer。全部 Session 完成后，页面依次提供“生成 Eval 候选”和“生成正式 Eval Examples”按钮。Blueprint 与 Plan 的候选数量都可在 Web 侧边栏按次调整（1–8 个）。每个 Plan 都保存来源 Blueprint 的候选 ID 与指纹，因此不能与其他 Blueprint 交叉选择。命令行直接运行仍兼容原来的一次性完整流水线。
 
 ## 最简 Spec 与故事线规划
 
@@ -34,6 +34,10 @@ Web 默认采用三阶段工作流：程序先生成若干 Dataset Blueprint 候
 新的 SessionPlan 除了 topic 和 story_beat，还显式包含 `session_type`、`scene`、`user_intent`、`continuity_hook`，以及从蓝图锁定的 `memory_role`、`memory_id`、`cue_id`、`evidence_goal`、局部情绪和相对过去的变化。旧版 `session_plans.json` 仍可读取，缺失的新字段会在载入时使用兼容默认值。
 
 Web 第一步写出只含 Blueprint 候选的 `planning_candidates.json` 后停止，不调用 SessionPlanner 或 SessionWriter。选择 Blueprint 后，第二步只针对该 Blueprint 生成 Plan 候选，并展示日期、场景、聊天动机、故事节拍、生活线、后续钩子及逐 Session 的蓝图落实情况；点击“选定这个 Plan 并继续生成”后才会写出正式的 `dataset_blueprint.json` 和 `session_plans.json`。
+
+主页面“分步审阅与生成”区域也会扫描输出根目录中的全部历史运行，并按内容指纹建立 `Blueprint → Plan → Session` 复用关系。选择历史 Blueprint 后只显示真正由它生成的 Plan；选择 Plan 后可复用从第一条到指定 Session 的连续前缀，再继续生成剩余部分。复用操作始终创建新运行，不修改历史来源目录，并写入 `reuse_provenance.json` 记录 Blueprint、Plan、Session 来源与指纹。Pipeline 在继续运行前会再次核对这些指纹、Session ID、日期和主题，防止错配。完整 Session 被复用时，与同一来源匹配的 Eval checkpoint 也会一并复用。
+
+侧边栏“API 与模型”可以分别设置 Blueprint、Plan、Session Writer、Session 检查/修订、Eval 候选和正式 Eval Examples 所用模型，也可将当前全局模型一次应用到全部阶段。每个阶段启动前，当前选择都会写入该运行的 `.runtime/config.json`；因此用户可以完成一个阶段、检查结果、切换模型后再继续。确定性的 GoldFinalizer 不调用模型。
 
 Web 侧边栏按“运行与保存 → API 与模型 → 数据规模与 Blueprint → 流水线阶段 → 可选质量检查”组织。“页面导航”可以切换到“数据浏览与评估”，扫描输出根目录下的全部历史运行，兼容完整 benchmark、仅蓝图、仅 Plan、Eval 候选和只有 checkpoint 的中断运行；“Dataset 蓝图”页签可查看情绪记忆、不同类型 cue、Session 槽位和 Eval 覆盖，Plans 页可按记忆角色筛选。
 

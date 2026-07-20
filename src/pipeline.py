@@ -8,15 +8,16 @@ from .components import (
     DatasetBlueprintPlanner, EvalGenerator, EvalVerifier, EvidenceResolver,
     NaturalnessChecker, SessionPlanner, SessionReviser, SessionVerifier, SessionWriter,
     blueprint_id_for, build_eval_candidate_list, canonical_eval_ids, blueprint_fingerprint,
-    canonical_session_ids, eval_label_targets, memory_role_targets,
+    canonical_session_ids, eval_label_targets, memory_role_targets, plan_fingerprint,
     validate_blueprint_constraints, validate_dataset_blueprint, validate_eval_candidate,
 )
 from .config import AppConfig, BlueprintConstraints
 from .gold_finalizer import GoldFinalizer
-from .llm_client import LLMClient, is_powershell_connection_error
+from .llm_client import LLMClient, describe_exception, is_powershell_connection_error
 from .models import (
-    Benchmark, BlueprintCandidate, BlueprintCandidateSelection, CandidateSelection,
-    CaseSpec, DatasetBlueprint, EvalGenerationResult, EvalSample, PlanCandidate,
+    ArtifactReuseProvenance, Benchmark, BlueprintCandidate,
+    BlueprintCandidateSelection, CandidateSelection, CaseSpec, DatasetBlueprint,
+    EvalGenerationResult, EvalSample, PlanCandidate,
     PlanningCandidateManifest, Session, SessionPlanList, VerificationIssue,
     VerificationResult,
 )
@@ -193,6 +194,16 @@ class GenerationPipeline:
         cfg = self.config.generation
         total = len(manifest.session_ids)
         selected_blueprint = blueprints[blueprint_candidate_id].blueprint
+        reuse_path = output_dir / "reuse_provenance.json"
+        if reuse_path.exists():
+            reuse = ArtifactReuseProvenance.model_validate_json(
+                reuse_path.read_text(encoding="utf-8")
+            )
+            if (
+                reuse.case_id != case.case_id
+                or reuse.blueprint_fingerprint != blueprint_fingerprint(selected_blueprint)
+            ):
+                raise ValueError("reused Blueprint does not match its provenance")
         expected_ids = [slot.session_id for slot in selected_blueprint.session_slots]
         if expected_ids != manifest.session_ids:
             raise ValueError("selected Blueprint session IDs do not match the candidate manifest")
@@ -429,6 +440,21 @@ class GenerationPipeline:
         eval_count = sum(eval_label_targets(constraints=blueprint_constraints).values())
         blueprint_path = output_dir / "dataset_blueprint.json"
         plan_path = output_dir / "session_plans.json"
+        reuse_path = output_dir / "reuse_provenance.json"
+        reuse = (
+            ArtifactReuseProvenance.model_validate_json(
+                reuse_path.read_text(encoding="utf-8")
+            )
+            if reuse_path.exists() else None
+        )
+        if reuse and reuse.case_id != case.case_id:
+            raise ValueError("reuse provenance belongs to a different CaseSpec")
+        if reuse:
+            self._write_log(audit_dir / "00_reuse_provenance.json", {
+                "component": "pipeline",
+                "action": "validated_reused_artifacts",
+                "output": reuse.model_dump(),
+            })
 
         blueprint: DatasetBlueprint | None = None
         blueprint_schema_migrated = False
@@ -506,6 +532,12 @@ class GenerationPipeline:
             )
         else:
             print("resuming legacy plans without a dataset blueprint", flush=True)
+
+        if reuse:
+            if blueprint is None:
+                raise ValueError("reuse provenance requires dataset_blueprint.json")
+            if blueprint_fingerprint(blueprint) != reuse.blueprint_fingerprint:
+                raise ValueError("reused Blueprint fingerprint does not match provenance")
 
         if plan_path.exists():
             from .models import SessionPlanList
@@ -597,6 +629,9 @@ class GenerationPipeline:
             raise ValueError(f"planner did not return the expected session IDs; got {[p.session_id for p in plans.plans]}")
         if blueprint is not None:
             self._validate_plans_against_blueprint(plans.plans, blueprint)
+        if reuse and reuse.plan_fingerprint:
+            if plan_fingerprint(plans) != reuse.plan_fingerprint:
+                raise ValueError("reused Plan fingerprint does not match provenance")
 
         (output_dir / "session_plans.json").write_text(plans.model_dump_json(indent=2), encoding="utf-8")
         text_plan = "\n".join(
@@ -627,6 +662,17 @@ class GenerationPipeline:
             sessions = [Session.model_validate(item) for item in saved]
             if [s.session_id for s in sessions] != expected[:len(sessions)]:
                 raise ValueError("checkpoint sessions are not a valid prefix of the case")
+            if reuse and reuse.reused_session_ids:
+                saved_ids = [session.session_id for session in sessions]
+                if saved_ids[:len(reuse.reused_session_ids)] != reuse.reused_session_ids:
+                    raise ValueError("checkpoint does not contain the reused Session prefix")
+                plan_by_id = {plan.session_id: plan for plan in plans.plans}
+                for session in sessions[:len(reuse.reused_session_ids)]:
+                    plan = plan_by_id[session.session_id]
+                    if session.date != plan.date or session.topic != plan.topic:
+                        raise ValueError(
+                            f"reused {session.session_id} does not match its selected Plan"
+                        )
             print(f"resumed {len(sessions)}/{len(plans.plans)} completed sessions", flush=True)
         failed_plans: list = []
         for plan in plans.plans[len(sessions):]:
@@ -863,11 +909,27 @@ class GenerationPipeline:
 
                     finalized = None
                     cycle_errors: list[str] = []
+                    regenerate_candidates = False
                     for cycle in range(1, max_eval_cycles + 1):
-                        if cycle > 1:
-                            generation = self.eval_generator.run(
-                                case, sessions, outline, blueprint
-                            )
+                        if cycle > 1 and regenerate_candidates:
+                            try:
+                                generation = self.eval_generator.run(
+                                    case, sessions, outline, blueprint
+                                )
+                            except Exception as exc:
+                                error_detail = describe_exception(exc)
+                                cycle_errors.append(
+                                    f"EvalGenerator retry failed: {error_detail}"
+                                )
+                                self._write_log(
+                                    eval_log_dir / f"01_generator_retry_{cycle:02d}_error.json",
+                                    {
+                                        "component": "eval_generator",
+                                        "error": error_detail,
+                                    },
+                                )
+                                regenerate_candidates = True
+                                continue
                             eval_results[outline_index] = generation
                             eval_candidates_path.write_text(
                                 json.dumps({
@@ -885,6 +947,7 @@ class GenerationPipeline:
                                     "output": generation.model_dump(),
                                 },
                             )
+                            regenerate_candidates = False
 
                         candidates = build_eval_candidate_list(
                             generation, outline, resolution
@@ -902,12 +965,33 @@ class GenerationPipeline:
                                 "all candidates failed deterministic precheck: "
                                 + repr(precheck_issues)
                             )
+                            regenerate_candidates = True
                             continue
 
-                        selection = self.eval_verifier.run(
-                            case, sessions, outline, candidates, blueprint,
-                            precheck_issues=precheck_issues,
-                        )
+                        try:
+                            selection = self.eval_verifier.run(
+                                case, sessions, outline, candidates, blueprint,
+                                precheck_issues=precheck_issues,
+                            )
+                        except Exception as exc:
+                            error_detail = describe_exception(exc)
+                            cycle_errors.append(
+                                f"EvalVerifier request failed: {error_detail}"
+                            )
+                            self._write_log(
+                                eval_log_dir / f"04_verifier_cycle_{cycle:02d}_error.json",
+                                {
+                                    "component": "eval_verifier",
+                                    "error": error_detail,
+                                    "retry_same_candidates": True,
+                                },
+                            )
+                            # generate() has already exhausted its configured API
+                            # retries. A transport failure says nothing about
+                            # candidate quality, so keep the candidates/checkpoint
+                            # and return control to the Web retry button.
+                            regenerate_candidates = False
+                            break
                         self._write_log(
                             eval_log_dir / f"04_verifier_cycle_{cycle:02d}.json",
                             {
@@ -925,12 +1009,14 @@ class GenerationPipeline:
                                 "verifier rejected all candidates: "
                                 + "; ".join(selection.issues)
                             )
+                            regenerate_candidates = True
                             continue
                         if precheck_issues[selection.selected_index]:
                             cycle_errors.append(
                                 "verifier selected a candidate with deterministic errors: "
                                 + "; ".join(precheck_issues[selection.selected_index])
                             )
+                            regenerate_candidates = True
                             continue
                         try:
                             finalized = self.gold_finalizer.finalize(
@@ -941,6 +1027,7 @@ class GenerationPipeline:
                             )
                         except Exception as exc:
                             cycle_errors.append(f"finalizer rejected candidate: {exc}")
+                            regenerate_candidates = True
                             continue
                         self._write_log(eval_log_dir / "05_finalizer.json", {
                             "component": "gold_finalizer",

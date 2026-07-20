@@ -403,6 +403,21 @@ class PlanningCandidateManifest(StrictModel):
         return normalized
 
 
+class ArtifactReuseProvenance(StrictModel):
+    """Auditable links for Blueprint/Plan/Session artifacts reused in a new run."""
+
+    version: int = 1
+    blueprint_source_run: str
+    plan_source_run: str = ""
+    session_source_run: str = ""
+    case_id: str
+    blueprint_fingerprint: str
+    plan_fingerprint: str = ""
+    reused_session_ids: list[str] = Field(default_factory=list)
+    reused_eval_artifacts: list[str] = Field(default_factory=list)
+    created_at: str
+
+
 class Turn(StrictModel):
     turn_id: str
     round_id: str
